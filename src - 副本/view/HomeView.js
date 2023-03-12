@@ -6,7 +6,6 @@ import {FriendList} from "../component/friendList";
 import {MessageSend} from "../component/messageSend";
 import {MessageScreen} from "../component/messageScreen";
 import "../css/Home.css";
-import LoginView from "./LoginView";
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -18,9 +17,9 @@ export class HomeView extends React.Component {
                     <HeaderStyle />
                 </Header>
                 <Layout>
-                    <Sider className={"ant-sider"} width={"17vw"}>
+                    <Sider className={"ant-sider"} width={220}>
                         <Layout>
-                            <Sider className={"ant-sider-in-sider"} width={"4vw"}>
+                            <Sider className={"ant-sider"} width={40}>
                                 <MenuBar_Left />
                             </Sider>
                             <Content className={"ant-content-in-sider"}>
@@ -43,4 +42,3 @@ export class HomeView extends React.Component {
         )
     }
 }
-export default HomeView;

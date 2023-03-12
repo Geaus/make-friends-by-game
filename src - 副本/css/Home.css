@@ -5,42 +5,37 @@
 }
 
 .ant-header {
-    height : 10vh;
-    width : 100vw;
+    height : 64px;
+    width : 1280px;
     padding : 0;
 }
 
 .ant-sider {
-    height : 90vh;
-    padding : 0;
-}
-
-.ant-sider-in-sider {
-    height : 90vh;
+    height : 512px;
     padding : 0;
 }
 
 .ant-content-in-sider {
-    height : 90vh;
-    width : 13vw;
+    height : 512px;
+    width : 180px;
     padding : 0;
 }
 
 .ant-content {
-    height : 90vh;
-    width : 83vw;
+    height : 512px;
+    width : 1060px;
     padding : 0;
 }
 
 .ant-content-in-content {
-    height : 65vh;
-    width : 83vw;
+    height : 384px;
+    width : 1060px;
     padding : 0;
 }
 
 .ant-footer-in-content {
-    height : 25vh;
-    width : 83vw;
+    height : 128px;
+    width : 1060px;
     padding : 0;
 }
 
@@ -68,7 +63,3 @@
     width : 100%;
 }
 
-.iconStyle{
-  padding-top: 4vh;
-    font-size: 4vw;
-}
