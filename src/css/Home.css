@@ -5,37 +5,42 @@
 }
 
 .ant-header {
-    height : 64px;
-    width : 1280px;
+    height : 10vh;
+    width : 100vw;
     padding : 0;
 }
 
 .ant-sider {
-    height : 512px;
+    height : 90vh;
+    padding : 0;
+}
+
+.ant-sider-in-sider {
+    height : 90vh;
     padding : 0;
 }
 
 .ant-content-in-sider {
-    height : 512px;
-    width : 180px;
+    height : 90vh;
+    width : 13vw;
     padding : 0;
 }
 
 .ant-content {
-    height : 512px;
-    width : 1060px;
+    height : 90vh;
+    width : 83vw;
     padding : 0;
 }
 
 .ant-content-in-content {
-    height : 384px;
-    width : 1060px;
+    height : 65vh;
+    width : 83vw;
     padding : 0;
 }
 
 .ant-footer-in-content {
-    height : 128px;
-    width : 1060px;
+    height : 25vh;
+    width : 83vw;
     padding : 0;
 }
 

@@ -17,9 +17,9 @@ export class HomeView extends React.Component {
                     <HeaderStyle />
                 </Header>
                 <Layout>
-                    <Sider className={"ant-sider"} width={220}>
+                    <Sider className={"ant-sider"} width={"17vw"}>
                         <Layout>
-                            <Sider className={"ant-sider"} width={40}>
+                            <Sider className={"ant-sider-in-sider"} width={"4vw"}>
                                 <MenuBar_Left />
                             </Sider>
                             <Content className={"ant-content-in-sider"}>
