@@ -2,10 +2,10 @@ import React from 'react';
 import {Menu} from 'antd';
 import type {MenuProps} from "antd";
 import {SearchOutlined, QuestionOutlined} from "@ant-design/icons";
-
+import { Link } from "react-router-dom"
 const items : MenuProps['items'] = [
     {
-        label : '搜索陌生人',
+        label : <Link to={'/search'}>搜索陌生人</Link>,
         key : 'search',
         icon : <SearchOutlined />,
     },
@@ -27,7 +27,11 @@ export class HeaderStyle extends React.Component {
                 <div className={"header-menu"}>
                     <Menu className="menu" items={items} theme={"dark"} mode="horizontal"></Menu>
                 </div>
-                <div className={"header-person"}>个人中心</div>
+
+                <Link to={"/profile"}>
+                    <div className={"header-person"}>个人中心</div>
+                </Link>
+
             </div>
         )
     }
