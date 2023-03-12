@@ -7,7 +7,7 @@
 .ant-header {
     height : 10vh;
     width : 100vw;
-    padding : 0;
+    padding: 0;
 }
 
 .ant-sider {
@@ -45,31 +45,106 @@
 }
 
 .menuBar-left {
-    background-color : #fd010e;
+    background-color : #000000;
     height: 100%;
     width : 100%;
 }
 
 .friendList {
-    background-color : #62fd01;
+    background-color : #31382e;
     height : 100%;
     width : 100%;
 }
 
 .messageScreen {
-    background-color : #fd4e9e;
+    background-color : #ffffff;
     height : 100%;
     width : 100%;
 }
 
 .messageSend {
-    background-color : #00fde9;
+    background-color : #ffffff;
     height : 100%;
     width : 100%;
+    padding: 0;
 }
 
 .iconStyle{
-  padding-top: 4vh;
+    padding-top: 4vh;
     font-size: 4vw;
 }
 
+.header-name {
+    height : 100%;
+    width : 10vw;
+    font-size: 3vh;
+    color : #000000;
+    float : left;
+    text-align: center;
+}
+
+.header-menu {
+    height : 100%;
+    width : 80vw;
+    font-size: 3vh;
+    float : left;
+}
+
+.header-person {
+    height : 100%;
+    width : 10vw;
+    font-size : 3vh;
+    color : #000000;
+    float : left;
+    text-align: center;
+}
+
+.menu {
+    height : 10vh;
+    width : 80vw;
+    background-color: #0301fd;
+    align-content: center;
+    text-align: center;
+}
+
+.menuLeft {
+    background-color: #000000;
+    height : 90vh;
+    width : 4vw;
+    align-content: center;
+    color: #ffffff;
+}
+
+.friends {
+    background-color: #31382e;
+    height : 90vh;
+    width : 13vw;
+    align-content: center;
+    color: #ffffff;
+}
+
+.toolbar {
+    height : 0;
+    width : 73vw;
+    background-color: #00fde9;
+    float : left;
+    padding-top: 0;
+}
+
+.sending {
+    height : 0;
+    width : 10vw;
+    align-content: center;
+    background: #00fde9;
+    float : right;
+}
+
+.toolbarMenu {
+    height : 100%;
+    width : 73vw;
+    background-color: #00fde9;
+}
+
+.sendingButton {
+    background-color: #00fde9;
+}

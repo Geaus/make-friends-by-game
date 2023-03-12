@@ -1,12 +1,12 @@
-import React from 'react';
-import { Menu,Layout} from 'antd'
-import type {MenuProps} from "antd";
+import React from "react";
+import {Button, Menu, Layout} from "antd";
 
 import {
     UserAddOutlined,
     UserDeleteOutlined,
     UsergroupAddOutlined
 } from '@ant-design/icons';
+
 const { Sider } = Layout;
 
 const items : MenuProps['items'] = [
@@ -23,11 +23,12 @@ const items : MenuProps['items'] = [
         key : '3'
     }
 ]
-export class MenuBar_Left extends React.Component {
+
+export class ProfileMenu extends React.Component {
     render() {
         return (
-            <div className={"menuBar-left"}>
-                <Menu items={items} className={"menuLeft"} mode={'vertical'}></Menu>
+            <div className={"menuBar-left"} className={"menuLeft"}>
+                <Menu items={items} mode={'vertical'}></Menu>
             </div>
         )
     }
