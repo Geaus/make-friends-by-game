@@ -15,8 +15,11 @@ export class ActivityView extends React.Component {
                     <HeaderStyle keys={'activity'}/>
                 </Header>
                 <Content className={"ant-content-activity"}>
-                    <Card title={"每日签到"} bordered={false} style={{width: '30vw'}}>
+                    <Card title={"每日签到"} bordered={true} style={{width: '30vw', margin: '2vw'}}>
                         <p>每日签到领奖励</p>
+                    </Card>
+                    <Card title={"游戏争霸赛"} bordered={true} style={{width: '30vw', margin: '2vw'}}>
+                        <p>看看谁是游戏之王</p>
                     </Card>
                 </Content>
             </Layout>
