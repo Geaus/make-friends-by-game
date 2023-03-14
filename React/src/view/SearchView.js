@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout,Form, Input, Button, Checkbox ,Switch} from 'antd';
+import { Layout,Form, Input, Button, Checkbox ,Switch,Space} from 'antd';
 import {HeaderStyle} from "../component/header"
 import "../css/Home.css";
 import {SearchBar} from "../component/SearchBar";
@@ -48,21 +48,23 @@ class SearchView extends React.Component{
                   <HeaderStyle/>
                </Header>
                <Content style={{backgroundColor:"white"}}>
+                   <Space direction="vertical" size={"large"}>
                       <SearchBar/>
 
-                   <div>
-                       {this.state.buttons.map((button) => (
-                           <Button
-                               type="primary"
+                          <div>
+                          {this.state.buttons.map((button) => (
+                              <Button
+                               type="dashed"
                                shape="round"
                                style={{marginRight:20 ,marginBottom:40}}
                                key={button.id}
                                onClick={() => this.handleClick(button.id)}
-                           >
-                               {button.text} - {button.clicked ? "添加" : "未添加"}
-                           </Button>
-                       ))}
-                   </div>
+                               >
+                               {button.text} - {button.clicked ? "已添加" : "未添加"}
+                               </Button>
+                          ))}
+                          </div>
+                   </Space>
 
                </Content>
            </Layout>

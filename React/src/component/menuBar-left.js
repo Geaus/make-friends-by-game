@@ -1,6 +1,7 @@
 import React from 'react';
 import { Menu,Layout} from 'antd'
 import type {MenuProps} from "antd";
+import { Link } from "react-router-dom"
 
 import {
     UserAddOutlined,
@@ -11,14 +12,17 @@ const { Sider } = Layout;
 
 const items : MenuProps['items'] = [
     {
+        label: <Link to={'/home'}/>,
         icon : <UserAddOutlined/>,
         key : '1'
     },
     {
+        label: <Link to={'/home/black'}/>,
         icon : <UserDeleteOutlined/>,
         key : '2'
     },
     {
+        label: <Link to={'/home/group'}/>,
         icon : <UsergroupAddOutlined/>,
         key : '3'
     }

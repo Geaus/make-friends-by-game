@@ -56,8 +56,8 @@ class LoginCard extends React.Component{
                         <Form.Item>
 
                             <Link to={"/home"}>
-                                <Button type="primary" htmlType="submit" Primary ghost style={{float:'right'} }>
-                                    登录
+                                <Button type="primary"  htmlType="submit" Primary ghost style={{float:'right'} }>
+                                    <span style={{color:'white',fontSize:14}}>登录</span>
                                 </Button>
                             </Link>
 

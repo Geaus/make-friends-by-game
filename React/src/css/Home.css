@@ -1,5 +1,5 @@
 .header {
-    background-color: #0301fd;
+    background-color: #000000;
     height : 100%;
     width : 100%;
 }
@@ -78,9 +78,15 @@
     height : 100%;
     width : 10vw;
     font-size: 3vh;
-    color : #000000;
     float : left;
     text-align: center;
+    color:white;
+    font-family: "Microsoft YaHei";
+    background: -webkit-linear-gradient(left, #0f0, #00f) 0 0 no-repeat;/*设置线性渐变*/
+    -webkit-background-size: 160px;                        /*设置背景大小*/
+    -webkit-background-clip: text;                            /*背景被裁剪到文字*/
+    -webkit-text-fill-color: rgba(255, 255, 255, 0.3);        /*设置文字的填充颜色*/
+    -webkit-animation: shine 3s infinite;
 }
 
 .header-menu {
@@ -94,15 +100,22 @@
     height : 100%;
     width : 10vw;
     font-size : 3vh;
-    color : #000000;
+
     float : left;
     text-align: center;
+    color:white;
+    font-family:SimHei;        /*定义字体*/
+          /*定义文字大小*/
+    font-weight:bolder;        /*定义字体粗细*/
+    fill:transparent;            /*定义文字透明*/
+    stroke:#0000FF;            /*定义描边颜色*/
+    stroke-dasharray:3;
 }
 
 .menu {
     height : 10vh;
     width : 80vw;
-    background-color: #0301fd;
+    background-color: #000000;
     align-content: center;
     text-align: center;
 }
@@ -127,24 +140,50 @@
     height : 0;
     width : 73vw;
     background-color: #00fde9;
+    line-height : 6vh;
     float : left;
-    padding-top: 0;
+    padding : 0;
+    margin : 0;
+    color : #000000;
 }
 
 .sending {
     height : 0;
     width : 10vw;
-    align-content: center;
-    background: #00fde9;
+    line-height : 4vh;
+    background: #000000;
     float : right;
+    margin : 0;
+    padding : 0;
 }
 
 .toolbarMenu {
     height : 100%;
     width : 73vw;
-    background-color: #00fde9;
+    background-color: #000000;
 }
 
 .sendingButton {
     background-color: #00fde9;
+}
+
+.inputBox {
+    min-height: 100% !important;
+    width : 100%;
+    float : end;
+}
+
+.ant-header-in-send {
+    height : 5vh;
+    width : 83vw;
+    padding : 0;
+    margin : 0;
+    background-color: #ffffff;
+}
+
+.ant-footer-in-send {
+    height : 20vh;
+    width : 83vw;
+    padding : 0;
+    margin : 0;
 }
