@@ -31,7 +31,7 @@ export class MenuBar_Left extends React.Component {
     render() {
         return (
             <div className={"menuBar-left"}>
-                <Menu items={items} className={"menuLeft"} mode={'vertical'}></Menu>
+                <Menu items={items} className={"menuLeft"} defaultSelectedKeys={this.props.keys} mode={'vertical'}></Menu>
             </div>
         )
     }

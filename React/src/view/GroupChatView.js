@@ -21,7 +21,7 @@ export class GroupChatView extends React.Component {
                     <Sider className={"ant-sider"} width={"17vw"}>
                         <Layout>
                             <Sider className={"ant-sider-in-sider"} width={"4vw"}>
-                                <MenuBar_Left />
+                                <MenuBar_Left keys={'3'}></MenuBar_Left>
                             </Sider>
                             <Content className={"ant-content-in-sider"}>
                                <GroupChatList/>
