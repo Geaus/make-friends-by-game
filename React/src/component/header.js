@@ -11,13 +11,21 @@ const items : MenuProps['items'] = [
         icon : <SearchOutlined />,
     },
     {
-        label : '活动界面',
-        key : 'active',
+        label : <Link to={'/activity'}>活动中心</Link>,
+        key : 'activity',
     },
     {
-        label : '在线帮助',
+        label : <Link to={'/help'}>在线帮助</Link>,
         key : 'help',
         icon : <QuestionOutlined />,
+    },
+    {
+        label : <Link to={'/report'}>举报/反馈</Link>,
+        key : 'report',
+    },
+    {
+        label : <Link to={'/admin'}>管理员</Link>,
+        key : 'admin',
     }
 ]
 export class HeaderStyle extends React.Component {
@@ -28,7 +36,7 @@ export class HeaderStyle extends React.Component {
                 <div className={"header-name"}>游戏交友</div>
                 </Link>
                 <div className={"header-menu"}>
-                    <Menu className="menu" items={items} theme={"dark"} mode="horizontal"></Menu>
+                    <Menu className="menu" items={items} defaultSelectedKeys={this.props.keys} theme={"dark"} mode="horizontal"></Menu>
                 </div>
 
                 <Link to={"/profile"}>

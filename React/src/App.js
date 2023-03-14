@@ -5,6 +5,10 @@ import ProfileView from "./view/ProfileView";
 import SearchView from"./view/SearchView"
 import BlackListView from "./view/BlackListView"
 import GroupChatView from"./view/GroupChatView"
+import ActivityView from "./view/ActivityView";
+import ReportView from "./view/ReportView";
+import HelpView from "./view/HelpView";
+import AdminView from "./view/AdminView";
 import { BrowserRouter,Routes, Route } from "react-router-dom"
 
 
@@ -23,6 +27,10 @@ function App() {
                  <Route path="/home/group" element={<GroupChatView />} />
                  <Route path="/profile" element={<ProfileView />} />
                  <Route path="/search" element={<SearchView />} />
+                 <Route path="/report" element={<ReportView />} />
+                 <Route path="/activity" element={<ActivityView />} />
+                 <Route path="/help" element={<HelpView />} />
+                 <Route path="/admin" element={<AdminView />} />
              </Routes>
          </BrowserRouter>
 
