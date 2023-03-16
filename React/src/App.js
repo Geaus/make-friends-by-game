@@ -9,6 +9,7 @@ import ActivityView from "./view/ActivityView";
 import ReportView from "./view/ReportView";
 import HelpView from "./view/HelpView";
 import AdminView from "./view/AdminView";
+import SettingsView from "./view/SettingsView";
 import { BrowserRouter,Routes, Route } from "react-router-dom"
 
 
@@ -26,6 +27,7 @@ function App() {
                  <Route path="/home/black" element={<BlackListView />} />
                  <Route path="/home/group" element={<GroupChatView />} />
                  <Route path="/profile" element={<ProfileView />} />
+                 <Route path="/settings" element={<SettingsView />} />
                  <Route path="/search" element={<SearchView />} />
                  <Route path="/report" element={<ReportView />} />
                  <Route path="/activity" element={<ActivityView />} />

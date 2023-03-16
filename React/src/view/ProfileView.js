@@ -2,7 +2,6 @@ import React from 'react';
 import { UserOutlined } from '@ant-design/icons';
 import { Avatar, Card, Tag, Space, Layout } from 'antd';
 import {HeaderStyle} from "../component/header";
-import {MenuBar_Left} from "../component/menuBar-left";
 import {ProfileMenu} from "../component/profileMenu";
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -16,8 +15,8 @@ class ProfileView extends React.Component {
                     <HeaderStyle />
                 </Header>
                 <Layout>
-                   <Sider className={"ant-sider"}>
-                       <MenuBar_Left />
+                   <Sider theme={"dark"}>
+                       <ProfileMenu />
                    </Sider>
                     <Content className={"ant-content"} style={{ display: "flex", justifyContent: "center" }}>
                         <Space direction={"vertical"} align={"center"} style={{ justifyContent: 'space-evenly' }}>

@@ -1,34 +1,32 @@
 import React from "react";
-import {Button, Menu, Layout} from "antd";
+import { Menu } from "antd";
+function getItem(label, key, children) {
+    return {
+        key,
+        children,
+        label
+    };
+}
 
-import {
-    UserAddOutlined,
-    UserDeleteOutlined,
-    UsergroupAddOutlined
-} from '@ant-design/icons';
-
-const { Sider } = Layout;
-
-const items : MenuProps['items'] = [
-    {
-        icon : <UserAddOutlined/>,
-        key : '1'
-    },
-    {
-        icon : <UserDeleteOutlined/>,
-        key : '2'
-    },
-    {
-        icon : <UsergroupAddOutlined/>,
-        key : '3'
-    }
+const items = [
+    getItem('预览个人主页','1'),
+    getItem('设置', '2', [
+        getItem('修改个人主页','3'),
+        getItem('账户信息', '4'),
+        getItem('隐私', '5'),
+    ])
 ]
 
 export class ProfileMenu extends React.Component {
     render() {
         return (
-            <div className={"menuBar-left"} className={"menuLeft"}>
-                <Menu items={items} mode={'vertical'}></Menu>
+            <div>
+                <Menu
+                    mode={'inline'}
+                    theme={"dark"}
+                    defaultSelectedKeys={['sub1']}
+                    items={items}
+                />
             </div>
         )
     }
