@@ -26,11 +26,11 @@ const AdminView = () => {
         <Layout>
             <Header className={'header'}>
                 <Menu className={'header'} theme="dark" mode="horizontal" onClick={handleMenuClick}>
-                   <Menu.Item>
-
-                           返回主页
-
-                   </Menu.Item>
+                  <Link to={'/home'}>
+                      <Menu.Item>
+                          返回主页
+                      </Menu.Item>
+                  </Link>
 
                     <Menu.Item key="activity" >
                         设计平台活动
