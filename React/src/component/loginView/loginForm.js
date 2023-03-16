@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link } from "react-router-dom"
-import '../css/login.css'
+import '../../css/login.css'
 class LoginCard extends React.Component{
 
     render() {

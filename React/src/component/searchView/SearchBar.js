@@ -76,7 +76,7 @@ export class SearchBar extends React.Component {
                                 size="large"
                                 type="primary"
                             >
-                              <SearchOutlined/>
+                                <SearchOutlined/>
                             </Button>
                         }
                     />

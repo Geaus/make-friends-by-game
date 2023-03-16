@@ -24,8 +24,8 @@ function App() {
 
                 <Route path="/" element={<LoginView />} />
                 <Route path="/home" element={<HomeView />} />
-                 <Route path="/home/black" element={<BlackListView />} />
-                 <Route path="/home/group" element={<GroupChatView />} />
+                 {/*<Route path="/home/black" element={<BlackListView />} />*/}
+                 {/*<Route path="/home/group" element={<GroupChatView />} />*/}
                  <Route path="/profile" element={<ProfileView />} />
                  <Route path="/settings" element={<SettingsView />} />
                  <Route path="/search" element={<SearchView />} />

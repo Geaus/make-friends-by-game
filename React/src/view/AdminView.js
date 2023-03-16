@@ -1,11 +1,11 @@
 import React ,{useState}from 'react';
 import { Button, Card, Form, Input, List, Modal, Radio ,Layout,Menu} from 'antd';
-import {HeaderStyle} from "../component/header";
+import {HeaderStyle} from "../component/homeView/header";
 import "../css/Home.css";
 import LoginView from "./LoginView";
-import Activity from"../component/Activity"
-import ReportList from "../component/ReportList"
-import UserList from "../component/UserList"
+import Activity from "../component/adminView/Activity"
+import ReportList from "../component/adminView/ReportList"
+import UserList from "../component/adminView/UserList"
 import { Link } from "react-router-dom"
 
 const { Header, Footer, Sider, Content } = Layout;

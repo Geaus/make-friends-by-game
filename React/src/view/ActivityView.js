@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Card } from 'antd';
-import {HeaderStyle} from "../component/header";
+import {HeaderStyle} from "../component/homeView/header";
 import "../css/Home.css";
 import "../css/activity.css";
 import LoginView from "./LoginView";

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Layout } from 'antd';
-import {HeaderStyle} from "../component/header";
-import {MenuBar_Left} from "../component/menuBar-left";
-import {GroupChatList} from "../component/groupChatList";
-import {MessageSend} from "../component/messageSend";
-import {MessageScreen} from "../component/messageScreen";
+import {HeaderStyle} from "../component/homeView/header";
+import MenuBar_Left from "../component/homeView/menuBar-left";
+import {GroupChatList} from "../component/homeView/groupChatList";
+import {MessageSend} from "../component/homeView/messageSend";
+import {MessageScreen} from "../component/homeView/messageScreen";
 import "../css/Home.css";
 import LoginView from "./LoginView";
 

@@ -3,7 +3,7 @@ import {Menu} from 'antd';
 import type {MenuProps} from "antd";
 import {SearchOutlined, QuestionOutlined} from "@ant-design/icons";
 import { Link } from "react-router-dom"
-import '../css/Home.css'
+import '../../css/Home.css'
 const items : MenuProps['items'] = [
     {
         label : <Link to={'/search'}>搜索陌生人</Link>,

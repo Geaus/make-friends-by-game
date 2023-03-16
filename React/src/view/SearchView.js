@@ -1,8 +1,8 @@
 import React from 'react';
 import { Layout,Form, Input, Button, Checkbox ,Switch,Space} from 'antd';
-import {HeaderStyle} from "../component/header"
+import {HeaderStyle} from "../component/homeView/header"
 import "../css/Home.css";
-import {SearchBar} from "../component/SearchBar";
+import {SearchBar} from "../component/searchView/SearchBar";
 import { Row, Col } from 'antd';
 const { Header, Footer, Sider, Content } = Layout;
 class SearchView extends React.Component{
@@ -43,31 +43,31 @@ class SearchView extends React.Component{
 
     render(){
         return(
-           <Layout>
-               <Header className={"ant-header"}>
-                  <HeaderStyle keys={'search'}/>
-               </Header>
-               <Content style={{backgroundColor:"white"}}>
-                   <Space direction="vertical" size={"large"}>
-                      <SearchBar/>
+            <Layout>
+                <Header className={"ant-header"}>
+                    <HeaderStyle keys={'search'}/>
+                </Header>
+                <Content style={{backgroundColor:"white"}}>
+                    <Space direction="vertical" size={"large"}>
+                        <SearchBar/>
 
-                          <div>
-                          {this.state.buttons.map((button) => (
-                              <Button
-                               type="dashed"
-                               shape="round"
-                               style={{marginRight:20 ,marginBottom:40}}
-                               key={button.id}
-                               onClick={() => this.handleClick(button.id)}
-                               >
-                               {button.text} - {button.clicked ? "已添加" : "未添加"}
-                               </Button>
-                          ))}
-                          </div>
-                   </Space>
+                        <div>
+                            {this.state.buttons.map((button) => (
+                                <Button
+                                    type="dashed"
+                                    shape="round"
+                                    style={{marginRight:20 ,marginBottom:40}}
+                                    key={button.id}
+                                    onClick={() => this.handleClick(button.id)}
+                                >
+                                    {button.text} - {button.clicked ? "已添加" : "未添加"}
+                                </Button>
+                            ))}
+                        </div>
+                    </Space>
 
-               </Content>
-           </Layout>
+                </Content>
+            </Layout>
         );
 
     }
