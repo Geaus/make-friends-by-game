@@ -6,6 +6,7 @@ import "../css/activity.css";
 import LoginView from "./LoginView";
 
 const { Header, Footer, Sider, Content } = Layout;
+const {Meta} = Card;
 
 export class ActivityView extends React.Component {
     render() {
@@ -15,11 +16,14 @@ export class ActivityView extends React.Component {
                     <HeaderStyle keys={'activity'}/>
                 </Header>
                 <Content className={"ant-content-activity"}>
-                    <Card title={"每日签到"} bordered={true} style={{width: '30vw', margin: '2vw'}}>
-                        <p>每日签到领奖励</p>
+                    <Card className={"card-activity"} bordered={true} style={{width: '25vw', margin: '2vw'}}>
+                        <Meta title={"每日签到"} description={"每日签到领奖励"}></Meta>
                     </Card>
-                    <Card title={"游戏争霸赛"} bordered={true} style={{width: '30vw', margin: '2vw'}}>
-                        <p>看看谁是游戏之王</p>
+                    <Card className={"card-activity"} bordered={true} style={{width: '25vw', margin: '2vw'}}>
+                        <Meta title={"游戏争霸赛"} description={"看看谁是游戏之王"}></Meta>
+                    </Card>
+                    <Card className={"card-activity"} bordered={true} style={{width: '25vw', margin: '2vw'}}>
+                    <Meta title={"节日活动"} description={"节日限定活动"}></Meta>
                     </Card>
                 </Content>
             </Layout>
