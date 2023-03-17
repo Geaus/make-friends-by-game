@@ -4,3 +4,8 @@
     background-color: #ffffff;
     padding: 5vh;
 }
+
+.card-activity {
+    float : left;
+    background-color: #00fde9;
+}

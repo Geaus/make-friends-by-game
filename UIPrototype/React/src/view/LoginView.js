@@ -1,6 +1,6 @@
 import React from 'react';
 //import { Form, Input, Button, Checkbox } from 'antd';
-import LoginCard from "../component/loginForm"
+import LoginCard from "../component/loginView/loginForm"
 
 
 class LoginView extends React.Component{
