@@ -1,73 +1,59 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { Link } from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import '../../css/login.css'
-class LoginCard extends React.Component{
 
-    render() {
-        return(
-            <div>
-                <div className="login-header" sytle={{height:'56px',width:'300px'}}>
-                    <h2 style={{textAlign:'left',color:'#1c1717'}}>欢迎登录</h2>
+const LoginCard = () => {
+    const navigate = useNavigate();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleUsernameChange = (event) => {
+        setUsername(event.target.value);
+    };
+
+    const handlePasswordChange = (event) => {
+        setPassword(event.target.value);
+    };
+
+    const handleLogin = () => {
+
+        sessionStorage.setItem('userName',username);
+        navigate('/home');
+        // login(username, password)
+        //     .then((data) => {
+        //         message.success('登录成功');
+        //         navigate('/home');
+        //     })
+        //     .catch((error) => {
+        //         message.error(error.message);
+        //     });
+
+
+    };
+
+    return (
+        <div>
+            <div className="login-header" style={{ height: '56px', width: '300px' }}>
+                <h2 style={{ textAlign: 'left', color: '#fff' }}>欢迎登录</h2>
+            </div>
+
+            <div className="form-content" style={{ width: '300px' ,height:'120px'}}>
+                <div style={{ marginBottom: 16 }}>
+                    <Input placeholder="用户名" value={username} onChange={handleUsernameChange} />
                 </div>
-
-                <div className="form-content" style={{width:'300px'}}>
-                    <Form
-                        name="normal_login"
-                        className="login-form"
-                        initialValues={{
-                            remember: true,
-                        }}
-                        onFinish={this.onFinish}
-                    >
-                        <Form.Item
-                            name="name"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input your Username!',
-                                },
-                            ]}
-                        >
-                            <Input prefix={<UserOutlined className="site-form-item-icon" />}
-                                   placeholder="Username"
-                            />
-                        </Form.Item>
-
-
-                        <Form.Item
-                            name="password"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input your Password!',
-                                },
-                            ]}
-                        >
-                            <Input
-                                prefix={<LockOutlined className="site-form-item-icon" />}
-                                type="password"
-                                placeholder="Password"
-                            />
-                        </Form.Item>
-
-
-                        <Form.Item>
-
-                            <Link to={"/home"}>
-                                <Button type="primary"  htmlType="submit" Primary ghost style={{float:'right'} }>
-                                    <span style={{color:'white',fontSize:14}}>登录</span>
-                                </Button>
-                            </Link>
-
-                        </Form.Item>
-
-                    </Form>
+                <div style={{ marginBottom: 16 }}>
+                    <Input.Password placeholder="密码" value={password} onChange={handlePasswordChange} />
+                </div>
+                <div>
+                    <Button type="primary" onClick={handleLogin} ghost style={{ float: 'right' }}>
+                        登录
+                    </Button>
                 </div>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
 
 export default LoginCard;

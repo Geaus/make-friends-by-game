@@ -1,4 +1,4 @@
-package com.example.makefriendbackend;
+package com.example.makefriendsbackend;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +49,7 @@ public class WebSocketServer {
             this.userId = userId;
             webSockets.add(this);
             sessionPool.put(userId, session);
+            logger.info(userId);
             logger.info("【websocket消息】有新的连接，总数为:" + webSockets.size());
         } catch (Exception e) {
         }
@@ -72,8 +73,9 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message) {
+        String[] parts = message.split(" ", 2);
         logger.info("【websocket消息】收到客户端消息:" + message);
-        sendAllMessage(message);
+        sendOneMessage(parts[0], parts[1]);
     }
 
     /**
@@ -108,6 +110,7 @@ public class WebSocketServer {
      * 此为单点消息
      */
     public void sendOneMessage(String userId, String message) {
+
         Session session = sessionPool.get(userId);
         if (session != null && session.isOpen()) {
             try {

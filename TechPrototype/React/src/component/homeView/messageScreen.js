@@ -24,7 +24,9 @@ export class MessageScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {message: "", browse:"<p></p>"};
-        let baseUrl = "ws://localhost:8080/websocket/admin";
+        let username=sessionStorage.getItem('userName');
+        this.setState({user:username});
+        let baseUrl = "ws://localhost:8080/websocket/"+username;
         websocket = new WebSocket(baseUrl);
         websocket.onopen = ()=> {
             console.log("建立 websocket 连接...");
@@ -55,7 +57,15 @@ export class MessageScreen extends React.Component {
             alert("请重新输入")
             return;
         }
-        websocket.send(this.state.message);
+        if(this.state.user === '1'){
+            let str = '2 ' + this.state.message;
+            websocket.send(str);
+        }
+
+        else {
+            let str = '1 ' + this.state.message;
+            websocket.send(str);
+        }
     }
     render() {
         let html = {__html:this.state.browse};

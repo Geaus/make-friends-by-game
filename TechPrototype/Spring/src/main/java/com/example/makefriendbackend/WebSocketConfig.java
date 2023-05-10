@@ -1,4 +1,4 @@
-package com.example.makefriendbackend;
+package com.example.makefriendsbackend;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
