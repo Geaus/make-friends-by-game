@@ -75,7 +75,9 @@ public class WebSocketServer {
     public void onMessage(String message) {
         String[] parts = message.split(" ", 2);
         logger.info("【websocket消息】收到客户端消息:" + message);
-        sendOneMessage(parts[0], parts[1]);
+        String str = this.userId + " " + parts[1];
+        sendOneMessage(parts[0], str);
+        sendOneMessage(userId, str);
     }
 
     /**

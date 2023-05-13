@@ -75,7 +75,7 @@ CREATE TABLE `chat_message` (
   CONSTRAINT `mess_from_user` FOREIGN KEY (`from_user`) REFERENCES `user` (`id`),
   CONSTRAINT `mess_link_id` FOREIGN KEY (`link_id`) REFERENCES `chat_user_link` (`link_id`),
   CONSTRAINT `mess_to_user` FOREIGN KEY (`to_user`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -84,6 +84,7 @@ CREATE TABLE `chat_message` (
 
 LOCK TABLES `chat_message` WRITE;
 /*!40000 ALTER TABLE `chat_message` DISABLE KEYS */;
+INSERT INTO `chat_message` VALUES (1,1,1,2,'aaaaa','2023-5-12 13:00:00',1,0),(2,2,2,1,'bbbbb','2023-5-12 18:00:00',1,0),(3,1,1,2,'cccccc','2023-5-12 15:00:00',1,0),(4,2,2,1,'ddddd','2023-5-12 16:00:00',1,0);
 /*!40000 ALTER TABLE `chat_message` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -104,7 +105,7 @@ CREATE TABLE `chat_user_link` (
   KEY `link_to_user_idx` (`to_user`),
   CONSTRAINT `link_from_user` FOREIGN KEY (`from_user`) REFERENCES `user` (`id`),
   CONSTRAINT `link_to_user` FOREIGN KEY (`to_user`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,6 +114,7 @@ CREATE TABLE `chat_user_link` (
 
 LOCK TABLES `chat_user_link` WRITE;
 /*!40000 ALTER TABLE `chat_user_link` DISABLE KEYS */;
+INSERT INTO `chat_user_link` VALUES (1,1,2,'1'),(2,2,1,'1'),(3,1,3,'1'),(4,2,3,'1');
 /*!40000 ALTER TABLE `chat_user_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -125,8 +127,9 @@ DROP TABLE IF EXISTS `user`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -135,6 +138,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'小明'),(2,'小红'),(3,'小李');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -147,4 +151,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-10 20:01:02
+-- Dump completed on 2023-05-13 21:44:38

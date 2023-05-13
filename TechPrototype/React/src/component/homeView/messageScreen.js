@@ -23,10 +23,12 @@ let websocket;
 export class MessageScreen extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {message: "", browse:"<p></p>"};
-        let username=sessionStorage.getItem('userName');
-        this.setState({user:username});
-        let baseUrl = "ws://localhost:8080/websocket/"+username;
+        this.state = {message: "", browse:"<p class=\"message-receive\"></p>"};
+        let uid=sessionStorage.getItem('uid');
+        this.setState({user:uid});
+        let baseUrl = "ws://localhost:8080/websocket/"+uid;
+
+
         websocket = new WebSocket(baseUrl);
         websocket.onopen = ()=> {
             console.log("建立 websocket 连接...");
@@ -34,8 +36,16 @@ export class MessageScreen extends React.Component {
         websocket.onmessage = (event) => {
             const data = event.data;
             console.log(data);
+            let str = data.split(" ", 2);
             let tmp = this.state.browse;
-            tmp = tmp + data + "<br />";
+            if(str[0] !== uid) {
+                tmp = tmp + "<p class=\"message-receive\">" + str[0] + "</p>";
+                tmp = tmp + "<p class=\"message-receive\">" + str[1] + "</p>";
+            }
+            else {
+                tmp = tmp + "<p class=\"message-send\">" + str[0] + "</p>";
+                tmp = tmp + "<p class=\"message-send\">" + str[1] + "</p>";
+            }
             this.setState({browse: tmp});
             //setMessage(data)
         };
@@ -57,15 +67,9 @@ export class MessageScreen extends React.Component {
             alert("请重新输入")
             return;
         }
-        if(this.state.user === '1'){
-            let str = '2 ' + this.state.message;
-            websocket.send(str);
-        }
-
-        else {
-            let str = '1 ' + this.state.message;
-            websocket.send(str);
-        }
+        let to_uid = sessionStorage.getItem("to_uid");
+        let str = to_uid + " " + this.state.message;
+        websocket.send(str);
     }
     render() {
         let html = {__html:this.state.browse};

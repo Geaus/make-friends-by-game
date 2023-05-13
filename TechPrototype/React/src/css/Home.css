@@ -60,6 +60,7 @@
     background-color : #ffffff;
     height: 65vh;
     width : 100%;
+    overflow: scroll;
 }
 
 .messageSend {
@@ -186,4 +187,18 @@
     width : 83vw;
     padding : 0;
     margin : 0;
+}
+
+.message-send {
+    text-align: right;
+    background-color: white;
+    font-size: 18px;
+    color: green;
+}
+
+.message-receive {
+    text-align: left;
+    background-color: white;
+    font-size: 18px;
+    color: #0731e3;
 }

@@ -36,27 +36,27 @@ public class ChatList {
     @Column(name = "status")
     private Integer status;
 
-    public User getToUserEntity() {
+    public User getToUser() {
         return toUser;
     }
 
-    public void setToUserEntity(User toUser) {
+    public void setToUser(User toUser) {
         this.toUser = toUser;
     }
 
-    public User getFromUserEntity() {
+    public User getFromUser() {
         return fromUser;
     }
 
-    public void setFromUserEntity(User fromUser) {
+    public void setFromUser(User fromUser) {
         this.fromUser = fromUser;
     }
 
-    public ChatUserLink getChatUserLinkEntity() {
+    public ChatUserLink getChatUserLink() {
         return chatUserLink;
     }
 
-    public void setChatUserLinkEntity(ChatUserLink chatUserLink) {
+    public void setChatUserLink(ChatUserLink chatUserLink) {
         this.chatUserLink = chatUserLink;
     }
 

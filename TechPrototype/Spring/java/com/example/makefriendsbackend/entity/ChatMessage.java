@@ -1,5 +1,7 @@
 package com.example.makefriendsbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -7,10 +9,12 @@ import javax.persistence.*;
 public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @JsonIgnore
     @Column(name = "message_id")
     private int messageId;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "link_id")
     private ChatUserLink chatUserLink;
 
@@ -37,27 +41,27 @@ public class ChatMessage {
 
 
 
-    public User getToUserEntity() {
+    public User getToUser() {
         return toUser;
     }
 
-    public void setToUserEntity(User toUser) {
+    public void setToUser(User toUser) {
         this.toUser = toUser;
     }
 
-    public User getFromUserEntity() {
+    public User getFromUser() {
         return fromUser;
     }
 
-    public void setFromUserEntity(User fromUser) {
+    public void setFromUser(User fromUser) {
         this.fromUser = fromUser;
     }
 
-    public ChatUserLink getChatUserLinkEntity() {
+    public ChatUserLink getChatUserLink() {
         return chatUserLink;
     }
 
-    public void setChatUserLinkEntity(ChatUserLink chatUserLink) {
+    public void setChatUserLink(ChatUserLink chatUserLink) {
         this.chatUserLink = chatUserLink;
     }
 

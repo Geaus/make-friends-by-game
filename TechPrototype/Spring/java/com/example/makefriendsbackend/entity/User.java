@@ -10,6 +10,9 @@ public class User {
     @Id
     @Column(name = "id")
     private int id;
+    @Basic
+    @Column(name = "name")
+    private String name;
 
     public int getId() {
         return id;
@@ -20,4 +23,12 @@ public class User {
     }
 
 
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
