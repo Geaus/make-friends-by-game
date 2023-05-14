@@ -98,6 +98,7 @@ export class MessageScreen extends React.Component {
         }
         let to_uid = sessionStorage.getItem("to_uid");
         let str = to_uid + " " + this.state.message;
+        this.setState({message: ""});
         websocket.send(str);
     }
     render() {
@@ -118,7 +119,7 @@ export class MessageScreen extends React.Component {
                             </div>
                         </Header>
                         <Footer className={"ant-footer-in-send"}>
-                            <TextArea onChange={event=>this.setMessage(event)} className={"inputBox"}></TextArea>
+                            <TextArea onChange={event=>this.setMessage(event)} value={this.state.message} className={"inputBox"}></TextArea>
                         </Footer>
                     </Layout>
                 </div>
