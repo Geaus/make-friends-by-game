@@ -22,7 +22,8 @@ export class FriendList extends React.Component<{}, FriendListState> {
 
         handleClick = (e: any) => {
           sessionStorage.setItem('to_uid', e.key);
-       }
+          this.props.to_user_change(e.key);
+        }
 
        render() {
             return (
