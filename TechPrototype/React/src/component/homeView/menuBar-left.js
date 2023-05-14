@@ -30,8 +30,13 @@ const items : MenuProps['items'] = [
         key : '3'
     }
 ]
-const MenuBar_Left =()=> {
+
+const MenuBar_Left = (props) => {
     const [selectedKey, setSelectedKey] = useState('1');
+
+    const to_user_change = (to_uid) => {
+        props.to_user_change(to_uid);
+    }
 
     // 定义一个函数来处理 menu 的点击事件，更新 state 并渲染相应的组件
     const handleMenuClick = (e) => {
@@ -69,7 +74,7 @@ const MenuBar_Left =()=> {
                 </Sider>
                 <Content className={"ant-content-in-sider"}>
                     {selectedKey === '1' && (
-                        <FriendList/>
+                        <FriendList to_user_change={to_user_change}/>
 
                     )}
                     {selectedKey === '2' && (

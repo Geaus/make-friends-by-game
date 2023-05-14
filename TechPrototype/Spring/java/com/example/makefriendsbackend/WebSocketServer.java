@@ -1,12 +1,21 @@
 package com.example.makefriendsbackend;
 
+import com.example.makefriendsbackend.entity.ChatMessage;
+import com.example.makefriendsbackend.entity.ChatUserLink;
+import com.example.makefriendsbackend.entity.User;
+import com.example.makefriendsbackend.repository.ChatMessageRepository;
+import com.example.makefriendsbackend.repository.ChatUserLinkRepository;
+import com.example.makefriendsbackend.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -18,6 +27,24 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Component
 @ServerEndpoint("/websocket/{userId}")
 public class WebSocketServer {
+    private static UserRepository userRepository;
+
+    private static ChatUserLinkRepository chatUserLinkRepository;
+
+    private static ChatMessageRepository chatMessageRepository;
+
+    @Autowired
+    public void setUserService (UserRepository userRepository) {
+        WebSocketServer.userRepository = userRepository;
+    }
+    @Autowired
+    public void setLinkService (ChatUserLinkRepository chatUserLinkRepository) {
+        WebSocketServer.chatUserLinkRepository = chatUserLinkRepository;
+    }
+    @Autowired
+    public void setMessageService (ChatMessageRepository chatMessageRepository) {
+        WebSocketServer.chatMessageRepository = chatMessageRepository;
+    }
     /**
      * 日志工具
      */
@@ -73,11 +100,45 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message) {
+
         String[] parts = message.split(" ", 2);
+
         logger.info("【websocket消息】收到客户端消息:" + message);
-        String str = this.userId + " " + parts[1];
+
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = formatter.format(date);
+
+        int from_uid=Integer.parseInt(this.userId);
+        int to_uid=Integer.parseInt(parts[0]);
+
+
+        String str = this.userId + " " +formattedDate+" "+ parts[1];
+
+        //from发给to
         sendOneMessage(parts[0], str);
-        sendOneMessage(userId, str);
+        logger.info(parts[0]);
+        //from发给from
+        sendOneMessage(this.userId, str);
+
+
+        User from=WebSocketServer.userRepository.findUserById(from_uid);
+        User to=WebSocketServer.userRepository.findUserById(to_uid);
+        ChatUserLink from_to =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
+
+        // ChatUserLink to_from =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
+        ChatMessage new_mess=new ChatMessage();
+
+        new_mess.setChatUserLink(from_to);
+        new_mess.setFromUser(from);
+        new_mess.setToUser(to);
+        new_mess.setContent(parts[1]);
+        new_mess.setType(1);
+        new_mess.setIsLatest(0);
+        new_mess.setSendTime(formattedDate);
+
+        WebSocketServer.chatMessageRepository.save(new_mess);
+
     }
 
     /**

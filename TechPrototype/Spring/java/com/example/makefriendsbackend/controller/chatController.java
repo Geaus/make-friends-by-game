@@ -33,8 +33,8 @@ public class chatController {
     @RequestMapping("/getMessages")
     public List<ChatMessage> getMessages(@RequestParam int from_uid, @RequestParam int to_uid){
 
-        User from = userRepository.findUserByIdIs(from_uid);
-        User to=userRepository.findUserByIdIs(to_uid);
+        User from = userRepository.findUserById(from_uid);
+        User to=userRepository.findUserById(to_uid);
         ChatUserLink link_1=chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
         ChatUserLink link_2=chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
         List<ChatMessage> message_1=chatMessageRepository.findChatMessagesByChatUserLink(link_1);

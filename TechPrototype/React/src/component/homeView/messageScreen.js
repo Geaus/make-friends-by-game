@@ -3,6 +3,8 @@ import type {MenuProps} from "antd";
 import {Button, Layout, Menu} from "antd";
 import {Footer, Header} from "antd/es/layout/layout";
 import TextArea from "antd/es/input/TextArea";
+import {getMessage} from "../../service/ChatService";
+import {getUser} from "../../service/UserService";
 
 const items : MenuProps['items'] = [
     {
@@ -23,12 +25,10 @@ let websocket;
 export class MessageScreen extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {message: "", browse:"<p class=\"message-receive\"></p>"};
-        let uid=sessionStorage.getItem('uid');
-        this.setState({user:uid});
+        this.state = {message: "", browse:"<p class=\"message-receive\"></p>", to_user: null, from_user: null};
+        let uid = sessionStorage.getItem('uid');
+        this.setState({user: uid});
         let baseUrl = "ws://localhost:8080/websocket/"+uid;
-
-
         websocket = new WebSocket(baseUrl);
         websocket.onopen = ()=> {
             console.log("建立 websocket 连接...");
@@ -36,15 +36,15 @@ export class MessageScreen extends React.Component {
         websocket.onmessage = (event) => {
             const data = event.data;
             console.log(data);
-            let str = data.split(" ", 2);
+            let str = data.split(" ", 4);
             let tmp = this.state.browse;
             if(str[0] !== uid) {
-                tmp = tmp + "<p class=\"message-receive\">" + str[0] + "</p>";
-                tmp = tmp + "<p class=\"message-receive\">" + str[1] + "</p>";
+                tmp = tmp + "<p class=\"message-receive\">" + this.state.to_user.name + " " + str[1] + " " + str[2] + "</p>";
+                tmp = tmp + "<p class=\"message-receive\">" + str[3] + "</p>";
             }
             else {
-                tmp = tmp + "<p class=\"message-send\">" + str[0] + "</p>";
-                tmp = tmp + "<p class=\"message-send\">" + str[1] + "</p>";
+                tmp = tmp + "<p class=\"message-send\">" + this.state.from_user.name + " " + str[1] + " " + str[2] + "</p>";
+                tmp = tmp + "<p class=\"message-send\">" + str[3] + "</p>";
             }
             this.setState({browse: tmp});
             //setMessage(data)
@@ -53,9 +53,38 @@ export class MessageScreen extends React.Component {
             console.log("websocket发生错误..." + event + '\n');
         }
 
-        websocket.onclose = ()=> {
+        websocket.onclose = () => {
             console.log("关闭 websocket 连接...");
         };
+    }
+
+    componentWillReceiveProps(nextProps: Readonly<P>, nextContext: any) {
+        const callback_to_user = (data) => {
+            this.setState({to_user: data});
+        }
+        const callback_from_user = (data) => {
+            this.setState({from_user: data});
+        }
+        let from_uid = sessionStorage.getItem('uid');
+        let to_uid = sessionStorage.getItem('to_uid');
+        getUser(to_uid, callback_to_user);
+        getUser(from_uid, callback_from_user);
+        const callback = (data) => {
+            console.log(data);
+            let tmp = "<p class=\"message-receive\"></p>";
+            for(let i = 0; i < data.length; i++) {
+                if(data[i].fromUser.id === parseInt(from_uid)) {
+                    tmp = tmp + "<p class=\"message-send\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
+                    tmp = tmp + "<p class=\"message-send\">" + data[i].content + "</p>";
+                }
+                else {
+                    tmp = tmp + "<p class=\"message-receive\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
+                    tmp = tmp + "<p class=\"message-receive\">" + data[i].content + "</p>";
+                }
+            }
+            this.setState({browse: tmp});
+        }
+        getMessage(from_uid, to_uid, callback);
     }
 
     setMessage = (event) => {
