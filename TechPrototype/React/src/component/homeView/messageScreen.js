@@ -47,6 +47,10 @@ export class MessageScreen extends React.Component {
                 tmp = tmp + "<p class=\"message-send\">" + str[3] + "</p>";
             }
             this.setState({browse: tmp});
+            let div = document.getElementsByClassName("messageScreen")[0];
+            setTimeout(() => {
+                div.scrollTop = div.scrollHeight;
+            }, 0);
             //setMessage(data)
         };
         websocket.onerror = (event) => {
@@ -83,6 +87,10 @@ export class MessageScreen extends React.Component {
                 }
             }
             this.setState({browse: tmp});
+            let div = document.getElementsByClassName("messageScreen")[0];
+            setTimeout(() => {
+                div.scrollTop = div.scrollHeight;
+            }, 0);
         }
         getMessage(from_uid, to_uid, callback);
     }
