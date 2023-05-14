@@ -28,7 +28,7 @@ public class friendController {
     @RequestMapping("/getFriends")
     public List<User> getFriend(@RequestParam int uid){
 
-        User from =userRepository.findUserByIdIs(uid);
+        User from =userRepository.findUserById(uid);
         List<ChatUserLink> links= chatUserLinkRepository.findChatUserLinksByFromUser(from);
         List<User> list =new ArrayList<>();
 

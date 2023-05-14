@@ -16,7 +16,7 @@ public class userController {
 
     @RequestMapping("getUser")
     public User getUser(@RequestParam int uid) {
-        User user = userRepository.findUserByIdIs(uid);
+        User user = userRepository.findUserById(uid);
         return user;
     }
 }
