@@ -1,6 +1,5 @@
 package com.example.makefriendsbackend;
 
-import com.sun.xml.internal.ws.addressing.v200408.MemberSubmissionWsaServerTube;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -8,8 +7,7 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -19,8 +17,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * websocket操作类
  */
 @Component
-@ServerEndpoint("/websocket/{userId}")
-public class WebSocketServer {
+@ServerEndpoint("/websocket/game/{userId}")
+public class WebSocketOfGameServer {
     /**
      * 日志工具
      */
@@ -36,7 +34,7 @@ public class WebSocketServer {
     /**
      * 用来存放每个客户端对应的MyWebSocket对象
      */
-    private static CopyOnWriteArraySet<WebSocketServer> webSockets = new CopyOnWriteArraySet<>();
+    private static CopyOnWriteArraySet<WebSocketOfGameServer> webSockets = new CopyOnWriteArraySet<>();
     /**
      * 用来存在线连接用户信息
      */
@@ -66,7 +64,7 @@ public class WebSocketServer {
         try {
             webSockets.remove(this);
             sessionPool.remove(this.userId);
-            logger.info("【websocket消息】连接断开总数为:" + webSockets.size());
+            logger.info("【websocket消息】连接断开，总数为:" + webSockets.size());
         } catch (Exception e) {
         }
     }
@@ -76,27 +74,15 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message) {
+        String[] parts = message.split(" ", 3);
         logger.info("【websocket消息】收到客户端消息:" + message);
-        String[] parts = message.split(" ", 2);
-
-        sendOneMessage(parts[0], parts[1]);
-    }
-
-    @OnMessage
-    public void onMessage(byte[] message) {
-        logger.info("【websocket消息】收到客户端消息:" + message);
-        byte firstByte = message[0];
-        byte secondByte = message[1];
-        byte[] remainingBytes = Arrays.copyOfRange(message, 2, message.length);
-        logger.info(String.valueOf(secondByte));
-        if(String.valueOf(secondByte).equals("1")) { //图片
-            sendOnePicture(String.valueOf(firstByte), remainingBytes);
+        logger.info(parts[1]);
+        if(!parts[1].equals("history")) {
+            sendOneMessage(parts[0], parts[1]);
         }
-        if(String.valueOf(secondByte).equals("2")) { //音频
-            sendOneAudio(String.valueOf(firstByte), remainingBytes);
+        else {
+            backToHistory(parts[0],parts[2]);
         }
-
-
     }
 
     /**
@@ -111,33 +97,16 @@ public class WebSocketServer {
         error.printStackTrace();
     }
 
-    /* 发送音频*/
-    public void sendOneAudio(String userId,byte[] message) {
-        Session session = sessionPool.get(userId);
-        if (session != null && session.isOpen()) {
+    /**
+     * 此为广播消息
+     */
+    public void sendAllMessage(String message) {
+        logger.info("【websocket消息】广播消息:" + message);
+        for (WebSocketOfGameServer webSocket : webSockets) {
             try {
-                byte[] newArray = new byte[message.length + 1];
-                newArray[0]=2; //消息类型标记位
-                System.arraycopy(message, 0, newArray, 1, message.length);
-                logger.info("【websocket消息】 单点消息:" + Arrays.toString(newArray));
-                session.getAsyncRemote().sendBinary(ByteBuffer.wrap(newArray));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /*发送图片*/
-    public void sendOnePicture(String userId,byte[] message) {
-        Session session = sessionPool.get(userId);
-        logger.info(userId);
-        if (session != null && session.isOpen()) {
-            try {
-                byte[] newArray = new byte[message.length + 1];
-                newArray[0]=1; //消息类型标记位
-                System.arraycopy(message, 0, newArray, 1, message.length);
-                logger.info("【websocket消息】 单点消息:" + Arrays.toString(newArray));
-                session.getAsyncRemote().sendBinary(ByteBuffer.wrap(newArray));
+                if (webSocket.session.isOpen()) {
+                    webSocket.session.getAsyncRemote().sendText(message);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -163,18 +132,17 @@ public class WebSocketServer {
     /**
      * 此为单点消息(多人)
      */
-    public void sendMoreMessage(String[] userIds, String message) {
-        for (String userId : userIds) {
+    public void backToHistory(String userId, String message) {
+
             Session session = sessionPool.get(userId);
             if (session != null && session.isOpen()) {
                 try {
                     logger.info("【websocket消息】 单点消息:" + message);
-                    session.getAsyncRemote().sendText(message);
+                    session.getAsyncRemote().sendText("history "+message);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }
 
     }
 }

@@ -5,7 +5,6 @@ import {Link, useNavigate} from "react-router-dom"
 import '../../css/login.css'
 
 const LoginCard = () => {
-
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -20,7 +19,7 @@ const LoginCard = () => {
 
     const handleLogin = () => {
 
-        sessionStorage.setItem('uid',username);
+        sessionStorage.setItem('userName',username);
         navigate('/home');
         // login(username, password)
         //     .then((data) => {

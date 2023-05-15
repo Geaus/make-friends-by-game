@@ -28,19 +28,19 @@ public class ChatUserLink {
     @Column(name = "create_time")
     private String createTime;
 
-    public User getFromUser() {
+    public User getFromUserEntity() {
         return fromUser;
     }
 
-    public void setFromUser(User fromUser) {
+    public void setFromUserEntity(User fromUser) {
         this.fromUser = fromUser;
     }
 
-    public User getToUser() {
+    public User getToUserEntity() {
         return toUser;
     }
 
-    public void setToUser(User toUser) {
+    public void setToUserEntity(User toUser) {
         this.toUser = toUser;
     }
 
