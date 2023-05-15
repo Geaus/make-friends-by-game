@@ -3,6 +3,8 @@ package com.example.makefriendsbackend.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.Objects;
 
 @Entity
 @Table(name = "chat_message", schema = "make_friend", catalog = "")
@@ -17,6 +19,7 @@ public class ChatMessage {
     @JsonIgnore
     @JoinColumn(name = "link_id")
     private ChatUserLink chatUserLink;
+
 
     @ManyToOne
     @JoinColumn(name = "from_user")
@@ -40,10 +43,14 @@ public class ChatMessage {
     private Integer isLatest;
 
 
+    @Basic
+    @Column(name = "media")
+    private byte[] media;
 
     public User getToUser() {
         return toUser;
     }
+
 
     public void setToUser(User toUser) {
         this.toUser = toUser;
@@ -52,6 +59,8 @@ public class ChatMessage {
     public User getFromUser() {
         return fromUser;
     }
+
+
 
     public void setFromUser(User fromUser) {
         this.fromUser = fromUser;
@@ -72,8 +81,6 @@ public class ChatMessage {
     public void setMessageId(int messageId) {
         this.messageId = messageId;
     }
-
-
 
     public String getContent() {
         return content;
@@ -105,6 +112,15 @@ public class ChatMessage {
 
     public void setIsLatest(Integer isLatest) {
         this.isLatest = isLatest;
+    }
+
+
+    public byte[] getMedia() {
+        return media;
+    }
+
+    public void setMedia(byte[] media) {
+        this.media = media;
     }
 
 

@@ -130,7 +130,7 @@ public class WebSocketServer {
         new_mess.setFromUser(from);
         new_mess.setToUser(to);
         new_mess.setContent(parts[1]);
-        new_mess.setType(1);
+        new_mess.setType(0);
         new_mess.setIsLatest(0);
         new_mess.setSendTime(formattedDate);
 
@@ -144,14 +144,43 @@ public class WebSocketServer {
         byte firstByte = message[0];
         byte secondByte = message[1];
         byte[] remainingBytes = Arrays.copyOfRange(message, 2, message.length);
+
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = formatter.format(date);
+
+        int from_uid=Integer.parseInt(this.userId);
+        int to_uid=firstByte;
+
+        User from=WebSocketServer.userRepository.findUserById(from_uid);
+        User to=WebSocketServer.userRepository.findUserById(to_uid);
+        ChatUserLink from_to =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
+        ChatMessage new_mess=new ChatMessage();
+        new_mess.setChatUserLink(from_to);
+        new_mess.setFromUser(from);
+        new_mess.setToUser(to);
+        new_mess.setContent(null);
+        new_mess.setIsLatest(0);
+        new_mess.setSendTime(formattedDate);
+
+
+
         logger.info(String.valueOf(secondByte));
         if (String.valueOf(secondByte).equals("1")) { //图片
             sendOnePicture(String.valueOf(firstByte), remainingBytes);
             sendOnePicture(this.userId, remainingBytes);
+
+            new_mess.setType(1);
+            new_mess.setMedia(remainingBytes);
+            WebSocketServer.chatMessageRepository.save(new_mess);
         }
         if (String.valueOf(secondByte).equals("2")) { //音频
             sendOneAudio(String.valueOf(firstByte), remainingBytes);
             sendOneAudio(this.userId, remainingBytes);
+
+            new_mess.setType(2);
+            new_mess.setMedia(remainingBytes);
+            WebSocketServer.chatMessageRepository.save(new_mess);
         }
     }
     /**
