@@ -3,6 +3,7 @@ import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import {Link, useNavigate} from "react-router-dom"
 import '../../css/login.css'
+import {login} from "../../service/UserService";
 
 const LoginCard = () => {
 
@@ -20,16 +21,16 @@ const LoginCard = () => {
 
     const handleLogin = () => {
 
-        sessionStorage.setItem('uid',username);
-        navigate('/home');
-        // login(username, password)
-        //     .then((data) => {
-        //         message.success('登录成功');
-        //         navigate('/home');
-        //     })
-        //     .catch((error) => {
-        //         message.error(error.message);
-        //     });
+        // sessionStorage.setItem('uid',username);
+        // navigate('/home');
+        login(username, password)
+            .then((data) => {
+                message.success('登录成功');
+                navigate('/home');
+            })
+            .catch((error) => {
+                message.error(error.message);
+            });
 
 
     };

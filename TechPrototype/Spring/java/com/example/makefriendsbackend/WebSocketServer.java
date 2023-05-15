@@ -10,20 +10,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-/**
- * @author hanjinqun
- * @date 2022/10/24
- * websocket操作类
- */
+
 @Component
 @ServerEndpoint("/websocket/{userId}")
 public class WebSocketServer {
@@ -141,6 +138,22 @@ public class WebSocketServer {
 
     }
 
+    @OnMessage
+    public void onMessage(byte[] message) {
+        logger.info("【websocket消息】收到客户端消息:" + message);
+        byte firstByte = message[0];
+        byte secondByte = message[1];
+        byte[] remainingBytes = Arrays.copyOfRange(message, 2, message.length);
+        logger.info(String.valueOf(secondByte));
+        if (String.valueOf(secondByte).equals("1")) { //图片
+            sendOnePicture(String.valueOf(firstByte), remainingBytes);
+            sendOnePicture(this.userId, remainingBytes);
+        }
+        if (String.valueOf(secondByte).equals("2")) { //音频
+            sendOneAudio(String.valueOf(firstByte), remainingBytes);
+            sendOneAudio(this.userId, remainingBytes);
+        }
+    }
     /**
      * 发送错误时的处理
      *
@@ -202,4 +215,43 @@ public class WebSocketServer {
         }
 
     }
+
+    public void sendOneAudio(String userId,byte[] message) {
+        Session session = sessionPool.get(userId);
+        if (session != null && session.isOpen()) {
+            try {
+                byte[] newArray = new byte[message.length + 2];
+                newArray[0]=2; //消息类型标记位
+                Integer number = Integer.parseInt(this.userId);
+                newArray[1]= number.byteValue();
+                System.arraycopy(message, 0, newArray, 2, message.length);
+                logger.info("【websocket消息】 单点消息:" + Arrays.toString(newArray));
+                session.getAsyncRemote().sendBinary(ByteBuffer.wrap(newArray));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /*发送图片*/
+    public void sendOnePicture(String userId,byte[] message) {
+        Session session = sessionPool.get(userId);
+        logger.info(userId);
+        if (session != null && session.isOpen()) {
+            try {
+                byte[] newArray = new byte[message.length + 2];
+                newArray[0]=1; //消息类型标记位
+                Integer number = Integer.parseInt(this.userId);
+                newArray[1]= number.byteValue();
+                System.arraycopy(message, 0, newArray, 2, message.length);
+                logger.info("【websocket消息】 单点消息:" + Arrays.toString(newArray));
+                session.getAsyncRemote().sendBinary(ByteBuffer.wrap(newArray));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
+
+

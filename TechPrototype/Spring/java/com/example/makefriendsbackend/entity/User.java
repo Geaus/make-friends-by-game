@@ -13,6 +13,9 @@ public class User {
     @Basic
     @Column(name = "name")
     private String name;
+    @Basic
+    @Column(name = "password")
+    private String password;
 
     public int getId() {
         return id;
@@ -22,8 +25,6 @@ public class User {
         this.id = id;
     }
 
-
-
     public String getName() {
         return name;
     }
@@ -31,4 +32,14 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
 }
