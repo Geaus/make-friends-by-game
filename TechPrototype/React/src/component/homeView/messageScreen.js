@@ -68,9 +68,26 @@ export class MessageScreen extends React.Component {
                         const URL=event.target.result;
 
                         let tmp = this.state.browse;
+<<<<<<< Updated upstream
                         tmp = tmp + `<div><img src="${URL}" style="width: 300px;" /></div>`;
                         this.setState({browse: tmp});
                     }    
+=======
+                            if(originalView[1].toString() === to_uid) {
+                                tmp = tmp + "<p class=\"message-receive\">" + this.state.to_user.name + " " + currentDate + "</p>";
+                                tmp = tmp + `<div class=\"message-receive\">><img src="${URL}" style="width: 300px;" /></div>`;
+                            }
+                            else if(originalView[1].toString() === uid){
+                                tmp = tmp + "<p class=\"message-send\">" + this.state.from_user.name + " " + currentDate + "</p>";
+                                tmp = tmp + `<div class=\"message-send\">><img src="${URL}" style="width: 300px;" /></div>`;
+                            }
+                            this.setState({browse: tmp});
+                            let div = document.getElementsByClassName("messageScreen")[0];
+                            setTimeout(() => {
+                                div.scrollTop = div.scrollHeight;
+                            }, 0.2);
+                        }    
+>>>>>>> Stashed changes
                     }
                     if(originalView[0]===2){
                         alert('audio');
@@ -109,10 +126,36 @@ export class MessageScreen extends React.Component {
 
         getUser(to_uid, callback_to_user);
         getUser(from_uid, callback_from_user);
-        const callback = (data) => {
+        const callback = async(data) => {
             console.log(data);
             let tmp = "<p class=\"message-receive\"></p>";
             for(let i = 0; i < data.length; i++) {
+                console.log(data.length);
+                let reader = new FileReader();
+                    
+                console.log(atob(data[i].media));
+                const byteCharacters = atob(data[i].media);
+                const byteArrays = [];
+                for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+                    const slice = byteCharacters.slice(offset, offset + 512);
+                    const byteNumbers = new Array(slice.length);
+                    for (let j = 0; j < slice.length; j++) {
+                    byteNumbers[j] = slice.charCodeAt(j);
+                    }
+                    const byteArray = new Uint8Array(byteNumbers);
+                    byteArrays.push(byteArray);
+                }
+                const totalLength = byteArrays.reduce((acc, arr) => acc + arr.length, 0);
+                const buffer1 = new ArrayBuffer(totalLength);
+                const resultArray = new Uint8Array(buffer1);
+                let offset = 0;
+                for (const byteArray of byteArrays) {
+                    resultArray.set(byteArray, offset);
+                    offset += byteArray.length;
+                }
+                console.log(buffer1);
+                const readBlob = new Blob([buffer1]);
+
                 if(data[i].type === 0) {
                     if(data[i].fromUser.id === parseInt(from_uid)) {
                         tmp = tmp + "<p class=\"message-send\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
@@ -124,6 +167,7 @@ export class MessageScreen extends React.Component {
                     }
                 }
                 else {
+<<<<<<< Updated upstream
                     let reader = new FileReader();
                     
                     const buffer = new ArrayBuffer(data[i].media.byteLength);
@@ -158,11 +202,18 @@ export class MessageScreen extends React.Component {
                         const newView = new Uint8Array(newBuffer); // 使用视图解释新的 ArrayBuffer
                         newView.set(originalView);
                         const blob = new Blob([newBuffer]);
+=======
+
+>>>>>>> Stashed changes
                         if(data[i].type === 1){
-                            reader.readAsDataURL(blob);
-                            reader.onload=(event)=>{
-                                const URL=event.target.result;
-                                let tmp = this.state.browse;
+                            const URL = await new Promise((resolve) => {
+                                reader.onload = (event) => {
+                                  resolve(event.target.result);
+                                };
+                                reader.readAsDataURL(readBlob);
+                              });
+                        
+
                                 if(data[i].fromUser.id === parseInt(from_uid)) {
                                     tmp = tmp + "<p class=\"message-send\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
                                     tmp = tmp + `<div class=\"message-send\">><img src="${URL}" style="width: 300px;" /></div>`;
@@ -175,16 +226,18 @@ export class MessageScreen extends React.Component {
                                 let div = document.getElementsByClassName("messageScreen")[0];
                                 setTimeout(() => {
                                     div.scrollTop = div.scrollHeight;
-                                }, 0);
-                            }
+                                }, 0.2);
+                            
                         }
                         if(data[i].type === 2){
-                            let tmp = this.state.browse;
-                            let audioUrl=URL.createObjectURL(blob);
-                            console.log(audioUrl);
+                            //let tmp = this.state.browse;
+                            console.log(tmp);
+                            let audioUrl=URL.createObjectURL(readBlob);
+                            console.log(from_uid);
                             if(data[i].fromUser.id === parseInt(from_uid)) {
                                 tmp = tmp + "<p class=\"message-send\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
                                 tmp = tmp + `<div class=\"message-send\">><audio controls src="${audioUrl}" /></div>`;
+
                             }
                             else {
                                 tmp = tmp + "<p class=\"message-receive\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
@@ -196,7 +249,6 @@ export class MessageScreen extends React.Component {
                                 div.scrollTop = div.scrollHeight;
                             }, 0);
                         }
-                    };
                 }
             }
             this.setState({browse: tmp});
