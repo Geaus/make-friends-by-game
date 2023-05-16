@@ -143,13 +143,68 @@ export class MessageScreen extends React.Component {
             console.log(data);
             let tmp = "<p class=\"message-receive\"></p>";
             for(let i = 0; i < data.length; i++) {
-                if(data[i].fromUser.id === parseInt(from_uid)) {
-                    tmp = tmp + "<p class=\"message-send\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
-                    tmp = tmp + "<p class=\"message-send\">" + data[i].content + "</p>";
+                if(data[i].type === 0) {
+                    if(data[i].fromUser.id === parseInt(from_uid)) {
+                        tmp = tmp + "<p class=\"message-send\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
+                        tmp = tmp + "<p class=\"message-send\">" + data[i].content + "</p>";
+                    }
+                    else {
+                        tmp = tmp + "<p class=\"message-receive\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
+                        tmp = tmp + "<p class=\"message-receive\">" + data[i].content + "</p>";
+                    }
                 }
                 else {
-                    tmp = tmp + "<p class=\"message-receive\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
-                    tmp = tmp + "<p class=\"message-receive\">" + data[i].content + "</p>";
+                    let reader = new FileReader();
+                    const buffer = new ArrayBuffer(data[i].media.byteLength);
+                    const readBlob = new Blob([buffer]);
+                    reader.readAsArrayBuffer(readBlob);
+                    //reader.readAsDataURL(data);
+                    reader.onload = (event) => {
+                        const imageData = event.target.result;
+                        const originalView = new Uint8Array(imageData);
+                        const newBuffer = new ArrayBuffer(imageData.byteLength); // 创建新的 ArrayBuffer，长度比原始的 ArrayBuffer 多 1 字节
+                        const newView = new Uint8Array(newBuffer); // 使用视图解释新的 ArrayBuffer
+                        newView.set(originalView);
+                        const blob = new Blob([newBuffer]);
+                        if(data[i].type === 1){
+                            reader.readAsDataURL(blob);
+                            reader.onload=(event)=>{
+                                const URL=event.target.result;
+                                let tmp = this.state.browse;
+                                if(data[i].fromUser.id === parseInt(from_uid)) {
+                                    tmp = tmp + "<p class=\"message-send\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
+                                    tmp = tmp + `<div class=\"message-send\">><img src="${URL}" style="width: 300px;" /></div>`;
+                                }
+                                else {
+                                    tmp = tmp + "<p class=\"message-receive\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
+                                    tmp = tmp + `<div class=\"message-receive\">><img src="${URL}" style="width: 300px;" /></div>`;
+                                }
+                                this.setState({browse: tmp});
+                                let div = document.getElementsByClassName("messageScreen")[0];
+                                setTimeout(() => {
+                                    div.scrollTop = div.scrollHeight;
+                                }, 0);
+                            }
+                        }
+                        if(data[i].type === 2){
+                            let tmp = this.state.browse;
+                            let audioUrl=URL.createObjectURL(blob);
+                            console.log(audioUrl);
+                            if(data[i].fromUser.id === parseInt(from_uid)) {
+                                tmp = tmp + "<p class=\"message-send\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
+                                tmp = tmp + `<div class=\"message-send\">><audio controls src="${audioUrl}" /></div>`;
+                            }
+                            else {
+                                tmp = tmp + "<p class=\"message-receive\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
+                                tmp = tmp + `<div class=\"message-receive\">><audio controls src="${audioUrl}" /></div>`;
+                            }
+                            this.setState({browse: tmp});
+                            let div = document.getElementsByClassName("messageScreen")[0];
+                            setTimeout(() => {
+                                div.scrollTop = div.scrollHeight;
+                            }, 0);
+                        }
+                    };
                 }
             }
             this.setState({browse: tmp});
