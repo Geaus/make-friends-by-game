@@ -1,49 +1,33 @@
 import React,{createRef} from 'react';
 import type {MenuProps} from "antd";
-import {Button, Layout,Popover,Tooltip,message,Drawer,Spin} from "antd";
+import {Button, Layout,Popover,Tooltip,message,Drawer,Modal} from "antd";
 import {Footer, Header} from "antd/es/layout/layout";
 import Emoji from './Emoji';
-import {SmileOutlined,AudioOutlined,FileImageOutlined,PhoneOutlined,PoweroffOutlined} from '@ant-design/icons';
+import {SmileOutlined,AudioOutlined,FileImageOutlined,MergeCellsOutlined} from '@ant-design/icons';
 import Recorder from 'js-audio-recorder'
 import WebRTCChat from './WebRTCChat';
+import {getMessage} from "../../service/ChatService";
+import {getUser} from "../../service/UserService";
+import moment from "moment";
+import Toe from '../Toe';
 
-const items : MenuProps['items'] = [
-    {
-        label : '表情' ,
-        key : 'emoji',
-    },
-    {
-        label : '语音',
-        key : 'voice',
-    },
-    {
-        label : '游戏',
-        key : 'game',
-    }
-]
+
 let websocket;
 let videoCallSender;
+let gameSender;
 
 export class MessageScreen extends React.Component {
     constructor(props) {
         super(props);
+
         this.handleEmojiClick = this.handleEmojiClick.bind(this)
 
-<<<<<<< Updated upstream
-        this.state = {message: "", browse:"<p></p>",text:""};
-=======
-        this.state = {message: "", browse:"<p class=\"message-receive\"></p>", to_user: null, from_user: null, text:"",isReceiveVideo:false,isShowVideo:false};
+        this.state = {isShowGame:false,isReceiveGame:false, message: "", browse:"<p class=\"message-receive\"></p>", to_user: null, from_user: null, text:"",isReceiveVideo:false,isShowVideo:false};
         let uid = sessionStorage.getItem('uid');
         this.setState({user: uid});
         let baseUrl = "ws://localhost:8080/websocket/"+uid;
 
->>>>>>> Stashed changes
         this.text = createRef();
-
-        let username=sessionStorage.getItem('userName');
-        //alert(username);
-        this.setState({user:username});
-        let baseUrl = "ws://localhost:8080/websocket/"+username;
         websocket = new WebSocket(baseUrl);
         websocket.onopen = ()=> {
             console.log("建立 websocket 连接...");
@@ -51,13 +35,6 @@ export class MessageScreen extends React.Component {
         websocket.onmessage = (event) => {
 
             const data = event.data;
-<<<<<<< Updated upstream
-            console.log(typeof data);
-            if(typeof data==='string'){
-                let tmp = this.state.browse;
-                tmp = tmp + data + "<br />";
-                this.setState({browse: tmp});
-=======
 
             if(typeof data==='string'){
                 let str = data.split(" ", 4);
@@ -80,6 +57,12 @@ export class MessageScreen extends React.Component {
                 if(str[3]==='视频聊天已结束'){
                     this.setState({isOver:true});
                 }
+                if(str[3]==='一起游戏吧' && gameSender != sessionStorage.getItem('uid')){
+                    this.setState({isReceiveGame:true});
+                }
+                if(str[3]==='开一把'){
+                    this.setState({isShowGame:true});
+                }
                 
                     console.log(data);
                     if(str[0] === to_uid) {
@@ -97,7 +80,6 @@ export class MessageScreen extends React.Component {
                     }, 0);
                     //setMessage(data)
 
->>>>>>> Stashed changes
             }
             else{
                 var reader=new FileReader();
@@ -108,30 +90,18 @@ export class MessageScreen extends React.Component {
                     
                     const imageData = event.target.result;
                     const originalView = new Uint8Array(imageData);
-                    const newBuffer = new ArrayBuffer(imageData.byteLength-1); // 创建新的 ArrayBuffer，长度比原始的 ArrayBuffer 多 1 字节
+                    const newBuffer = new ArrayBuffer(imageData.byteLength-2); // 创建新的 ArrayBuffer，长度比原始的 ArrayBuffer 多 1 字节
                     const newView = new Uint8Array(newBuffer); // 使用视图解释新的 ArrayBuffer
-<<<<<<< Updated upstream
-                    newView.set(originalView.subarray(1));
-                    console.log(newBuffer);
-                    const blob = new Blob([newBuffer]);
-                    if(originalView[0]===1){
-=======
                     newView.set(originalView.subarray(2));
                     const blob = new Blob([newBuffer]);
                     const currentDate = moment().format('YYYY-MM-DD HH:mm:ss');
                     let to_uid = sessionStorage.getItem('to_uid');
                     if(originalView[0] === 1){
->>>>>>> Stashed changes
                         reader.readAsDataURL(blob);
                         reader.onload=(event)=>{
                         const URL=event.target.result;
 
                         let tmp = this.state.browse;
-<<<<<<< Updated upstream
-                        tmp = tmp + `<div><img src="${URL}" style="width: 300px;" /></div>`;
-                        this.setState({browse: tmp});
-                    }    
-=======
                             if(originalView[1].toString() === to_uid) {
                                 tmp = tmp + "<p class=\"message-receive\">" + this.state.to_user.name + " " + currentDate + "</p>";
                                 tmp = tmp + `<div class=\"message-receive\">><img src="${URL}" style="width: 300px;" /></div>`;
@@ -146,16 +116,7 @@ export class MessageScreen extends React.Component {
                                 div.scrollTop = div.scrollHeight;
                             }, 0.2);
                         }    
->>>>>>> Stashed changes
                     }
-<<<<<<< Updated upstream
-                    if(originalView[0]===2){
-                        alert('audio');
-                        let tmp = this.state.browse;
-                        let audioUrl=URL.createObjectURL(blob);
-                        console.log(audioUrl);
-                        tmp = tmp+`<div><audio controls src="${audioUrl}" /></div>`;
-=======
                     if(originalView[0] === 2){
                         let tmp = this.state.browse;
                         let audioUrl=URL.createObjectURL(blob);
@@ -167,13 +128,15 @@ export class MessageScreen extends React.Component {
                             tmp = tmp + "<p class=\"message-send\">" + this.state.from_user.name + " " + currentDate + "</p>";
                             tmp = tmp + `<div class=\"message-send\">><audio controls src="${audioUrl}" /></div>`;
                         }
->>>>>>> Stashed changes
                         this.setState({browse: tmp});
+                        let div = document.getElementsByClassName("messageScreen")[0];
+                        setTimeout(() => {
+                            div.scrollTop = div.scrollHeight;
+                        }, 0);
                     }
                     
                 };
             }
-            
             //setMessage(data)
         };
         websocket.onerror = (event) => {
@@ -185,8 +148,6 @@ export class MessageScreen extends React.Component {
         };
     }
 
-<<<<<<< Updated upstream
-=======
     componentWillReceiveProps(nextProps: Readonly<P>, nextContext: any) {
         const callback_to_user = (data) => {
             this.setState({to_user: data});
@@ -240,44 +201,7 @@ export class MessageScreen extends React.Component {
                     }
                 }
                 else {
-<<<<<<< Updated upstream
-                    let reader = new FileReader();
-                    
-                    const buffer = new ArrayBuffer(data[i].media.byteLength);
-                    console.log(atob(data[i].media));
-                    const byteCharacters = atob(data[i].media);
-            const byteArrays = [];
-            for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-                const slice = byteCharacters.slice(offset, offset + 512);
-                const byteNumbers = new Array(slice.length);
-                for (let i = 0; i < slice.length; i++) {
-                byteNumbers[i] = slice.charCodeAt(i);
-                }
-                const byteArray = new Uint8Array(byteNumbers);
-                byteArrays.push(byteArray);
-            }
-            const totalLength = byteArrays.reduce((acc, arr) => acc + arr.length, 0);
-            const buffer1 = new ArrayBuffer(totalLength);
-            const resultArray = new Uint8Array(buffer1);
-            let offset = 0;
-            for (const byteArray of byteArrays) {
-                resultArray.set(byteArray, offset);
-                offset += byteArray.length;
-            }
-            console.log(buffer1);
-                    const readBlob = new Blob([buffer1]);
-                    reader.readAsArrayBuffer(readBlob);
-                    //reader.readAsDataURL(data);
-                    reader.onload = (event) => {
-                        const imageData = event.target.result;
-                        const originalView = new Uint8Array(imageData);
-                        const newBuffer = new ArrayBuffer(imageData.byteLength); // 创建新的 ArrayBuffer，长度比原始的 ArrayBuffer 多 1 字节
-                        const newView = new Uint8Array(newBuffer); // 使用视图解释新的 ArrayBuffer
-                        newView.set(originalView);
-                        const blob = new Blob([newBuffer]);
-=======
 
->>>>>>> Stashed changes
                         if(data[i].type === 1){
                             const URL = await new Promise((resolve) => {
                                 reader.onload = (event) => {
@@ -337,30 +261,20 @@ export class MessageScreen extends React.Component {
         }, 0);
     }
 
->>>>>>> Stashed changes
 
     handleEmojiClick(emoji) {
         const cursorStart = this.text.current.selectionStart;
         this.text.current.value = this.text.current.value.slice(0, cursorStart) + emoji + this.text.current.value.slice(cursorStart)
-    }
-    setMessage = (event) => {
-        let value = event.target.value;
-        this.setState({message: value});
     }
     sendMessage = () => {
         if (this.text.current.value === "") {
             alert("请重新输入")
             return;
         }
-        if(sessionStorage.getItem('userName') === '1'){
-            let str = '2 ' + this.text.current.value;
-            websocket.send(str);
-        }
-
-        else {
-            let str = '1 ' + this.text.current.value;
-            websocket.send(str);
-        }
+        let to_uid = sessionStorage.getItem("to_uid");
+        let str = to_uid + " " + this.text.current.value;
+        this.text.current.value = "";
+        websocket.send(str);
     }
     sendPicture=()=>{
 
@@ -387,7 +301,7 @@ export class MessageScreen extends React.Component {
 
                 const newView = new Uint8Array(newBuffer); // 使用视图解释新的 ArrayBuffer
 
-                newView[0] = 1; // 在新的 ArrayBuffer 的开头位置设置新的字节值,这是userId
+                newView[0] = sessionStorage.getItem("to_uid"); // 在新的 ArrayBuffer 的开头位置设置新的字节值,这是userId
                 newView[1] = 1; //消息类型，1是图片
 
                 newView.set(originalView, 2);
@@ -450,7 +364,7 @@ export class MessageScreen extends React.Component {
 
                 const newView = new Uint8Array(newBuffer); // 使用视图解释新的 ArrayBuffer
 
-                newView[0] = 1; // 在新的 ArrayBuffer 的开头位置设置新的字节值,userId
+                newView[0] = sessionStorage.getItem("to_uid"); // 在新的 ArrayBuffer 的开头位置设置新的字节值,userId
                 newView[1] = 2; //2为音频
 
                 newView.set(originalView, 2);
@@ -480,6 +394,26 @@ export class MessageScreen extends React.Component {
         this.setState({isOver:false});
     }
 
+    sendGame = () =>{
+        let to_uid = sessionStorage.getItem("to_uid");
+        let str = to_uid + " " + "一起游戏吧";
+        console.log(str);
+        websocket.send(str);
+        gameSender=sessionStorage.getItem("uid");
+    }
+    startGame = () => {
+        let to_uid = sessionStorage.getItem("to_uid");
+        let str = to_uid + " " + "开一把";
+        console.log(str);
+        websocket.send(str);
+        this.setState({isShowGame:true});
+        this.setState({isReceiveGame:false});
+    }
+
+    onClose = () => {
+        this.setState({isShowGame:false});
+    }
+    
     render() {
         let html = {__html:this.state.browse};
         // upload组件配置
@@ -522,6 +456,21 @@ export class MessageScreen extends React.Component {
                                     icon={<FileImageOutlined />}
                                 />
                             </Tooltip>
+                            <Tooltip title="联机游戏">
+                                <Button
+                                    shape="circle"
+                                    onClick={this.sendGame}
+                                    style={{ marginRight: 10 }}
+                                    icon={<MergeCellsOutlined />}
+                                />
+                            </Tooltip>
+                            <Modal title="联机游戏" 
+                                open={this.state.isReceiveGame}
+                                onOk={this.startGame}
+                                onCancel={this.onCancel}
+                                >
+                                <p>好友邀请您联机游戏</p>
+                            </Modal>
                             <Tooltip title="发送语音">
                                 <Button
                                     shape="circle"
@@ -534,23 +483,33 @@ export class MessageScreen extends React.Component {
                                 />
                             </Tooltip>
                             <WebRTCChat websocket ={websocket} 
-                            isReceiveVideo = {this.state.isReceiveVideo}
-                            isShowVideo = {this.state.isShowVideo}
-                            isBusy = {this.state.isBusy}
-                            isOver = {this.state.isOver}
-                            setIsBusy = {this.setIsBusy}
-                            setIsReceiveVideo = {this.setIsReceiveVideo}
-                            setIsShowVideo = {this.setIsShowVideo}
-                            videoCallSender={videoCallSender}
-                            setIsOver = {this.setIsOver} /> 
-                           
+                                isReceiveVideo = {this.state.isReceiveVideo}
+                                isShowVideo = {this.state.isShowVideo}
+                                isBusy = {this.state.isBusy}
+                                isOver = {this.state.isOver}
+                                setIsBusy = {this.setIsBusy}
+                                setIsReceiveVideo = {this.setIsReceiveVideo}
+                                setIsShowVideo = {this.setIsShowVideo}
+                                videoCallSender={videoCallSender}
+                                setIsOver = {this.setIsOver} />
+                             
+                            <Drawer width='1000px'
+                                forceRender={true}
+                                title="游戏面板"
+                                placement="right"
+                                onClose={this.onClose}
+                                open={this.state.isShowGame}
+                            >
+                                <Toe 
+                                    gameSender={gameSender}/>
+                            </Drawer>
                             
                             <div className={"sending"}>
                                 <Button className={"sendingButton"} block={true} onClick={this.sendMessage}>发送信息</Button>
                             </div>
                         </Header>
                         <Footer className={"ant-footer-in-send"}>
-                            <textarea onChange={event=>this.setMessage(event)} className={"inputBox"} ref={this.text}></textarea>
+                            <textarea  className={"inputBox"}  ref={this.text}></textarea>
                         </Footer> 
                     </Layout>
                 </div>

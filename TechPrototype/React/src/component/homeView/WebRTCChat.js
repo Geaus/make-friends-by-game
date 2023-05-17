@@ -10,12 +10,8 @@ class WebRTCChat extends React.Component {
     this.peerConnection = null;
     this.websocket = null;
     this.socketUrl = "ws://localhost:8080/msgServer/";
-<<<<<<< Updated upstream
-    this.user = sessionStorage.getItem('userName');
-=======
     this.user = sessionStorage.getItem('uid');
     this.to_uid = null;
->>>>>>> Stashed changes
     this.socket = null;
     this.socketRead = false;
 
@@ -24,9 +20,6 @@ class WebRTCChat extends React.Component {
     this.connect = this.connect.bind(this);
     this.hangUp = this.hangUp.bind(this);
 
-<<<<<<< Updated upstream
-  this.socket = new WebSocket(this.socketUrl + this.user+"/"+sessionStorage.getItem('toId'));
-=======
   }
 
   componentDidMount() {
@@ -41,7 +34,6 @@ class WebRTCChat extends React.Component {
         this.socket.close();
       }
       this.socket = new WebSocket(this.socketUrl + this.user+"/"+sessionStorage.getItem('to_uid'));
->>>>>>> Stashed changes
       this.socket.onopen = () => {
         console.log("Successfully connected to the server...");
         this.socketRead = true;

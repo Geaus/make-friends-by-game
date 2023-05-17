@@ -1,26 +1,47 @@
 package com.example.makefriendsbackend;
 
-import com.sun.xml.internal.ws.addressing.v200408.MemberSubmissionWsaServerTube;
+import com.example.makefriendsbackend.entity.ChatMessage;
+import com.example.makefriendsbackend.entity.ChatUserLink;
+import com.example.makefriendsbackend.entity.User;
+import com.example.makefriendsbackend.repository.ChatMessageRepository;
+import com.example.makefriendsbackend.repository.ChatUserLinkRepository;
+import com.example.makefriendsbackend.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-/**
- * @author hanjinqun
- * @date 2022/10/24
- * websocket操作类
- */
+
 @Component
 @ServerEndpoint("/websocket/{userId}")
 public class WebSocketServer {
+    private static UserRepository userRepository;
+
+    private static ChatUserLinkRepository chatUserLinkRepository;
+
+    private static ChatMessageRepository chatMessageRepository;
+
+    @Autowired
+    public void setUserService (UserRepository userRepository) {
+        WebSocketServer.userRepository = userRepository;
+    }
+    @Autowired
+    public void setLinkService (ChatUserLinkRepository chatUserLinkRepository) {
+        WebSocketServer.chatUserLinkRepository = chatUserLinkRepository;
+    }
+    @Autowired
+    public void setMessageService (ChatMessageRepository chatMessageRepository) {
+        WebSocketServer.chatMessageRepository = chatMessageRepository;
+    }
     /**
      * 日志工具
      */
@@ -66,7 +87,7 @@ public class WebSocketServer {
         try {
             webSockets.remove(this);
             sessionPool.remove(this.userId);
-            logger.info("【websocket消息】连接断开总数为:" + webSockets.size());
+            logger.info("【websocket消息】连接断开，总数为:" + webSockets.size());
         } catch (Exception e) {
         }
     }
@@ -76,10 +97,45 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message) {
-        logger.info("【websocket消息】收到客户端消息:" + message);
+
         String[] parts = message.split(" ", 2);
 
-        sendOneMessage(parts[0], parts[1]);
+        logger.info("【websocket消息】收到客户端消息:" + message);
+
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = formatter.format(date);
+
+        int from_uid=Integer.parseInt(this.userId);
+        int to_uid=Integer.parseInt(parts[0]);
+
+
+        String str = this.userId + " " +formattedDate+" "+ parts[1];
+
+        //from发给to
+        sendOneMessage(parts[0], str);
+        logger.info(this.userId);
+        //from发给from
+        sendOneMessage(this.userId, str);
+
+
+        User from=WebSocketServer.userRepository.findUserById(from_uid);
+        User to=WebSocketServer.userRepository.findUserById(to_uid);
+        ChatUserLink from_to =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
+
+        // ChatUserLink to_from =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
+        ChatMessage new_mess=new ChatMessage();
+
+        new_mess.setChatUserLink(from_to);
+        new_mess.setFromUser(from);
+        new_mess.setToUser(to);
+        new_mess.setContent(parts[1]);
+        new_mess.setType(0);
+        new_mess.setIsLatest(0);
+        new_mess.setSendTime(formattedDate);
+
+        WebSocketServer.chatMessageRepository.save(new_mess);
+
     }
 
     @OnMessage
@@ -88,17 +144,45 @@ public class WebSocketServer {
         byte firstByte = message[0];
         byte secondByte = message[1];
         byte[] remainingBytes = Arrays.copyOfRange(message, 2, message.length);
+
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = formatter.format(date);
+
+        int from_uid=Integer.parseInt(this.userId);
+        int to_uid=firstByte;
+
+        User from=WebSocketServer.userRepository.findUserById(from_uid);
+        User to=WebSocketServer.userRepository.findUserById(to_uid);
+        ChatUserLink from_to =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
+        ChatMessage new_mess=new ChatMessage();
+        new_mess.setChatUserLink(from_to);
+        new_mess.setFromUser(from);
+        new_mess.setToUser(to);
+        new_mess.setContent(null);
+        new_mess.setIsLatest(0);
+        new_mess.setSendTime(formattedDate);
+
+
+
         logger.info(String.valueOf(secondByte));
-        if(String.valueOf(secondByte).equals("1")) { //图片
+        if (String.valueOf(secondByte).equals("1")) { //图片
             sendOnePicture(String.valueOf(firstByte), remainingBytes);
+            sendOnePicture(this.userId, remainingBytes);
+
+            new_mess.setType(1);
+            new_mess.setMedia(remainingBytes);
+            WebSocketServer.chatMessageRepository.save(new_mess);
         }
-        if(String.valueOf(secondByte).equals("2")) { //音频
+        if (String.valueOf(secondByte).equals("2")) { //音频
             sendOneAudio(String.valueOf(firstByte), remainingBytes);
+            sendOneAudio(this.userId, remainingBytes);
+
+            new_mess.setType(2);
+            new_mess.setMedia(remainingBytes);
+            WebSocketServer.chatMessageRepository.save(new_mess);
         }
-
-
     }
-
     /**
      * 发送错误时的处理
      *
@@ -111,33 +195,16 @@ public class WebSocketServer {
         error.printStackTrace();
     }
 
-    /* 发送音频*/
-    public void sendOneAudio(String userId,byte[] message) {
-        Session session = sessionPool.get(userId);
-        if (session != null && session.isOpen()) {
+    /**
+     * 此为广播消息
+     */
+    public void sendAllMessage(String message) {
+        logger.info("【websocket消息】广播消息:" + message);
+        for (WebSocketServer webSocket : webSockets) {
             try {
-                byte[] newArray = new byte[message.length + 1];
-                newArray[0]=2; //消息类型标记位
-                System.arraycopy(message, 0, newArray, 1, message.length);
-                logger.info("【websocket消息】 单点消息:" + Arrays.toString(newArray));
-                session.getAsyncRemote().sendBinary(ByteBuffer.wrap(newArray));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /*发送图片*/
-    public void sendOnePicture(String userId,byte[] message) {
-        Session session = sessionPool.get(userId);
-        logger.info(userId);
-        if (session != null && session.isOpen()) {
-            try {
-                byte[] newArray = new byte[message.length + 1];
-                newArray[0]=1; //消息类型标记位
-                System.arraycopy(message, 0, newArray, 1, message.length);
-                logger.info("【websocket消息】 单点消息:" + Arrays.toString(newArray));
-                session.getAsyncRemote().sendBinary(ByteBuffer.wrap(newArray));
+                if (webSocket.session.isOpen()) {
+                    webSocket.session.getAsyncRemote().sendText(message);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -177,4 +244,43 @@ public class WebSocketServer {
         }
 
     }
+
+    public void sendOneAudio(String userId,byte[] message) {
+        Session session = sessionPool.get(userId);
+        if (session != null && session.isOpen()) {
+            try {
+                byte[] newArray = new byte[message.length + 2];
+                newArray[0]=2; //消息类型标记位
+                Integer number = Integer.parseInt(this.userId);
+                newArray[1]= number.byteValue();
+                System.arraycopy(message, 0, newArray, 2, message.length);
+                logger.info("【websocket消息】 单点消息:" + Arrays.toString(newArray));
+                session.getAsyncRemote().sendBinary(ByteBuffer.wrap(newArray));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /*发送图片*/
+    public void sendOnePicture(String userId,byte[] message) {
+        Session session = sessionPool.get(userId);
+        logger.info(userId);
+        if (session != null && session.isOpen()) {
+            try {
+                byte[] newArray = new byte[message.length + 2];
+                newArray[0]=1; //消息类型标记位
+                Integer number = Integer.parseInt(this.userId);
+                newArray[1]= number.byteValue();
+                System.arraycopy(message, 0, newArray, 2, message.length);
+                logger.info("【websocket消息】 单点消息:" + Arrays.toString(newArray));
+                session.getAsyncRemote().sendBinary(ByteBuffer.wrap(newArray));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
+
+

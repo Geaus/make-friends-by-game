@@ -74,15 +74,11 @@ public class WebSocketOfGameServer {
      */
     @OnMessage
     public void onMessage(String message) {
-        String[] parts = message.split(" ", 3);
+        String[] parts = message.split(" ", 2);
         logger.info("【websocket消息】收到客户端消息:" + message);
         logger.info(parts[1]);
-        if(!parts[1].equals("history")) {
-            sendOneMessage(parts[0], parts[1]);
-        }
-        else {
-            backToHistory(parts[0],parts[2]);
-        }
+        sendOneMessage(parts[0], parts[1]);
+
     }
 
     /**

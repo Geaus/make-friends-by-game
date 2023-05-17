@@ -1,5 +1,7 @@
 package com.example.makefriendsbackend;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -17,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Scope("prototype")
 public class AudioOnlineServer {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
      * 静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
      */
@@ -42,12 +45,13 @@ public class AudioOnlineServer {
          * 连接被打开：向socket-map中添加session
          */
         webSocketMap.put(userId, session);
-        System.out.println(userId + " - 连接建立成功...");
+        logger.info(userId + " - 连接建立成功...");
     }
 
     @OnMessage
     public void onMessage(String message, Session session,@PathParam("userId2") String userId) {
         try {
+            logger.info(userId);
             this.sendMessage(message,userId);
         } catch (IOException e) {
             e.printStackTrace();
@@ -73,6 +77,7 @@ public class AudioOnlineServer {
             this.session.getBasicRemote().sendText(message);
         }
         Session sessionValue = webSocketMap.get(userId);
+        logger.info(String.valueOf(webSocketMap.size()));
         if (sessionValue.isOpen()){
             System.out.println("发消息给: " + userId + " ,message: " + message);
             sessionValue.getBasicRemote().sendText(message);

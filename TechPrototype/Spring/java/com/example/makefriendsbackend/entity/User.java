@@ -10,6 +10,12 @@ public class User {
     @Id
     @Column(name = "id")
     private int id;
+    @Basic
+    @Column(name = "name")
+    private String name;
+    @Basic
+    @Column(name = "password")
+    private String password;
 
     public int getId() {
         return id;
@@ -17,6 +23,22 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 
