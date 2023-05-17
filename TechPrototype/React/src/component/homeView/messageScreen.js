@@ -1,6 +1,6 @@
 import React,{createRef} from 'react';
 import type {MenuProps} from "antd";
-import {Button, Layout,Popover,Tooltip,message,Drawer} from "antd";
+import {Button, Layout,Popover,Tooltip,message,Drawer,Spin} from "antd";
 import {Footer, Header} from "antd/es/layout/layout";
 import Emoji from './Emoji';
 import {SmileOutlined,AudioOutlined,FileImageOutlined,PhoneOutlined,PoweroffOutlined} from '@ant-design/icons';
@@ -22,13 +22,22 @@ const items : MenuProps['items'] = [
     }
 ]
 let websocket;
+let videoCallSender;
 
 export class MessageScreen extends React.Component {
     constructor(props) {
         super(props);
         this.handleEmojiClick = this.handleEmojiClick.bind(this)
 
+<<<<<<< Updated upstream
         this.state = {message: "", browse:"<p></p>",text:""};
+=======
+        this.state = {message: "", browse:"<p class=\"message-receive\"></p>", to_user: null, from_user: null, text:"",isReceiveVideo:false,isShowVideo:false};
+        let uid = sessionStorage.getItem('uid');
+        this.setState({user: uid});
+        let baseUrl = "ws://localhost:8080/websocket/"+uid;
+
+>>>>>>> Stashed changes
         this.text = createRef();
 
         let username=sessionStorage.getItem('userName');
@@ -42,11 +51,53 @@ export class MessageScreen extends React.Component {
         websocket.onmessage = (event) => {
 
             const data = event.data;
+<<<<<<< Updated upstream
             console.log(typeof data);
             if(typeof data==='string'){
                 let tmp = this.state.browse;
                 tmp = tmp + data + "<br />";
                 this.setState({browse: tmp});
+=======
+
+            if(typeof data==='string'){
+                let str = data.split(" ", 4);
+                
+                let tmp = this.state.browse;
+                let to_uid = sessionStorage.getItem('to_uid');
+
+                if(str[3]==='视频聊天'){
+                    console.log(data);
+                    this.setState({ isReceiveVideo: true });
+                    videoCallSender = str[0];
+                    
+                }
+                if(str[3]==='答应视频聊天'){
+                    this.setState({isShowVideo:true});
+                }
+                if(str[3]==='拒绝视频聊天'){
+                    this.setState({isBusy:true});
+                }
+                if(str[3]==='视频聊天已结束'){
+                    this.setState({isOver:true});
+                }
+                
+                    console.log(data);
+                    if(str[0] === to_uid) {
+                        tmp = tmp + "<p class=\"message-receive\">" + this.state.to_user.name + " " + str[1] + " " + str[2] + "</p>";
+                        tmp = tmp + "<p class=\"message-receive\">" + str[3] + "</p>";
+                    }
+                    else if(str[0] === uid){
+                        tmp = tmp + "<p class=\"message-send\">" + this.state.from_user.name + " " + str[1] + " " + str[2] + "</p>";
+                        tmp = tmp + "<p class=\"message-send\">" + str[3] + "</p>";
+                    }
+                    this.setState({browse: tmp});
+                    let div = document.getElementsByClassName("messageScreen")[0];
+                    setTimeout(() => {
+                        div.scrollTop = div.scrollHeight;
+                    }, 0);
+                    //setMessage(data)
+
+>>>>>>> Stashed changes
             }
             else{
                 var reader=new FileReader();
@@ -59,10 +110,18 @@ export class MessageScreen extends React.Component {
                     const originalView = new Uint8Array(imageData);
                     const newBuffer = new ArrayBuffer(imageData.byteLength-1); // 创建新的 ArrayBuffer，长度比原始的 ArrayBuffer 多 1 字节
                     const newView = new Uint8Array(newBuffer); // 使用视图解释新的 ArrayBuffer
+<<<<<<< Updated upstream
                     newView.set(originalView.subarray(1));
                     console.log(newBuffer);
                     const blob = new Blob([newBuffer]);
                     if(originalView[0]===1){
+=======
+                    newView.set(originalView.subarray(2));
+                    const blob = new Blob([newBuffer]);
+                    const currentDate = moment().format('YYYY-MM-DD HH:mm:ss');
+                    let to_uid = sessionStorage.getItem('to_uid');
+                    if(originalView[0] === 1){
+>>>>>>> Stashed changes
                         reader.readAsDataURL(blob);
                         reader.onload=(event)=>{
                         const URL=event.target.result;
@@ -89,12 +148,26 @@ export class MessageScreen extends React.Component {
                         }    
 >>>>>>> Stashed changes
                     }
+<<<<<<< Updated upstream
                     if(originalView[0]===2){
                         alert('audio');
                         let tmp = this.state.browse;
                         let audioUrl=URL.createObjectURL(blob);
                         console.log(audioUrl);
                         tmp = tmp+`<div><audio controls src="${audioUrl}" /></div>`;
+=======
+                    if(originalView[0] === 2){
+                        let tmp = this.state.browse;
+                        let audioUrl=URL.createObjectURL(blob);
+                        if(originalView[1].toString() === to_uid) {
+                            tmp = tmp + "<p class=\"message-receive\">" + this.state.to_user.name + " " + currentDate + "</p>";
+                            tmp = tmp + `<div class=\"message-receive\">><audio controls src="${audioUrl}" /></div>`;
+                        }
+                        else if(originalView[1].toString() === uid){
+                            tmp = tmp + "<p class=\"message-send\">" + this.state.from_user.name + " " + currentDate + "</p>";
+                            tmp = tmp + `<div class=\"message-send\">><audio controls src="${audioUrl}" /></div>`;
+                        }
+>>>>>>> Stashed changes
                         this.setState({browse: tmp});
                     }
                     
@@ -127,13 +200,13 @@ export class MessageScreen extends React.Component {
         getUser(to_uid, callback_to_user);
         getUser(from_uid, callback_from_user);
         const callback = async(data) => {
-            console.log(data);
             let tmp = "<p class=\"message-receive\"></p>";
+            let loading=`<div class=\"loading1\"></div>`;
+            this.setState({browse: loading});
+
             for(let i = 0; i < data.length; i++) {
-                console.log(data.length);
                 let reader = new FileReader();
                     
-                console.log(atob(data[i].media));
                 const byteCharacters = atob(data[i].media);
                 const byteArrays = [];
                 for (let offset = 0; offset < byteCharacters.length; offset += 512) {
@@ -222,11 +295,11 @@ export class MessageScreen extends React.Component {
                                     tmp = tmp + "<p class=\"message-receive\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
                                     tmp = tmp + `<div class=\"message-receive\">><img src="${URL}" style="width: 300px;" /></div>`;
                                 }
-                                this.setState({browse: tmp});
-                                let div = document.getElementsByClassName("messageScreen")[0];
-                                setTimeout(() => {
-                                    div.scrollTop = div.scrollHeight;
-                                }, 0.2);
+                                // this.setState({browse: tmp});
+                                // let div = document.getElementsByClassName("messageScreen")[0];
+                                // setTimeout(() => {
+                                //     div.scrollTop = div.scrollHeight;
+                                // }, 0.2);
                             
                         }
                         if(data[i].type === 2){
@@ -243,11 +316,11 @@ export class MessageScreen extends React.Component {
                                 tmp = tmp + "<p class=\"message-receive\">" + data[i].fromUser.name + " " + data[i].sendTime + "</p>";
                                 tmp = tmp + `<div class=\"message-receive\">><audio controls src="${audioUrl}" /></div>`;
                             }
-                            this.setState({browse: tmp});
-                            let div = document.getElementsByClassName("messageScreen")[0];
-                            setTimeout(() => {
-                                div.scrollTop = div.scrollHeight;
-                            }, 0);
+                            // this.setState({browse: tmp});
+                            // let div = document.getElementsByClassName("messageScreen")[0];
+                            // setTimeout(() => {
+                            //     div.scrollTop = div.scrollHeight;
+                            // }, 0);
                         }
                 }
             }
@@ -391,6 +464,22 @@ export class MessageScreen extends React.Component {
 
     }
 
+    setIsReceiveVideo = () => {
+        this.setState({isReceiveVideo:false});
+    }
+
+    setIsShowVideo = () =>{
+        this.setState({isShowVideo:false});
+    }
+
+    setIsBusy = () =>{
+        this.setState({isBusy:false});
+    }
+
+    setIsOver = () => {
+        this.setState({isOver:false});
+    }
+
     render() {
         let html = {__html:this.state.browse};
         // upload组件配置
@@ -444,7 +533,16 @@ export class MessageScreen extends React.Component {
                                     icon={<AudioOutlined />}
                                 />
                             </Tooltip>
-                            <WebRTCChat/> 
+                            <WebRTCChat websocket ={websocket} 
+                            isReceiveVideo = {this.state.isReceiveVideo}
+                            isShowVideo = {this.state.isShowVideo}
+                            isBusy = {this.state.isBusy}
+                            isOver = {this.state.isOver}
+                            setIsBusy = {this.setIsBusy}
+                            setIsReceiveVideo = {this.setIsReceiveVideo}
+                            setIsShowVideo = {this.setIsShowVideo}
+                            videoCallSender={videoCallSender}
+                            setIsOver = {this.setIsOver} /> 
                            
                             
                             <div className={"sending"}>
@@ -454,7 +552,6 @@ export class MessageScreen extends React.Component {
                         <Footer className={"ant-footer-in-send"}>
                             <textarea onChange={event=>this.setMessage(event)} className={"inputBox"} ref={this.text}></textarea>
                         </Footer> 
-                         
                     </Layout>
                 </div>
             </div>
