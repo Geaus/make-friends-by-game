@@ -84,6 +84,12 @@ class WebRTCChat extends React.Component {
       this.props.setIsShowVideo();
       this.props.setIsOver();
     }
+    if(this.props.isBusy && this.props.videoCallSender === sessionStorage.getItem('uid')){
+      this.stopVideo();
+      clearTimeout(this.videoTimeout);
+      this.props.setIsBusy();
+
+    }
   }
 
   // ==================以上是socket=======================
@@ -132,25 +138,30 @@ class WebRTCChat extends React.Component {
   //---------------------- 视频处理 -----------------------
 
   startVideo = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        this.localStream = stream;
-        const localVideo = document.getElementById("local-video");
-        localVideo.srcObject = stream;
-        localVideo.play();
-        localVideo.volume = 0;
-        console.log("333");
-      })
-      .catch((error) => {
-        console.error("An error occurred: [Error code: " + error.code + "]");
-      });
+    return new Promise((resolve, reject) => {
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          this.localStream = stream;
+          const localVideo = document.getElementById("local-video");
+          localVideo.srcObject = stream;
+          localVideo.play();
+          localVideo.volume = 0;
+          message.success("摄像头权限获取成功！")
+          resolve(); // Resolve the promise when video starts
+        })
+        .catch((error) => {
+          console.error("An error occurred: [Error code: " + error.code + "]");
+          reject(error); // Reject the promise if there's an error
+        });
+    });
   };
 
   stopVideo = () => {
     const localVideo = document.getElementById("local-video");
     localVideo.srcObject = null;
     this.localStream.getTracks().forEach((track) => track.stop());
+    message.success("关闭摄像头");
   };
 
   //---------------------- 处理连接 -----------------------
@@ -282,14 +293,6 @@ class WebRTCChat extends React.Component {
     }
   };
 
-  resolveAfter1Seconds = () =>{
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve('resolved');
-      }, 2000);
-    });
-  }
-
   onOpen = async () => {
     clearTimeout(this.ReceiveVideoTimeout);
     let to_uid = sessionStorage.getItem("to_uid");
@@ -298,9 +301,7 @@ class WebRTCChat extends React.Component {
     this.props.websocket.send(str);
     this.setState({isOpen:false});
     this.setState({mediaPanelDrawerVisible:true});
-    this.startVideo();
-    const result = await this.resolveAfter1Seconds();
-    console.log(result);
+    await this.startVideo();
     this.connect();
 
   }
@@ -319,12 +320,12 @@ class WebRTCChat extends React.Component {
     this.setState({mediaPanelDrawerVisible:true});
   }
 
-  sendCall = () => {
+  sendCall = async () => {
     let to_uid = sessionStorage.getItem("to_uid");
     let str = to_uid + " " + "视频聊天";
     console.log(str);
     this.props.websocket.send(str);
-    this.startVideo();
+    await this.startVideo();
 
     this.videoTimeout = setTimeout(() => {
       message.error("好友在忙哦，请稍后再试！");
@@ -335,7 +336,6 @@ class WebRTCChat extends React.Component {
   onclose=()=>{
     this.setState({mediaPanelDrawerVisible:false});
     this.hangUp();
-    this.stopVideo();
     this.props.setIsShowVideo();
     this.props.setIsOver();
   }
