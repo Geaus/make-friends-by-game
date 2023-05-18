@@ -482,7 +482,7 @@ export class MessageScreen extends React.Component {
                                     icon={<SmileOutlined />}
                                 />
                             </Popover>
-                            <Tooltip title="上传图片或者文件">
+                            <Tooltip title="上传图片">
                                 <input type='file' id='file' onChange={this.handleFileChange} hidden />
                                 <Button
                                     onClick={this.clickFile}
