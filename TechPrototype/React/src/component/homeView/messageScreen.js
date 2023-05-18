@@ -22,7 +22,7 @@ export class MessageScreen extends React.Component {
 
         this.handleEmojiClick = this.handleEmojiClick.bind(this)
 
-        this.state = {isShowGame:false,isReceiveGame:false, message: "", browse:"<p class=\"message-receive\"></p>", to_user: null, from_user: null, text:"",isReceiveVideo:false,isShowVideo:false};
+        this.state = {gameIsFinished:false,isShowGame:false,isReceiveGame:false, message: "", browse:"<p class=\"message-receive\"></p>", to_user: null, from_user: null, text:"",isReceiveVideo:false,isShowVideo:false};
         let uid = sessionStorage.getItem('uid');
         this.setState({user: uid});
         let baseUrl = "ws://localhost:8080/websocket/"+uid;
@@ -58,10 +58,27 @@ export class MessageScreen extends React.Component {
                     this.setState({isOver:true});
                 }
                 if(str[3]==='一起游戏吧' && gameSender != sessionStorage.getItem('uid')){
+                    this.ReceiveGameTimeout = setTimeout(() => {
+                        let to_uid = sessionStorage.getItem("to_uid");
+                        let str = to_uid + " " + "我在忙，请稍后再试";
+                        console.log(str);
+                        websocket.send(str);
+                        this.setState({isReceiveGame:false});
+                      }, 20000);
                     this.setState({isReceiveGame:true});
                 }
                 if(str[3]==='开一把'){
                     this.setState({isShowGame:true});
+                    clearTimeout(this.gameTimeout);
+                }
+                if(str[3]==='结束游戏'){
+                    gameSender = null;
+                    this.setState({isShowGame:false});
+                    this.setState({gameIsFinished:true});
+                }
+                if(str[3]==='拒绝游戏'){
+                    gameSender = null;
+                    clearTimeout(this.gameTimeout);
                 }
                 
                     console.log(data);
@@ -187,7 +204,6 @@ export class MessageScreen extends React.Component {
                     resultArray.set(byteArray, offset);
                     offset += byteArray.length;
                 }
-                console.log(buffer1);
                 const readBlob = new Blob([buffer1]);
 
                 if(data[i].type === 0) {
@@ -228,7 +244,6 @@ export class MessageScreen extends React.Component {
                         }
                         if(data[i].type === 2){
                             //let tmp = this.state.browse;
-                            console.log(tmp);
                             let audioUrl=URL.createObjectURL(readBlob);
                             console.log(from_uid);
                             if(data[i].fromUser.id === parseInt(from_uid)) {
@@ -394,14 +409,23 @@ export class MessageScreen extends React.Component {
         this.setState({isOver:false});
     }
 
+    setGameIsFinished = () =>{
+        this.setState({gameIsFinished:false})
+    }
+
     sendGame = () =>{
         let to_uid = sessionStorage.getItem("to_uid");
         let str = to_uid + " " + "一起游戏吧";
         console.log(str);
         websocket.send(str);
         gameSender=sessionStorage.getItem("uid");
+        this.gameTimeout = setTimeout(() => {
+            message.error("好友在忙哦，请稍后再试！");
+            gameSender = null;
+        }, 20000);
     }
     startGame = () => {
+        clearTimeout(this.ReceiveGameTimeout);
         let to_uid = sessionStorage.getItem("to_uid");
         let str = to_uid + " " + "开一把";
         console.log(str);
@@ -409,8 +433,19 @@ export class MessageScreen extends React.Component {
         this.setState({isShowGame:true});
         this.setState({isReceiveGame:false});
     }
-
+    onCancel = () =>{
+        clearTimeout(this.ReceiveGameTimeout);
+        let to_uid = sessionStorage.getItem("to_uid");
+        let str = to_uid + " " + "拒绝游戏";
+        console.log(str);
+        websocket.send(str);
+        this.setState({isReceiveGame:false});
+    }
     onClose = () => {
+        let to_uid = sessionStorage.getItem("to_uid");
+        let str = to_uid + " " + "结束游戏";
+        console.log(str);
+        websocket.send(str);
         this.setState({isShowGame:false});
     }
     
@@ -501,7 +536,9 @@ export class MessageScreen extends React.Component {
                                 open={this.state.isShowGame}
                             >
                                 <Toe 
-                                    gameSender={gameSender}/>
+                                    gameSender={gameSender}
+                                    gameIsFinished={this.state.gameIsFinished}
+                                    setGameIsFinished = {this.setGameIsFinished}/>
                             </Drawer>
                             
                             <div className={"sending"}>

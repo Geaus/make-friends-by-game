@@ -12,12 +12,14 @@ class Toe extends React.Component {
       squares: Array(9).fill(""),
       turn: "x",
       winner: null,
+      whoIsFirst : "x"
     };
     this.websocket = null;
     this.sign=null;
   }
 
   componentDidMount() {
+    
     const userName = sessionStorage.getItem("uid");
     const baseUrl = "ws://localhost:8080/websocket/game/" + userName.toString();
     this.websocket = new WebSocket(baseUrl);
@@ -28,25 +30,42 @@ class Toe extends React.Component {
 
     this.websocket.onmessage = (event) => {
       console.log("收到WebSocket消息:", event.data);
-      const { squares, turn, winner } = this.state;
-      if (squares[parseInt(event.data)] || winner) {
-        return;
+      if(event.data === "reset game"){
+        this.setState({
+          squares: Array(9).fill(""),
+          turn: this.state.whoIsFirst === "x" ? "o" : "x",
+          whoIsFirst : this.state.whoIsFirst === "x" ? "o" : "x",
+          winner: null,
+          });
       }
-      const s = squares.slice();
-      s[parseInt(event.data)] = turn;
-      this.setState({ squares: s, turn: turn === "x" ? "o" : "x" });
+      else{
+        const { squares, turn, winner } = this.state;
+        if (squares[parseInt(event.data)] || winner) {
+          return;
+        }
+        const s = squares.slice();
+        s[parseInt(event.data)] = turn;
+        this.setState({ squares: s, turn: turn === "x" ? "o" : "x" });
 
-      const W = this.checkWinner(s);
-      if (W) {
-        this.setState({ winner: W });
-      } else if (this.checkEndTheGame(s)) {
-        this.setState({ winner: "x | o" });
+        const W = this.checkWinner(s);
+        if (W) {
+          this.setState({ winner: W });
+        } else if (this.checkEndTheGame(s)) {
+          this.setState({ winner: "x | o" });
+        }
       }
     };
 
     this.websocket.onclose = () => {
       console.log("WebSocket连接已关闭");
     };
+  }
+
+  componentDidUpdate() {
+    if(this.props.gameIsFinished){
+      this.resetGame();
+      this.props.setGameIsFinished();
+    }
   }
 
   componentWillUnmount() {
@@ -109,11 +128,14 @@ class Toe extends React.Component {
     }
     
     resetGame() {
-    this.setState({
-    squares: Array(9).fill(""),
-    turn: "x",
-    winner: null,
-    });
+      this.setState({
+      squares: Array(9).fill(""),
+      turn: this.state.whoIsFirst === "x" ? "o" : "x",
+          whoIsFirst : this.state.whoIsFirst === "x" ? "o" : "x",
+      winner: null,
+      });
+      console.log(sessionStorage.getItem("to_uid") + " " + "reset game");
+      this.websocket.send(sessionStorage.getItem("to_uid") + " " + "reset game");
     }
     
     render() {
@@ -203,7 +225,7 @@ class Toe extends React.Component {
                         transition: { delay: 1.5, duration: 0.3 },
                       }}
                     >
-                      <Button resetGame={() => this.resetGame()} />
+                      <Button resetGame={() =>this.resetGame()} />
                     </motion.div>
                   </motion.div>
                 </motion.div>

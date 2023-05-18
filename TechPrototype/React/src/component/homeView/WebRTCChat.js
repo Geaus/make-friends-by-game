@@ -63,6 +63,13 @@ class WebRTCChat extends React.Component {
     if (this.props.isReceiveVideo && this.props.videoCallSender === sessionStorage.getItem('to_uid')) {
       console.log("video");
       this.setState({isOpen:true});
+      this.ReceiveVideoTimeout = setTimeout(() => {
+        let to_uid = sessionStorage.getItem("to_uid");
+        let str = to_uid + " " + "我在忙，请稍后再拨";
+        console.log(str);
+        this.props.websocket.send(str);
+        this.setState({isOpen:false});
+      }, 20000);
       this.props.setIsReceiveVideo();
     }
     if (this.props.isShowVideo && this.props.videoCallSender === sessionStorage.getItem('uid')) {
@@ -284,6 +291,7 @@ class WebRTCChat extends React.Component {
   }
 
   onOpen = async () => {
+    clearTimeout(this.ReceiveVideoTimeout);
     let to_uid = sessionStorage.getItem("to_uid");
     let str = to_uid + " " + "答应视频聊天";
     console.log(str);
@@ -298,6 +306,7 @@ class WebRTCChat extends React.Component {
   }
 
   onCancel=()=>{
+    clearTimeout(this.ReceiveVideoTimeout);
     let to_uid = sessionStorage.getItem("to_uid");
     let str = to_uid + " " + "拒绝视频聊天";
     this.props.websocket.send(str);
@@ -305,6 +314,7 @@ class WebRTCChat extends React.Component {
   }
 
   openVideo = () => {
+    clearTimeout(this.videoTimeout);
     message.success('好友已经应答，进入视频聊天');
     this.setState({mediaPanelDrawerVisible:true});
   }
@@ -315,6 +325,11 @@ class WebRTCChat extends React.Component {
     console.log(str);
     this.props.websocket.send(str);
     this.startVideo();
+
+    this.videoTimeout = setTimeout(() => {
+      message.error("好友在忙哦，请稍后再试！");
+      this.stopVideo();
+    }, 20000);
   }
 
   onclose=()=>{
