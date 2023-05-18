@@ -10,6 +10,7 @@ public interface ChatUserLinkRepository extends JpaRepository<ChatUserLink, Inte
 
     List<ChatUserLink> findChatUserLinksByFromUser(User u);
 
-    ChatUserLink findChatUserLinkByFromUserAndToUser(User from,User to);
+    ChatUserLink findChatUserLinkByFromUserAndToUser(User from, User to);
 
+    void deleteChatUserLinkByLinkId(int index);
 }

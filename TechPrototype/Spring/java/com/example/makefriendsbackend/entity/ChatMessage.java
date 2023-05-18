@@ -42,7 +42,6 @@ public class ChatMessage {
     @Column(name = "is_latest")
     private Integer isLatest;
 
-
     @Basic
     @Column(name = "media")
     private byte[] media;

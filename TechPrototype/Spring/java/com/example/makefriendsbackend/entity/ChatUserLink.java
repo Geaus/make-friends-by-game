@@ -28,6 +28,10 @@ public class ChatUserLink {
     @Column(name = "create_time")
     private String createTime;
 
+    @Basic
+    @Column(name="is_black")
+    private int isBlack;
+
     public User getFromUser() {
         return fromUser;
     }
@@ -63,4 +67,11 @@ public class ChatUserLink {
         this.createTime = createTime;
     }
 
+    public int getIsBlack() {
+        return isBlack;
+    }
+
+    public void setIsBlack(int isBlack) {
+        this.isBlack = isBlack;
+    }
 }

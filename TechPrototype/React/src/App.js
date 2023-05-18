@@ -11,6 +11,7 @@ import HelpView from "./view/HelpView";
 import AdminView from "./view/AdminView";
 import SettingsView from "./view/SettingsView";
 import { BrowserRouter,Routes, Route } from "react-router-dom"
+import ContactView from "./view/ContactView";
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
                  <Route path="/activity" element={<ActivityView />} />
                  <Route path="/help" element={<HelpView />} />
                  <Route path="/admin" element={<AdminView />} />
+                 <Route path="/contact" element={<ContactView/>} />
              </Routes>
          </BrowserRouter>
 

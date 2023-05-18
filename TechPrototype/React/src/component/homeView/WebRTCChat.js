@@ -1,16 +1,17 @@
 import React from 'react';
-import {Tooltip,Button,Drawer,Modal} from 'antd';
+import {Tooltip,Button,Drawer,Modal, message} from 'antd';
 import {VideoCameraOutlined,PoweroffOutlined,PhoneOutlined} from '@ant-design/icons';
 
 class WebRTCChat extends React.Component {
   constructor(props) {
     super(props);
-    this.state={mediaPanelDrawerVisible:false};
+    this.state={mediaPanelDrawerVisible:false,isOpen:false,isWebSocket:null};
     this.localStream = null;
     this.peerConnection = null;
     this.websocket = null;
     this.socketUrl = "ws://localhost:8080/msgServer/";
     this.user = sessionStorage.getItem('uid');
+    this.to_uid = null;
     this.socket = null;
     this.socketRead = false;
 
@@ -19,7 +20,20 @@ class WebRTCChat extends React.Component {
     this.connect = this.connect.bind(this);
     this.hangUp = this.hangUp.bind(this);
 
-  this.socket = new WebSocket(this.socketUrl + this.user+"/"+sessionStorage.getItem('to_uid'));
+  }
+
+  componentDidMount() {
+    
+  }
+
+  componentDidUpdate() {
+    console.log(sessionStorage.getItem('to_uid'));
+    if(sessionStorage.getItem('to_uid') != this.state.isWebSocket){
+      this.setState({isWebSocket:sessionStorage.getItem('to_uid')})
+      if(this.socket != null){
+        this.socket.close();
+      }
+      this.socket = new WebSocket(this.socketUrl + this.user+"/"+sessionStorage.getItem('to_uid'));
       this.socket.onopen = () => {
         console.log("Successfully connected to the server...");
         this.socketRead = true;
@@ -45,11 +59,31 @@ class WebRTCChat extends React.Component {
           this.stop();
         }
       };
-    
-  }
-
-  componentDidMount() {
-      
+    }
+    if (this.props.isReceiveVideo && this.props.videoCallSender === sessionStorage.getItem('to_uid')) {
+      console.log("video");
+      this.setState({isOpen:true});
+      this.ReceiveVideoTimeout = setTimeout(() => {
+        let to_uid = sessionStorage.getItem("to_uid");
+        let str = to_uid + " " + "我在忙，请稍后再拨";
+        console.log(str);
+        this.props.websocket.send(str);
+        this.setState({isOpen:false});
+      }, 20000);
+      this.props.setIsReceiveVideo();
+    }
+    if (this.props.isShowVideo && this.props.videoCallSender === sessionStorage.getItem('uid')) {
+      this.openVideo();
+      this.props.setIsShowVideo();
+    }
+    if(this.props.isOver){
+      console.log(this.props.isOver)
+      this.setState({mediaPanelDrawerVisible:false});
+      this.hangUp1();
+      this.stopVideo();
+      this.props.setIsShowVideo();
+      this.props.setIsOver();
+    }
   }
 
   // ==================以上是socket=======================
@@ -106,6 +140,7 @@ class WebRTCChat extends React.Component {
         localVideo.srcObject = stream;
         localVideo.play();
         localVideo.volume = 0;
+        console.log("333");
       })
       .catch((error) => {
         console.error("An error occurred: [Error code: " + error.code + "]");
@@ -229,6 +264,14 @@ class WebRTCChat extends React.Component {
   hangUp = () => {
     console.log("Hang up.");
     this.stop();
+    let to_uid = sessionStorage.getItem("to_uid");
+    let str = to_uid + " " + "视频聊天已结束";
+    this.props.websocket.send(str);
+  };
+
+  hangUp1 = () => {
+    console.log("Hang up.");
+    this.stop();
   };
 
   stop = () => {
@@ -239,16 +282,67 @@ class WebRTCChat extends React.Component {
     }
   };
 
-  onopen=()=>{
+  resolveAfter1Seconds = () =>{
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve('resolved');
+      }, 2000);
+    });
+  }
+
+  onOpen = async () => {
+    clearTimeout(this.ReceiveVideoTimeout);
+    let to_uid = sessionStorage.getItem("to_uid");
+    let str = to_uid + " " + "答应视频聊天";
+    console.log(str);
+    this.props.websocket.send(str);
+    this.setState({isOpen:false});
     this.setState({mediaPanelDrawerVisible:true});
     this.startVideo();
+    const result = await this.resolveAfter1Seconds();
+    console.log(result);
+    this.connect();
 
+  }
+
+  onCancel=()=>{
+    clearTimeout(this.ReceiveVideoTimeout);
+    let to_uid = sessionStorage.getItem("to_uid");
+    let str = to_uid + " " + "拒绝视频聊天";
+    this.props.websocket.send(str);
+    this.setState({isOpen:false});
+  }
+
+  openVideo = () => {
+    clearTimeout(this.videoTimeout);
+    message.success('好友已经应答，进入视频聊天');
+    this.setState({mediaPanelDrawerVisible:true});
+  }
+
+  sendCall = () => {
+    let to_uid = sessionStorage.getItem("to_uid");
+    let str = to_uid + " " + "视频聊天";
+    console.log(str);
+    this.props.websocket.send(str);
+    this.startVideo();
+
+    this.videoTimeout = setTimeout(() => {
+      message.error("好友在忙哦，请稍后再试！");
+      this.stopVideo();
+    }, 20000);
   }
 
   onclose=()=>{
     this.setState({mediaPanelDrawerVisible:false});
     this.hangUp();
     this.stopVideo();
+    this.props.setIsShowVideo();
+    this.props.setIsOver();
+  }
+
+  closeModal = () => {
+    console.log("ok");
+    
   }
 
   render() {
@@ -259,11 +353,18 @@ class WebRTCChat extends React.Component {
                 <Tooltip title="视频聊天">
                     <Button
                         shape="circle"
-                        onClick={this.onopen}
+                        onClick={this.sendCall}
                         style={{ marginRight: 10 }}
                         icon={<VideoCameraOutlined />}
                     />
                 </Tooltip>
+                <Modal title="语音通话" 
+                  open={this.state.isOpen}
+                  onOk={this.onOpen}
+                  onCancel={this.onCancel}
+                >
+                  <p>好友邀请您语音聊天</p>
+                </Modal>
 
                 <Drawer width='500px'
                     forceRender={true}
