@@ -66,7 +66,7 @@ const MenuBar_Left = (props) => {
 
                     )}
                     {selectedKey === '2' && (
-                        <BlackList/>
+                        <BlackList to_user_change={to_user_change}/>
                     )}
                     {/*{selectedKey === '3' && (*/}
                     {/*    <GroupChatList/>*/}
