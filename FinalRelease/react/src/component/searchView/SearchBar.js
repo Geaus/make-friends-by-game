@@ -1,6 +1,7 @@
 import React from 'react';
 import {  Button, Input, AutoComplete } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import {getTag} from "../../service/UserService";
 const { Option } = AutoComplete;
 
 
@@ -44,9 +45,6 @@ function renderOption(item) {
 }
 
 export class SearchBar extends React.Component {
-    state = {
-        dataSource: [],
-    };
 
     handleSearch = value => {
         this.setState({
@@ -54,7 +52,30 @@ export class SearchBar extends React.Component {
         });
     };
 
+    componentDidMount() {
+        const callback = (data) => {
+            let tags = []
+            for(let i = 0; i < data.length; i++) {
+                let tag = {id: 0, text: "", clicked: false};
+                tag.id = data[i].tagid;
+                tag.text = data[i].tagname;
+                tags.push(tag);
+            }
+            this.setState({buttons: tags, dataSource: []})
+        }
+        getTag(callback)
+    }
+
+    handleClick = (id) => {
+        this.setState((state) => ({
+            buttons: state.buttons.map((button) =>
+                button.id === id ? { ...button, clicked: !button.clicked } : button
+            ),
+        }));
+    };
+
     render() {
+        if(this.state == null)return null;
         const { dataSource } = this.state;
         return (
             <div className="global-search-wrapper" style={{ width: "100vw" }}>
@@ -81,6 +102,20 @@ export class SearchBar extends React.Component {
                         }
                     />
                 </AutoComplete>
+
+                <div>
+                    {this.state.buttons.map((button) => (
+                        <Button
+                            type="dashed"
+                            shape="round"
+                            style={{marginRight:20 ,marginBottom:40}}
+                            key={button.id}
+                            onClick={() => this.handleClick(button.id)}
+                        >
+                            {button.text} - {button.clicked ? "已添加" : "未添加"}
+                        </Button>
+                    ))}
+                </div>
             </div>
         );
     }

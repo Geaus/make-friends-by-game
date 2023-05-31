@@ -245,10 +245,7 @@ export class MessageScreen extends React.Component {
                                     tmp = tmp + `<div class=\"message-receive\">><img src="${URL}" style="width: 300px;" /></div>`;
                                 }
                                 // this.setState({browse: tmp});
-                                // let div = document.getElementsByClassName("messageScreen")[0];
-                                // setTimeout(() => {
-                                //     div.scrollTop = div.scrollHeight;
-                                // }, 0.2);
+
                             
                         }
                         if(data[i].type === 2){
@@ -265,10 +262,6 @@ export class MessageScreen extends React.Component {
                                 tmp = tmp + `<div class=\"message-receive\">><audio controls src="${audioUrl}" /></div>`;
                             }
                             // this.setState({browse: tmp});
-                            // let div = document.getElementsByClassName("messageScreen")[0];
-                            // setTimeout(() => {
-                            //     div.scrollTop = div.scrollHeight;
-                            // }, 0);
                         }
                 }
             }
@@ -279,10 +272,10 @@ export class MessageScreen extends React.Component {
             }, 0);
         }
         getMessage(from_uid, to_uid, callback);
-        let div = document.getElementsByClassName("messageScreen")[0];
-        setTimeout(() => {
-            div.scrollTop = div.scrollHeight;
-        }, 0);
+        // let div = document.getElementsByClassName("messageScreen")[0];
+        // setTimeout(() => {
+        //     div.scrollTop = div.scrollHeight;
+        // }, 0);
     }
 
 
