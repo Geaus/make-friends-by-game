@@ -1,5 +1,6 @@
 package com.example.makefriendsbackend;
 
+import com.example.makefriendsbackend.BaiduAI.BaiDuAiCheck;
 import com.example.makefriendsbackend.entity.ChatMessage;
 import com.example.makefriendsbackend.entity.ChatUserLink;
 import com.example.makefriendsbackend.entity.User;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -102,95 +104,122 @@ public class WebSocketServer {
 
         logger.info("【websocket消息】收到客户端消息:" + message);
 
-        Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String formattedDate = formatter.format(date);
+        org.json.JSONObject result = BaiDuAiCheck.checkText(parts[1]);
 
-        int from_uid=Integer.parseInt(this.userId);
-        int to_uid=Integer.parseInt(parts[0]);
+        System.out.println(result);
 
+        if (result.get("conclusion").equals("合规")){
 
-        String str = this.userId + " " +formattedDate+" "+ parts[1];
+            Date date = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String formattedDate = formatter.format(date);
 
-        //from发给to
-        sendOneMessage(parts[0], str);
-        logger.info(parts[0]);
-        //from发给from
-        sendOneMessage(this.userId, str);
+            int from_uid=Integer.parseInt(this.userId);
+            int to_uid=Integer.parseInt(parts[0]);
 
 
-        User from=WebSocketServer.userRepository.findUserById(from_uid);
-        User to=WebSocketServer.userRepository.findUserById(to_uid);
-        ChatUserLink from_to =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
+            String str = this.userId + " " +formattedDate+" "+ parts[1];
 
-        ChatUserLink to_from=WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
-        if(to_from.getIsBlack()==1){
-            return;
+            //from发给to
+            sendOneMessage(parts[0], str);
+            logger.info(parts[0]);
+            //from发给from
+            sendOneMessage(this.userId, str);
+
+
+            User from=WebSocketServer.userRepository.findUserById(from_uid);
+            User to=WebSocketServer.userRepository.findUserById(to_uid);
+            ChatUserLink from_to =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
+
+            ChatUserLink to_from=WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
+            if(to_from.getIsBlack()==1){
+                return;
+            }
+            // ChatUserLink to_from =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
+            ChatMessage new_mess=new ChatMessage();
+
+            new_mess.setChatUserLink(from_to);
+            new_mess.setFromUser(from);
+            new_mess.setToUser(to);
+            new_mess.setContent(parts[1]);
+            new_mess.setType(0);
+            new_mess.setIsLatest(0);
+            new_mess.setSendTime(formattedDate);
+
+            WebSocketServer.chatMessageRepository.save(new_mess);
         }
-        // ChatUserLink to_from =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
-        ChatMessage new_mess=new ChatMessage();
 
-        new_mess.setChatUserLink(from_to);
-        new_mess.setFromUser(from);
-        new_mess.setToUser(to);
-        new_mess.setContent(parts[1]);
-        new_mess.setType(0);
-        new_mess.setIsLatest(0);
-        new_mess.setSendTime(formattedDate);
+        else if(result.get("conclusion").equals("不合规")){
+            sendOneMessage(this.userId, "-1 -1 -1 -1");
+        }
 
-        WebSocketServer.chatMessageRepository.save(new_mess);
+
 
     }
 
     @OnMessage
-    public void onMessage(byte[] message) {
+    public void onMessage(byte[] message) throws IOException {
         logger.info("【websocket消息】收到客户端消息:" + message);
         byte firstByte = message[0];
         byte secondByte = message[1];
         byte[] remainingBytes = Arrays.copyOfRange(message, 2, message.length);
 
-        Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String formattedDate = formatter.format(date);
+        org.json.JSONObject result = BaiDuAiCheck.checkImg(remainingBytes);
 
-        int from_uid=Integer.parseInt(this.userId);
-        int to_uid=firstByte;
+        System.out.println(result);
 
-        User from=WebSocketServer.userRepository.findUserById(from_uid);
-        User to=WebSocketServer.userRepository.findUserById(to_uid);
-        ChatUserLink from_to =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
+        if(result.get("conclusion").equals("合规")){
 
-        ChatUserLink to_from=WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
-        if(to_from.getIsBlack()==1){
-            return;
+            Date date = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String formattedDate = formatter.format(date);
+
+            int from_uid=Integer.parseInt(this.userId);
+            int to_uid=firstByte;
+
+            User from=WebSocketServer.userRepository.findUserById(from_uid);
+            User to=WebSocketServer.userRepository.findUserById(to_uid);
+            ChatUserLink from_to =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
+
+            ChatUserLink to_from=WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
+            if(to_from.getIsBlack()==1){
+                return;
+            }
+            ChatMessage new_mess=new ChatMessage();
+            new_mess.setChatUserLink(from_to);
+            new_mess.setFromUser(from);
+            new_mess.setToUser(to);
+            new_mess.setContent(null);
+            new_mess.setIsLatest(0);
+            new_mess.setSendTime(formattedDate);
+
+
+
+            logger.info(String.valueOf(secondByte));
+            if (String.valueOf(secondByte).equals("1")) { //图片
+                sendOnePicture(String.valueOf(firstByte), remainingBytes);
+                sendOnePicture(this.userId, remainingBytes);
+
+                new_mess.setType(1);
+                new_mess.setMedia(remainingBytes);
+                WebSocketServer.chatMessageRepository.save(new_mess);
+            }
+            if (String.valueOf(secondByte).equals("2")) { //音频
+                sendOneAudio(String.valueOf(firstByte), remainingBytes);
+                sendOneAudio(this.userId, remainingBytes);
+
+                new_mess.setType(2);
+                new_mess.setMedia(remainingBytes);
+                WebSocketServer.chatMessageRepository.save(new_mess);
+            }
+
         }
-        ChatMessage new_mess=new ChatMessage();
-        new_mess.setChatUserLink(from_to);
-        new_mess.setFromUser(from);
-        new_mess.setToUser(to);
-        new_mess.setContent(null);
-        new_mess.setIsLatest(0);
-        new_mess.setSendTime(formattedDate);
 
-
-
-        logger.info(String.valueOf(secondByte));
-        if (String.valueOf(secondByte).equals("1")) { //图片
-            sendOnePicture(String.valueOf(firstByte), remainingBytes);
-            sendOnePicture(this.userId, remainingBytes);
-
-            new_mess.setType(1);
-            new_mess.setMedia(remainingBytes);
-            WebSocketServer.chatMessageRepository.save(new_mess);
+        else if(result.get("conclusion").equals("不合规")){
+            sendOneMessage(this.userId, "-1 -1 -1 -1");
         }
-        if (String.valueOf(secondByte).equals("2")) { //音频
-            sendOneAudio(String.valueOf(firstByte), remainingBytes);
-            sendOneAudio(this.userId, remainingBytes);
 
-            new_mess.setType(2);
-            new_mess.setMedia(remainingBytes);
-            WebSocketServer.chatMessageRepository.save(new_mess);
-        }
+
     }
     /**
      * 发送错误时的处理
@@ -291,5 +320,4 @@ public class WebSocketServer {
     }
 
 }
-
 

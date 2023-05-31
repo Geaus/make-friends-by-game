@@ -41,6 +41,7 @@ export class MessageScreen extends React.Component {
                 
                 let tmp = this.state.browse;
                 let to_uid = sessionStorage.getItem('to_uid');
+                console.log(to_uid)
 
                 if(str[3]==='视频聊天'){
                     console.log(data);
@@ -83,12 +84,18 @@ export class MessageScreen extends React.Component {
                 
                     console.log(data);
                     if(str[0] === to_uid) {
+
+                        if(this.state.to_user === null)return;
                         tmp = tmp + "<p class=\"message-receive\">" + this.state.to_user.name + " " + str[1] + " " + str[2] + "</p>";
                         tmp = tmp + "<p class=\"message-receive\">" + str[3] + "</p>";
                     }
                     else if(str[0] === uid){
                         tmp = tmp + "<p class=\"message-send\">" + this.state.from_user.name + " " + str[1] + " " + str[2] + "</p>";
                         tmp = tmp + "<p class=\"message-send\">" + str[3] + "</p>";
+                    }
+
+                    else if(str[0].toString() === "-1"){
+                        message.error("发送信息不合法");
                     }
                     this.setState({browse: tmp});
                     let div = document.getElementsByClassName("messageScreen")[0];
@@ -120,6 +127,7 @@ export class MessageScreen extends React.Component {
 
                         let tmp = this.state.browse;
                             if(originalView[1].toString() === to_uid) {
+                                if(this.state.to_user === null)return;
                                 tmp = tmp + "<p class=\"message-receive\">" + this.state.to_user.name + " " + currentDate + "</p>";
                                 tmp = tmp + `<div class=\"message-receive\">><img src="${URL}" style="width: 300px;" /></div>`;
                             }
@@ -138,6 +146,7 @@ export class MessageScreen extends React.Component {
                         let tmp = this.state.browse;
                         let audioUrl=URL.createObjectURL(blob);
                         if(originalView[1].toString() === to_uid) {
+                            if(this.state.to_user === null)return;
                             tmp = tmp + "<p class=\"message-receive\">" + this.state.to_user.name + " " + currentDate + "</p>";
                             tmp = tmp + `<div class=\"message-receive\">><audio controls src="${audioUrl}" /></div>`;
                         }

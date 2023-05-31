@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "tagid")
+
 @Table(name = "tags", schema = "make_friend", catalog = "")
 public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)

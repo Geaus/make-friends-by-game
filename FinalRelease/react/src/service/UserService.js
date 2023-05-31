@@ -28,9 +28,3 @@ export const login = (username, password) => {
             return data;
         });
 };
-
-export const getTag = (callback) => {
-    fetch('http://localhost:8080/getTag')
-        .then((response) => response.json())
-        .then((data) => {callback(data)});
-}

@@ -120,12 +120,12 @@ class ContactsManagement extends Component {
                         {!contact.isBlack ? (
                             <React.Fragment>
                                 <Button onClick={() => this.handleBlacklist(contact.toUser.id)}>Black</Button>
-                                <Button onClick={() => this.handleDelete(contact.toUser.id)}>Delete</Button>
+                                {/*<Button onClick={() => this.handleDelete(contact.toUser.id)}>Delete</Button>*/}
                             </React.Fragment>
                         ) : (
                             <React.Fragment>
                                 <Button onClick={() => this.handleUnblacklist(contact.toUser.id)}>Unblack</Button>
-                                <Button onClick={() => this.handleDelete(contact.toUser.id)}>Delete</Button>
+                                {/*<Button onClick={() => this.handleDelete(contact.toUser.id)}>Delete</Button>*/}
                             </React.Fragment>
                         )}
                     </React.Fragment>
