@@ -1,0 +1,249 @@
+.header {
+    background-color: #000000;
+    height : 100%;
+    width : 100%;
+}
+
+.ant-header {
+    height : 10vh;
+    width : 100vw;
+    padding: 0;
+}
+
+.ant-sider {
+    height : 90vh;
+    padding : 0;
+}
+
+.ant-sider-in-sider {
+    height : 90vh;
+    padding : 0;
+}
+
+.ant-content-in-sider {
+    height : 90vh;
+    width : 13vw;
+    padding : 0;
+}
+
+.ant-content {
+    height : 90vh;
+    width : 83vw;
+    padding : 0;
+}
+
+.ant-content-in-content {
+    height : 90vh;
+    width : 83vw;
+    padding : 0;
+}
+
+.menuBar-left {
+    background-color : #000000;
+    height: 100%;
+    width : 100%;
+}
+
+.friendList {
+    background-color : #31382e;
+    height : 100%;
+    width : 100%;
+}
+
+.message {
+    background-color : #ffffff;
+    height : 100%;
+    width : 100%;
+}
+
+.messageScreen {
+    background-color : #ffffff;
+    height: 65vh;
+    width : 100%;
+    overflow: scroll;
+}
+
+.messageSend {
+    background-color : #ffffff;
+    height : 25vh;
+    width : 100%;
+    padding: 0;
+}
+
+.iconStyle{
+    padding-top: 4vh;
+    font-size: 4vw;
+}
+
+.header-name {
+    height : 100%;
+    width : 10vw;
+    font-size: 3vh;
+    float : left;
+    text-align: center;
+    color:white;
+    font-family: "Microsoft YaHei";
+    background: -webkit-linear-gradient(left, #0f0, #00f) 0 0 no-repeat;/*设置线性渐变*/
+    -webkit-background-size: 160px;                        /*设置背景大小*/
+    -webkit-background-clip: text;                            /*背景被裁剪到文字*/
+    -webkit-text-fill-color: rgba(255, 255, 255, 0.3);        /*设置文字的填充颜色*/
+    -webkit-animation: shine 3s infinite;
+}
+
+.header-menu {
+    height : 100%;
+    width : 80vw;
+    font-size: 3vh;
+    float : left;
+}
+
+.header-person {
+    height : 100%;
+    width : 10vw;
+    font-size : 3vh;
+
+    float : left;
+    text-align: center;
+    color:white;
+    font-family:SimHei;        /*定义字体*/
+          /*定义文字大小*/
+    font-weight:bolder;        /*定义字体粗细*/
+    fill:transparent;            /*定义文字透明*/
+    stroke:#0000FF;            /*定义描边颜色*/
+    stroke-dasharray:3;
+}
+
+.menu {
+    height : 10vh;
+    width : 80vw;
+    background-color: #000000;
+    align-content: center;
+    text-align: center;
+}
+
+.menuLeft {
+    background-color: #000000;
+    height : 90vh;
+    width : 4vw;
+    align-content: center;
+    color: #ffffff;
+}
+
+.friends {
+    background-color: #31382e;
+    height : 90vh;
+    width : 13vw;
+    align-content: center;
+    color: #ffffff;
+}
+
+.toolbar {
+    height : 0;
+    width : 73vw;
+    background-color: #00fde9;
+    line-height : 6vh;
+    float : left;
+    padding : 0;
+    margin : 0;
+    color : #000000;
+}
+
+.sending {
+    height : 0;
+    width : 10vw;
+    line-height : 4vh;
+    background: #000000;
+    float : right;
+    margin : 0;
+    padding : 0;
+
+}
+
+.toolbarMenu {
+    height : 100%;
+    width : 73vw;
+    background-color: #000000;
+}
+
+.sendingButton {
+    background-color: #00fde9;
+    bottom: 0;
+}
+
+.inputBox {
+    min-height: 100% !important;
+    width : 100%;
+    float : end;
+}
+
+.ant-header-in-send {
+    height : 5vh;
+    width : 83vw;
+    padding : 0;
+    margin : 0;
+    background-color: #ffffff;
+}
+
+.ant-footer-in-send {
+    height : 20vh;
+    width : 83vw;
+    padding : 0;
+    margin : 0;
+}
+
+.message-send {
+    text-align: right;
+    background-color: white;
+    font-size: 18px;
+    color: green;
+}
+
+.message-receive {
+    text-align: left;
+    background-color: white;
+    font-size: 18px;
+    color: #0731e3;
+}
+
+.loading1 {
+    position: absolute;
+    top: 40%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    height: 48px;
+    animation: satellite 3s infinite linear;
+    border: 1px solid #000;
+    border-radius: 100%;
+  }
+  
+  .loading1:before,
+  .loading1:after {
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    width: 12px;
+    height: 12px;
+    content: "";
+    border-radius: 100%;
+    background-color: #000;
+    box-shadow: 0 0 10px #000;
+  }
+  
+  .loading1:after {
+    right: 0;
+    width: 20px;
+    height: 20px;
+    margin: 13px;
+  }
+  
+  @keyframes satellite {
+    from {
+      transform: rotate(0) translateZ(0);
+    }
+  
+    to {
+      transform: rotate(360deg) translateZ(0);
+    }
+  }
+  
