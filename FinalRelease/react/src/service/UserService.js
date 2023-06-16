@@ -6,8 +6,6 @@ export const getUser = (uid, callback) => {
         .then((data) => {callback(data)});
 }
 
-
-
 export const login = (username, password) => {
     return fetch('http://localhost:8080/login', {
         method: 'POST',
@@ -33,4 +31,48 @@ export const getTag = (callback) => {
     fetch('http://localhost:8080/getTag')
         .then((response) => response.json())
         .then((data) => {callback(data)});
+}
+
+export const searchUser = (username, tags, callback) => {
+    let opts = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(tags)
+    }
+    const params = new URLSearchParams();
+    let uid = sessionStorage.getItem('uid');
+    params.append('userName', username);
+    params.append('uid', uid);
+    fetch('http://localhost:8080/searchUser?' + params.toString(), opts)
+        .then((response) => response.json())
+        .then((data) => {callback(data)})
+}
+
+export const addFriend = (target_id, callback) => {
+    const params = new URLSearchParams();
+    let uid = sessionStorage.getItem('uid');
+    params.append('from_id', uid);
+    params.append('to_id', target_id);
+    fetch('http://localhost:8080/addFriend?' + params.toString())
+        .then(() => callback())
+}
+
+export const acceptFriend = (target_id, callback) => {
+    const params = new URLSearchParams();
+    let uid = sessionStorage.getItem('uid');
+    params.append('from_id', uid);
+    params.append('to_id', target_id);
+    fetch('http://localhost:8080/accept?' + params.toString())
+        .then(() => callback())
+}
+
+export const rejectFriend = (target_id, callback) => {
+    const params = new URLSearchParams();
+    let uid = sessionStorage.getItem('uid');
+    params.append('from_id', uid);
+    params.append('to_id', target_id);
+    fetch('http://localhost:8080/reject?' + params.toString())
+        .then(() => callback())
 }

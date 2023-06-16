@@ -1,5 +1,6 @@
 package com.example.makefriendsbackend.controller;
 
+import com.example.makefriendsbackend.entity.ChatList;
 import com.example.makefriendsbackend.entity.ChatUserLink;
 import com.example.makefriendsbackend.entity.User;
 import com.example.makefriendsbackend.repository.ChatMessageRepository;
@@ -35,6 +36,12 @@ public class contactController {
             list.add(link);
         }
 
+        links = chatUserLinkRepository.findChatUserLinksByToUser(u);
+
+        for(ChatUserLink link: links) {
+            if(link.getIsAdd() == 0)list.add(link);
+        }
+
         return list;
 
     }
@@ -66,12 +73,15 @@ public class contactController {
     @RequestMapping("/deleteContact")
     public  String deleteContact (@RequestParam int uid,@RequestParam int to_uid){
 
-        User from=userRepository.findUserById(uid);
-        User to=userRepository.findUserById(to_uid);
-        ChatUserLink link=chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
+        User from = userRepository.findUserById(uid);
+        User to = userRepository.findUserById(to_uid);
+        ChatUserLink link_1 = chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from, to);
+        ChatUserLink link_2 = chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to, from);
 
-        chatMessageRepository.deleteChatMessagesByChatUserLink(link);
-        chatUserLinkRepository.deleteChatUserLinkByLinkId(link.getLinkId());
+        chatMessageRepository.deleteChatMessagesByChatUserLink(link_1);
+        chatMessageRepository.deleteChatMessagesByChatUserLink(link_2);
+        chatUserLinkRepository.delete(link_1);
+        chatUserLinkRepository.delete(link_2);
 
 
         return "删除成功";

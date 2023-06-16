@@ -32,6 +32,10 @@ public class ChatUserLink {
     @Column(name="is_black")
     private int isBlack;
 
+    @Basic
+    @Column(name="is_add")
+    private int isAdd;
+
     public User getFromUser() {
         return fromUser;
     }
@@ -73,5 +77,13 @@ public class ChatUserLink {
 
     public void setIsBlack(int isBlack) {
         this.isBlack = isBlack;
+    }
+
+    public int getIsAdd() {
+        return isAdd;
+    }
+
+    public void setIsAdd(int isAdd) {
+        this.isAdd = isAdd;
     }
 }

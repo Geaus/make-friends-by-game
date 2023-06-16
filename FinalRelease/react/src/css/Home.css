@@ -198,6 +198,16 @@
     color: green;
 }
 
+.search-font {
+    font-size: 3vw;
+    padding-left: 3vw;
+}
+
+.search-result-lines {
+    width : 100%;
+    background-color: #ffffff;
+}
+
 .message-receive {
     text-align: left;
     background-color: white;

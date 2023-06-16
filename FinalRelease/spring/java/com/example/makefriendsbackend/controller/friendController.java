@@ -33,7 +33,7 @@ public class friendController {
         List<User> list =new ArrayList<>();
 
         for(ChatUserLink link : links){
-            if(link.getIsBlack()==0){
+            if(link.getIsBlack()==0 && link.getIsAdd() == 1){
                 list.add(link.getToUser());
             }
 

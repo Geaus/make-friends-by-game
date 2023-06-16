@@ -1,54 +1,14 @@
 import React from 'react';
-import {  Button, Input, AutoComplete } from 'antd';
+import {Button, Input, AutoComplete, Table, message} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import {getTag} from "../../service/UserService";
+import {acceptFriend, addFriend, getTag, rejectFriend, searchUser} from "../../service/UserService";
 const { Option } = AutoComplete;
-
-
-function onSelect(value) {
-    console.log('onSelect', value);
-}
-
-function getRandomInt(max, min = 0) {
-    return Math.floor(Math.random() * (max - min + 1)) + min; // eslint-disable-line no-mixed-operators
-}
-
-function searchResult(query) {
-    return new Array(getRandomInt(5))
-        .join('.')
-        .split('.')
-        .map((item, idx) => ({
-            query,
-            category: `${query}${idx}`,
-            count: getRandomInt(200, 100),
-        }));
-}
-
-function renderOption(item) {
-    return (
-        <Option key={item.category} text={item.category}>
-            <div className="global-search-item">
-                <span className="global-search-item-desc">
-                      Found {item.query} on
-                     <a
-                         href={`https://s.taobao.com/search?q=${item.query}`}
-                         target="_blank"
-                         rel="noopener noreferrer"
-                     >
-                         {item.category}
-                     </a>
-                </span>
-                <span className="global-search-item-count">{item.count} results</span>
-            </div>
-        </Option>
-    );
-}
 
 export class SearchBar extends React.Component {
 
-    handleSearch = value => {
+    handleSearch = (event) => {
         this.setState({
-            dataSource: value ? searchResult(value) : [],
+            searchValue: event.target.value
         });
     };
 
@@ -61,12 +21,31 @@ export class SearchBar extends React.Component {
                 tag.text = data[i].tagname;
                 tags.push(tag);
             }
-            this.setState({buttons: tags, dataSource: []})
+            this.setState({buttons: tags, searchValue: "", searchResult: []})
         }
         getTag(callback)
     }
 
     handleClick = (id) => {
+        const callback = (data) => {
+            this.setState({searchResult: data})
+        }
+        let tags = []
+        for(let i = 0; i < this.state.buttons.length; i++) {
+            if(this.state.buttons[i].clicked === true && this.state.buttons[i].id !== id) {
+                let tag = {tagid: 0, tagname: ""}
+                tag.tagid = this.state.buttons[i].id;
+                tag.tagname = this.state.buttons[i].text;
+                tags.push(tag);
+            }
+            else if(this.state.buttons[i].clicked !== true && this.state.buttons[i].id === id) {
+                let tag = {tagid: 0, tagname: ""}
+                tag.tagid = this.state.buttons[i].id;
+                tag.tagname = this.state.buttons[i].text;
+                tags.push(tag);
+            }
+        }
+        searchUser(this.state.searchValue, tags, callback);
         this.setState((state) => ({
             buttons: state.buttons.map((button) =>
                 button.id === id ? { ...button, clicked: !button.clicked } : button
@@ -74,35 +53,153 @@ export class SearchBar extends React.Component {
         }));
     };
 
+    searching = () => {
+        const callback = (data) => {
+            this.setState({searchResult: data})
+        }
+        console.log(this.state.searchValue)
+        console.log(this.state.buttons)
+        let tags = []
+        for(let i = 0; i < this.state.buttons.length; i++) {
+            if(this.state.buttons[i].clicked === true) {
+                let tag = {tagid: 0, tagname: ""}
+                tag.tagid = this.state.buttons[i].id;
+                tag.tagname = this.state.buttons[i].text;
+                tags.push(tag);
+            }
+        }
+        searchUser(this.state.searchValue, tags, callback);
+    }
+
+    addFriend_callback = () => {
+        message.success("好友申请发送成功，等待对方同意");
+        const callback = (data) => {
+            this.setState({searchResult: data})
+        }
+        console.log(this.state.searchValue)
+        console.log(this.state.buttons)
+        let tags = []
+        for(let i = 0; i < this.state.buttons.length; i++) {
+            if(this.state.buttons[i].clicked === true) {
+                let tag = {tagid: 0, tagname: ""}
+                tag.tagid = this.state.buttons[i].id;
+                tag.tagname = this.state.buttons[i].text;
+                tags.push(tag);
+            }
+        }
+        searchUser(this.state.searchValue, tags, callback);
+    }
+
+    accept_callback = () => {
+        message.success("成功添加好友");
+        const callback = (data) => {
+            this.setState({searchResult: data})
+        }
+        console.log(this.state.searchValue)
+        console.log(this.state.buttons)
+        let tags = []
+        for(let i = 0; i < this.state.buttons.length; i++) {
+            if(this.state.buttons[i].clicked === true) {
+                let tag = {tagid: 0, tagname: ""}
+                tag.tagid = this.state.buttons[i].id;
+                tag.tagname = this.state.buttons[i].text;
+                tags.push(tag);
+            }
+        }
+        searchUser(this.state.searchValue, tags, callback);
+    }
+
+    reject_callback = () => {
+        message.success("已拒绝对方的好友申请");
+        const callback = (data) => {
+            this.setState({searchResult: data})
+        }
+        console.log(this.state.searchValue)
+        console.log(this.state.buttons)
+        let tags = []
+        for(let i = 0; i < this.state.buttons.length; i++) {
+            if(this.state.buttons[i].clicked === true) {
+                let tag = {tagid: 0, tagname: ""}
+                tag.tagid = this.state.buttons[i].id;
+                tag.tagname = this.state.buttons[i].text;
+                tags.push(tag);
+            }
+        }
+        searchUser(this.state.searchValue, tags, callback);
+    }
+
+    addFriend = (target_id) => {
+        addFriend(target_id, this.addFriend_callback);
+    }
+
+    acceptFriend = (target_id) => {
+        acceptFriend(target_id, this.accept_callback);
+    }
+
+    rejectFriend = (target_id) => {
+        rejectFriend(target_id, this.reject_callback);
+    }
+
     render() {
+        const columns = [
+            {
+                title: '用户ID',
+                dataIndex: 'id',
+                key: 'id',
+                width: '20vw',
+                align: 'center'
+            },
+            {
+                title: '用户名称',
+                dataIndex: 'name',
+                key: 'name',
+                width: '40vw',
+                align: 'center'
+            },
+            {
+                title: '操作',
+                dataIndex: 'action',
+                key: 'action',
+                width: '40vw',
+                align: 'center',
+                render: (_, record) => {
+                    if(parseInt(record.addFlag) === 1) return (
+                        <div>
+                            <span>等待对方确认请求</span>
+                        </div>
+                    )
+                    else if(parseInt(record.addFlag) === 0)return (
+                            <div>
+                                <Button onClick={() => this.addFriend(record.id)}>添加好友</Button>
+                            </div>
+                    )
+                    else return (
+                            <div>
+                                <Button onClick={() => this.acceptFriend(record.id)}>同意好友申请</Button>
+                                <Button onClick={() => this.rejectFriend(record.id)}>拒绝好友申请</Button>
+                            </div>
+                        )
+                }
+            }
+        ]
         if(this.state == null)return null;
-        const { dataSource } = this.state;
         return (
             <div className="global-search-wrapper" style={{ width: "100vw" }}>
-                <AutoComplete
-                    className="global-search"
-                    size="large"
-                    style={{ width: '100%',height:'100%'}}
-                    dataSource={dataSource.map(renderOption)}
-                    onSelect={onSelect}
-                    onSearch={this.handleSearch}
-                    placeholder="输入ID，昵称，标签来搜索好友"
-                    optionLabelProp="text"
-                >
                     <Input
+                        onChange={event => {this.handleSearch(event)}}
+                        value={this.state.searchValue}
                         suffix={
                             <Button
                                 className="search-btn"
                                 style={{ marginRight: -12 }}
                                 size="large"
                                 type="primary"
+                                onClick={this.searching}
                             >
                                 <SearchOutlined/>
                             </Button>
                         }
                     />
-                </AutoComplete>
-
                 <div>
                     {this.state.buttons.map((button) => (
                         <Button
@@ -116,6 +213,8 @@ export class SearchBar extends React.Component {
                         </Button>
                     ))}
                 </div>
+                <span className={"search-font"}>搜索结果</span>
+                <Table className={"search-result-lines"} columns={columns} dataSource={this.state.searchResult}></Table>
             </div>
         );
     }
