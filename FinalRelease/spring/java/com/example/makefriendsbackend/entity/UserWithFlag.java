@@ -9,6 +9,8 @@ public class UserWithFlag {
     private int id;
     private String name;
     private int addFlag;
+    private double prio;
+    private List<Tag> tags;
 
     public int getId() {
         return id;
@@ -32,5 +34,21 @@ public class UserWithFlag {
 
     public void setAddFlag(int addFlag) {
         this.addFlag = addFlag;
+    }
+
+    public double getPrio() {
+        return prio;
+    }
+
+    public void setPrio(double prio) {
+        this.prio = prio;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 }

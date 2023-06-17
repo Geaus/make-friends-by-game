@@ -49,7 +49,7 @@ const LoginCard = () => {
                     <Input.Password placeholder="密码" value={password} onChange={handlePasswordChange} />
                 </div>
                 <div>
-                    <Button type="primary" onClick={handleLogin} ghost style={{ float: 'right' }}>
+                    <Button onClick={handleLogin} ghost style={{ float: 'right' }}>
                         登录
                     </Button>
                 </div>

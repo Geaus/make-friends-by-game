@@ -67,6 +67,7 @@ public class userController {
                 UserWithFlag user = new UserWithFlag();
                 user.setName(users.get(i).getName());
                 user.setId(users.get(i).getId());
+                user.setTags(users.get(i).getTags());
                 if(chatUserLink != null && chatUserLink.getIsAdd() == 0)user.setAddFlag(1);
                 else if(chatUserLink == null && rev != null)user.setAddFlag(2);
                 else user.setAddFlag(0);

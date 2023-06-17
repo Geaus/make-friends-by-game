@@ -221,6 +221,13 @@
     color: #0731e3;
 }
 
+.contact-right {
+    height: 90vh;
+    width: 50vw;
+    padding: 2vw;
+    background-color: white;
+}
+
 .loading1 {
     position: absolute;
     top: 40%;
@@ -262,4 +269,3 @@
       transform: rotate(360deg) translateZ(0);
     }
   }
-  

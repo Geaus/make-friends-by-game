@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Input, AutoComplete, Table, message} from 'antd';
+import {Button, Input, AutoComplete, Table, message, Tag} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import {acceptFriend, addFriend, getTag, rejectFriend, searchUser} from "../../service/UserService";
 const { Option } = AutoComplete;
@@ -56,6 +56,7 @@ export class SearchBar extends React.Component {
     searching = () => {
         const callback = (data) => {
             this.setState({searchResult: data})
+            console.log(data);
         }
         console.log(this.state.searchValue)
         console.log(this.state.buttons)
@@ -146,15 +147,31 @@ export class SearchBar extends React.Component {
                 title: '用户ID',
                 dataIndex: 'id',
                 key: 'id',
-                width: '20vw',
+                width: '10vw',
                 align: 'center'
             },
             {
                 title: '用户名称',
                 dataIndex: 'name',
                 key: 'name',
-                width: '40vw',
+                width: '20vw',
                 align: 'center'
+            },
+            {
+                title: '用户标签',
+                dataIndex: 'tags',
+                key: 'tags',
+                width: '30vw',
+                align: 'center',
+                render: (_, record) => {
+                    return (
+                        <div>
+                            {record.tags.map(tag => (
+                                <Tag key={tag.tagid}>{tag.tagname}</Tag>
+                            ))}
+                        </div>
+                    )
+                }
             },
             {
                 title: '操作',

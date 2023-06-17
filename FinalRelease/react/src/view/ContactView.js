@@ -24,23 +24,7 @@ export class ContactView extends React.Component {
                 <Header className={"ant-header"}>
                     <HeaderStyle />
                 </Header>
-                <Layout>
-                    <Sider className={"ant-sider"} width={"17vw"}>
-                        <div style={{fontSize:'20px',color:'white',textAlign:'center'}}> 通讯录管理</div>
-                    </Sider>
-                    <Content className={"ant-content"}>
-                        <Layout>
-                            <Content className={"ant-content-in-content"}>
-
-                               <ContactsManagement/>
-                                <Link to={'/home'}>
-                                    <Button> return </Button>
-                                </Link>
-
-                            </Content>
-                        </Layout>
-                    </Content>
-                </Layout>
+                <ContactsManagement />
             </Layout>
         )
     }

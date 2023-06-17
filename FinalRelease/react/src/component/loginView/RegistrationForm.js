@@ -47,22 +47,22 @@ class RegisterForm extends React.Component {
     render() {
         return (
             <div>
-                <label htmlFor="username">Username:</label>
+                <label style={{color: "white"}} htmlFor="username">用户名</label>
                 <Input id="username" value={this.state.username} onChange={this.handleUsername}/>
                 <br />
-                <label htmlFor="password">Password:</label>
+                <label style={{color: "white"}} htmlFor="password">密码</label>
                 <Input id="password" type="password" value={this.state.password} onChange={this.handlePassword}/>
                 <br />
-                <Button  onClick={this.handleSubmit}>
-                    Register
+                <Button  ghost onClick={this.handleSubmit}>
+                    注册
                 </Button>
-                <Button  onClick={()=>{
+                <Button  ghost onClick={()=>{
                     const { onSubmit } = this.props;
                     onSubmit();
 
                 }}  style={{ float: 'right' }}
                 >
-                    cancel
+                    取消
                 </Button>
             </div>
         );

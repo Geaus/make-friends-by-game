@@ -31,8 +31,8 @@ class LoginView extends React.Component {
                                 <RegistrationForm onSubmit={this.handleRegistrationSubmit} />
                             )}
                             {!this.state.showRegistrationForm && (
-                                <Button onClick={() => this.setState({ showRegistrationForm: true })}>
-                                    Register
+                                <Button ghost onClick={() => this.setState({ showRegistrationForm: true })}>
+                                    注册
                                 </Button>
                             )}
                         </div>
