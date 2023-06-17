@@ -158,12 +158,20 @@ public class userController {
 
     @RequestMapping("changeName")
     public User changeName(@RequestParam int uid,@RequestParam String name) {
+        User tmp = userRepository.findUserByName(name);
+        if(tmp != null) {
+            User u = new User();
+            u.setId(-1);
+            return u;
+        }
+        else {
+            User u=userRepository.findUserById(uid);
+            u.setName(name);
+            userRepository.save(u);
 
-        User u=userRepository.findUserById(uid);
-        u.setName(name);
-        userRepository.save(u);
+            return u;
+        }
 
-        return u;
 
     }
     @Transactional
