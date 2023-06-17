@@ -13,23 +13,7 @@ import {FriendList} from "./friendList";
 import {BlackList} from "./blackList";
 import {GroupChatList} from "./groupChatList";
 const { Header, Footer, Sider, Content } = Layout;
-const items : MenuProps['items'] = [
-    {
-       // label: <Link to={'/home'}/>,
-        icon : <UserAddOutlined/>,
-        key : '1'
-    },
-    {
-       // label: <Link to={'/home/black'}/>,
-        icon : <UserDeleteOutlined/>,
-        key : '2'
-    },
-    {
-      //  label: <Link to={'/home/group'}/>,
-        icon : <UsergroupAddOutlined/>,
-        key : '3'
-    }
-]
+
 
 const MenuBar_Left = (props) => {
     const [selectedKey, setSelectedKey] = useState('1');
@@ -64,9 +48,13 @@ const MenuBar_Left = (props) => {
                             <Menu.Item key="2" icon={<UserDeleteOutlined/>}>
 
                             </Menu.Item>
-                            <Menu.Item key="3" icon={<UsergroupAddOutlined/>}>
 
-                            </Menu.Item>
+                            <Link to={'/contact'}>
+                                <Menu.Item key="3" icon={<UsergroupAddOutlined/>}>
+
+                                </Menu.Item>
+                            </Link>
+
 
                         </Menu>
 
@@ -80,9 +68,9 @@ const MenuBar_Left = (props) => {
                     {selectedKey === '2' && (
                         <BlackList/>
                     )}
-                    {selectedKey === '3' && (
-                        <GroupChatList/>
-                    )}
+                    {/*{selectedKey === '3' && (*/}
+                    {/*    <GroupChatList/>*/}
+                    {/*)}*/}
                 </Content>
             </Layout>
 

@@ -1,8 +1,9 @@
 import React from 'react';
 import {Tooltip,Button,Drawer,Modal, message} from 'antd';
 import {VideoCameraOutlined,PoweroffOutlined,PhoneOutlined} from '@ant-design/icons';
+import { Home } from '../fight';
 
-class WebRTCChat extends React.Component {
+class VideoOnFight extends React.Component {
   constructor(props) {
     super(props);
     this.state={mediaPanelDrawerVisible:false,isOpen:false,isWebSocket:null};
@@ -34,6 +35,7 @@ class WebRTCChat extends React.Component {
         this.socket.close();
       }
       this.socket = new WebSocket(this.socketUrl + this.user+"/"+sessionStorage.getItem('to_uid'));
+      this.websocket = new WebSocket("ws://localhost:8080/websocket/fightVideo/"+sessionStorage.getItem('uid'));
       this.socket.onopen = () => {
         console.log("Successfully connected to the server...");
         this.socketRead = true;
@@ -59,6 +61,27 @@ class WebRTCChat extends React.Component {
           this.stop();
         }
       };
+      this.websocket.onopen = () => {
+        console.log("Successfully connected to the server...");
+        this.socketRead = true;
+      };
+      this.websocket.onclose = (e) => {
+        console.log("Connection closed with the server: " + e.code);
+        this.socketRead = false;
+      };
+      this.websocket.onmessage = (event) => {
+
+        const data = event.data;
+        if(data === "游戏视频"){
+            this.setState({isOpen:true});
+        }
+        if(data === "答应视频聊天"){
+            this.connect();
+        }
+        if(data === "拒绝视频聊天"){
+            this.hangUp();
+        }
+      }
     }
     if (this.props.isReceiveVideo && this.props.videoCallSender === sessionStorage.getItem('to_uid')) {
       console.log("video");
@@ -143,7 +166,7 @@ class WebRTCChat extends React.Component {
         .getUserMedia({ video: true, audio: true })
         .then((stream) => {
           this.localStream = stream;
-          const localVideo = document.getElementById("local-video");
+          const localVideo = document.getElementById("local-video1");
           localVideo.srcObject = stream;
           localVideo.play();
           localVideo.volume = 0;
@@ -158,8 +181,10 @@ class WebRTCChat extends React.Component {
   };
 
   stopVideo = () => {
-    const localVideo = document.getElementById("local-video");
+    const localVideo = document.getElementById("local-video1");
     localVideo.srcObject = null;
+    const remoteVideo = document.getElementById("remote-video1");
+    remoteVideo.srcObject = null;
     this.localStream.getTracks().forEach((track) => track.stop());
     message.success("关闭摄像头");
   };
@@ -197,13 +222,13 @@ class WebRTCChat extends React.Component {
 
     peer.addEventListener("addstream", (event) => {
         console.log("Adding remote stream");
-        const remoteVideo = document.getElementById("remote-video");
+        const remoteVideo = document.getElementById("remote-video1");
         remoteVideo.srcObject = event.stream;
       }, false);
       
       peer.addEventListener("removestream", (event) => {
         console.log("Removing remote stream");
-        const remoteVideo = document.getElementById("remote-video");
+        const remoteVideo = document.getElementById("remote-video1");
         remoteVideo.srcObject = null;
       }, false);
 
@@ -274,10 +299,8 @@ class WebRTCChat extends React.Component {
 
   hangUp = () => {
     console.log("Hang up.");
+    this.stopVideo();
     this.stop();
-    let to_uid = sessionStorage.getItem("to_uid");
-    let str = to_uid + " " + "视频聊天已结束";
-    this.props.websocket.send(str);
   };
 
   hangUp1 = () => {
@@ -298,7 +321,7 @@ class WebRTCChat extends React.Component {
     let to_uid = sessionStorage.getItem("to_uid");
     let str = to_uid + " " + "答应视频聊天";
     console.log(str);
-    this.props.websocket.send(str);
+    this.websocket.send(str);
     this.setState({isOpen:false});
     this.setState({mediaPanelDrawerVisible:true});
     await this.startVideo();
@@ -310,7 +333,7 @@ class WebRTCChat extends React.Component {
     clearTimeout(this.ReceiveVideoTimeout);
     let to_uid = sessionStorage.getItem("to_uid");
     let str = to_uid + " " + "拒绝视频聊天";
-    this.props.websocket.send(str);
+    this.websocket.send(str);
     this.setState({isOpen:false});
   }
 
@@ -322,9 +345,9 @@ class WebRTCChat extends React.Component {
 
   sendCall = async () => {
     let to_uid = sessionStorage.getItem("to_uid");
-    let str = to_uid + " " + "视频聊天";
+    let str = to_uid + " " + "游戏视频";
     console.log(str);
-    this.props.websocket.send(str);
+    this.websocket.send(str);
     await this.startVideo();
 
     this.videoTimeout = setTimeout(() => {
@@ -349,15 +372,6 @@ class WebRTCChat extends React.Component {
     return (
         
       <>
-        
-                <Tooltip title="视频聊天">
-                    <Button
-                        shape="circle"
-                        onClick={this.sendCall}
-                        style={{ marginRight: 10 }}
-                        icon={<VideoCameraOutlined />}
-                    />
-                </Tooltip>
                 <Modal title="语音通话" 
                   open={this.state.isOpen}
                   onOk={this.onOpen}
@@ -365,19 +379,12 @@ class WebRTCChat extends React.Component {
                 >
                   <p>好友邀请您语音聊天</p>
                 </Modal>
-
-                <Drawer width='500px'
-                    forceRender={true}
-                    title="媒体面板"
-                    placement="bottom"
-                    onClose={this.onclose}
-                    open={this.state.mediaPanelDrawerVisible}
-                >
-                  <Tooltip title="开始视频通话">
+                    <Home />
+                    <Tooltip title="开始视频通话">
                         <Button
                             shape="circle"
-                            onClick={this.connect}
-                            style={{ marginTop: 10, marginRight:10, float: 'top' }}
+                            onClick={this.sendCall}
+                            style={{ marginTop: 10, marginRight:10, marginTop:350, float: 'top' }}
                             icon={<PhoneOutlined style={{ color: 'green' }} />}
                         />
                     </Tooltip>
@@ -389,23 +396,23 @@ class WebRTCChat extends React.Component {
                             icon={<PoweroffOutlined style={{ color: 'red' }} />}
                         />
                     </Tooltip>
+
                     <br />
                     <video
-                      id="local-video"
+                      id="local-video1"
                       autoPlay
                        style={{ width: "400px", height: "300px", border: "1px solid black", marginTop: 10 }}
                     ></video>
                     <video
-                      id="remote-video"
+                      id="remote-video1"
                       autoPlay
                       style={{ width: "400px", height: "300px", border: "1px solid black",marginTop: 10}}
                     ></video>
-                </Drawer>
       </>
     );
   }
 }
 
-export default WebRTCChat;
+export default VideoOnFight;
 
 

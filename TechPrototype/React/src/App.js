@@ -9,8 +9,10 @@ import ActivityView from "./view/ActivityView";
 import ReportView from "./view/ReportView";
 import HelpView from "./view/HelpView";
 import AdminView from "./view/AdminView";
+import FightView from './view/FightView';
 import SettingsView from "./view/SettingsView";
 import { BrowserRouter,Routes, Route } from "react-router-dom"
+import ContactView from "./view/ContactView";
 
 
 function App() {
@@ -33,6 +35,8 @@ function App() {
                  <Route path="/activity" element={<ActivityView />} />
                  <Route path="/help" element={<HelpView />} />
                  <Route path="/admin" element={<AdminView />} />
+                 <Route path="/contact" element={<ContactView/>} />
+                 <Route path="/fight" element={<FightView/>} />
              </Routes>
          </BrowserRouter>
 

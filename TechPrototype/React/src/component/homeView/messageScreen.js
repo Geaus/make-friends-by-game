@@ -3,12 +3,14 @@ import type {MenuProps} from "antd";
 import {Button, Layout,Popover,Tooltip,message,Drawer,Modal} from "antd";
 import {Footer, Header} from "antd/es/layout/layout";
 import Emoji from './Emoji';
-import {SmileOutlined,AudioOutlined,FileImageOutlined,MergeCellsOutlined} from '@ant-design/icons';
+import {SmileOutlined,AudioOutlined,FileImageOutlined,MergeCellsOutlined,PhoneOutlined,PoweroffOutlined} from '@ant-design/icons';
 import Recorder from 'js-audio-recorder'
 import WebRTCChat from './WebRTCChat';
 import {getMessage} from "../../service/ChatService";
 import {getUser} from "../../service/UserService";
 import moment from "moment";
+import { Home } from '../fight';
+import VideoOnFight from './VideoOnFight';
 import Toe from '../Toe';
 
 
@@ -22,7 +24,7 @@ export class MessageScreen extends React.Component {
 
         this.handleEmojiClick = this.handleEmojiClick.bind(this)
 
-        this.state = {gameIsFinished:false,isShowGame:false,isReceiveGame:false, message: "", browse:"<p class=\"message-receive\"></p>", to_user: null, from_user: null, text:"",isReceiveVideo:false,isShowVideo:false};
+        this.state = {gameIsFinished:false,isShowGame:false,isReceiveGame:false, message: "", browse:"<p class=\"message-receive\"></p>", to_user: null, from_user: null, text:"",isReceiveVideo:false,isReceiveVideo1:false,isShowVideo:false};
         let uid = sessionStorage.getItem('uid');
         this.setState({user: uid});
         let baseUrl = "ws://localhost:8080/websocket/"+uid;
@@ -45,6 +47,12 @@ export class MessageScreen extends React.Component {
                 if(str[3]==='视频聊天'){
                     console.log(data);
                     this.setState({ isReceiveVideo: true });
+                    videoCallSender = str[0];
+                    
+                }
+                if(str[3]==='游戏聊天'){
+                    console.log(data);
+                    this.setState({ isReceiveVideo1: true });
                     videoCallSender = str[0];
                     
                 }
@@ -473,7 +481,7 @@ export class MessageScreen extends React.Component {
                 </div>
                 <div className={"messageSend"}>
                     <Layout>
-                        <Header className={"ant-header-in-send"}>
+                        <Header style={{ height: '50px' }} className={"ant-header-in-send"}>
                             <Popover placement="topLeft" title={false}
                                 content={<Emoji handleEmojiClick={this.handleEmojiClick}/>} trigger="hover">
                                 <Button
@@ -482,7 +490,7 @@ export class MessageScreen extends React.Component {
                                     icon={<SmileOutlined />}
                                 />
                             </Popover>
-                            <Tooltip title="上传图片">
+                            <Tooltip title="上传图片或者文件">
                                 <input type='file' id='file' onChange={this.handleFileChange} hidden />
                                 <Button
                                     onClick={this.clickFile}
@@ -528,24 +536,28 @@ export class MessageScreen extends React.Component {
                                 videoCallSender={videoCallSender}
                                 setIsOver = {this.setIsOver} />
                              
-                            <Drawer width='1000px'
+                            <Drawer width='750px'
                                 forceRender={true}
                                 title="游戏面板"
                                 placement="right"
                                 onClose={this.onClose}
                                 open={this.state.isShowGame}
                             >
-                                <Toe 
+                                {/* <Toe 
                                     gameSender={gameSender}
                                     gameIsFinished={this.state.gameIsFinished}
-                                    setGameIsFinished = {this.setGameIsFinished}/>
+                                    setGameIsFinished = {this.setGameIsFinished}/> */}
+                                {/* <Home /> */}
+                                <VideoOnFight />
+                                
                             </Drawer>
                             
                             <div className={"sending"}>
-                                <Button className={"sendingButton"} block={true} onClick={this.sendMessage}>发送信息</Button>
+                                <Button  className={"sendingButton"} block={true} onClick={this.sendMessage}>发送信息</Button>
                             </div>
+
                         </Header>
-                        <Footer className={"ant-footer-in-send"}>
+                        <Footer style={{ height: '50px' }} className={"ant-footer-in-send"}>
                             <textarea  className={"inputBox"}  ref={this.text}></textarea>
                         </Footer> 
                     </Layout>

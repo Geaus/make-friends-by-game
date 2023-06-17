@@ -114,7 +114,7 @@ public class WebSocketServer {
 
         //from发给to
         sendOneMessage(parts[0], str);
-        logger.info(this.userId);
+        logger.info(parts[0]);
         //from发给from
         sendOneMessage(this.userId, str);
 
@@ -123,6 +123,10 @@ public class WebSocketServer {
         User to=WebSocketServer.userRepository.findUserById(to_uid);
         ChatUserLink from_to =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
 
+        ChatUserLink to_from=WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
+        if(to_from.getIsBlack()==1){
+            return;
+        }
         // ChatUserLink to_from =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
         ChatMessage new_mess=new ChatMessage();
 
@@ -155,6 +159,11 @@ public class WebSocketServer {
         User from=WebSocketServer.userRepository.findUserById(from_uid);
         User to=WebSocketServer.userRepository.findUserById(to_uid);
         ChatUserLink from_to =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
+
+        ChatUserLink to_from=WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
+        if(to_from.getIsBlack()==1){
+            return;
+        }
         ChatMessage new_mess=new ChatMessage();
         new_mess.setChatUserLink(from_to);
         new_mess.setFromUser(from);

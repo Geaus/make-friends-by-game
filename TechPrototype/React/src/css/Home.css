@@ -156,6 +156,7 @@
     float : right;
     margin : 0;
     padding : 0;
+
 }
 
 .toolbarMenu {
@@ -166,6 +167,7 @@
 
 .sendingButton {
     background-color: #00fde9;
+    bottom: 0;
 }
 
 .inputBox {

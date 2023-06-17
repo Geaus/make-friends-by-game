@@ -7,18 +7,12 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-/**
- * @author hanjinqun
- * @date 2022/10/24
- * websocket操作类
- */
 @Component
-@ServerEndpoint("/websocket/game/{userId}")
-public class WebSocketOfGameServer {
+@ServerEndpoint("/websocket/fightVideo/{userId}")
+public class WebSocketOfFightVideo {
     /**
      * 日志工具
      */
@@ -26,7 +20,7 @@ public class WebSocketOfGameServer {
     /**
      * 与某个客户端的连接会话，需要通过它来给客户端发送数据
      */
-    Session session;
+    private Session session;
     /**
      * 用户id
      */
@@ -34,7 +28,7 @@ public class WebSocketOfGameServer {
     /**
      * 用来存放每个客户端对应的MyWebSocket对象
      */
-    private static CopyOnWriteArraySet<WebSocketOfGameServer> webSockets = new CopyOnWriteArraySet<>();
+    private static CopyOnWriteArraySet<WebSocketOfFightVideo> webSockets = new CopyOnWriteArraySet<>();
     /**
      * 用来存在线连接用户信息
      */
@@ -77,7 +71,7 @@ public class WebSocketOfGameServer {
         String[] parts = message.split(" ", 2);
         logger.info("【websocket消息】收到客户端消息:" + message);
         logger.info(parts[1]);
-            sendOneMessage(parts[0], parts[1]);
+        sendOneMessage(parts[0], parts[1]);
     }
 
     /**
@@ -97,7 +91,7 @@ public class WebSocketOfGameServer {
      */
     public void sendAllMessage(String message) {
         logger.info("【websocket消息】广播消息:" + message);
-        for (WebSocketOfGameServer webSocket : webSockets) {
+        for (WebSocketOfFightVideo webSocket : webSockets) {
             try {
                 if (webSocket.session.isOpen()) {
                     webSocket.session.getAsyncRemote().sendText(message);
@@ -129,15 +123,15 @@ public class WebSocketOfGameServer {
      */
     public void backToHistory(String userId, String message) {
 
-            Session session = sessionPool.get(userId);
-            if (session != null && session.isOpen()) {
-                try {
-                    logger.info("【websocket消息】 单点消息:" + message);
-                    session.getAsyncRemote().sendText("history "+message);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        Session session = sessionPool.get(userId);
+        if (session != null && session.isOpen()) {
+            try {
+                logger.info("【websocket消息】 单点消息:" + message);
+                session.getAsyncRemote().sendText("history "+message);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
 
     }
 }

@@ -33,11 +33,29 @@ public class friendController {
         List<User> list =new ArrayList<>();
 
         for(ChatUserLink link : links){
-            list.add(link.getToUser());
+            if(link.getIsBlack()==0){
+                list.add(link.getToUser());
+            }
+
         }
         return list;
 
     }
 
+    @RequestMapping("/getBlack")
+    public List<User> getBlack(@RequestParam int uid){
 
+        User u =userRepository.findUserById(uid);
+        List<ChatUserLink> links= chatUserLinkRepository.findChatUserLinksByFromUser(u);
+        List<User> list=new ArrayList<>();
+
+        for(ChatUserLink  link:links){
+            if(link.getIsBlack()==1){
+                list.add(link.getToUser());
+            }
+        }
+
+        return list;
+
+    }
 }
