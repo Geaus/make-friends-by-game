@@ -24,12 +24,20 @@ class RegisterForm extends React.Component {
 
         console.log(this.state.username);
 
-        fetch('http://localhost:8080/newUser?'+params.toString()).then((data) => {
-
-            message.success('注册成功');
-            onSubmit();
-
-        }).catch((error) => {
+        fetch('http://localhost:8080/newUser?'+params.toString())
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                if(parseInt(data.id) !== -1) {
+                    message.success("注册成功");
+                    onSubmit();
+                }
+                else{
+                    console.log(1);
+                    message.error("用户名已被占用");
+                }
+            })
+            .catch((error) => {
             message.error(error.message);
         });
 

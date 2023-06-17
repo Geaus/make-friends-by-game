@@ -17,9 +17,7 @@ class ProfileView extends React.Component {
                 </Header>
                 <Layout>
                     <Content className={"ant-content"} style={{ display: "flex", justifyContent: "center" }}>
-                        <Space direction={"vertical"} align={"center"} style={{ justifyContent: 'space-evenly' }}>
                            <Profile/>
-                        </Space>
                     </Content>
                 </Layout>
             </layout>

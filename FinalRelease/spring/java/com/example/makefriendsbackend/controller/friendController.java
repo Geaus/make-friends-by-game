@@ -72,13 +72,13 @@ public class friendController {
         int mySum = 0;
         for(int i = 0; i < 20; i++)my_dir[i] = 0;
         for(int i = 0; i < me.getTags().size(); i++) {
-            my_dir[me.getTags().get(i).getTagid()] += 5;
+            my_dir[me.getTags().get(i).getTagid() - 1] += 5;
         }
         List<ChatUserLink> my_chat = chatUserLinkRepository.findChatUserLinksByFromUser(me);
         for(int i = 0; i < my_chat.size(); i++) {
             User friend = my_chat.get(i).getToUser();
             for(int j = 0; j < friend.getTags().size(); j++) {
-                my_dir[friend.getTags().get(j).getTagid()] += 1;
+                my_dir[friend.getTags().get(j).getTagid() - 1] += 1;
             }
         }
         System.out.println(Arrays.toString(my_dir));
@@ -95,12 +95,12 @@ public class friendController {
             int yourSum = 0;
             for(int j = 0; j < 20; j++)your_dir[j] = 0;
             for(int j = 0; j < you.getTags().size(); j++) {
-                your_dir[you.getTags().get(j).getTagid()] += 5;
+                your_dir[you.getTags().get(j).getTagid() - 1] += 5;
             }
             for(int k = 0; k < your_chat.size(); k++) {
                 User friend = your_chat.get(k).getToUser();
                 for(int j = 0; j < friend.getTags().size(); j++) {
-                    your_dir[friend.getTags().get(j).getTagid()] += 1;
+                    your_dir[friend.getTags().get(j).getTagid() - 1] += 1;
                 }
             }
             for(int j = 0; j < 20; j++)yourSum += your_dir[j] * your_dir[j];

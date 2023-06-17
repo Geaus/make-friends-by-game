@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import {Avatar, Button, Input, Modal, Space, Tag} from 'antd';
+import {Avatar, Button, Card, Divider, Input, Layout, message, Modal, Space, Tag} from 'antd';
 import {UserOutlined} from "@ant-design/icons";
-
+import'../../css/tag.css'
+const { Header, Footer, Sider, Content } = Layout;
 
 class Profile extends Component {
 
@@ -10,6 +11,8 @@ class Profile extends Component {
 
         this.state = {
             name: "",
+            password:"",
+
             avatar: "",
             tags: [],
             allTags:[],
@@ -24,7 +27,8 @@ class Profile extends Component {
         fetch('http://localhost:8080/getUser?uid=' + uid.toString()) // 发送fetch请求获取联系人信息的接口地址
             .then(response => response.json())
             .then(data => {
-                this.setState({ name: data.name ,avatar: data.avatar,tags: data.tags });
+                this.setState({ name: data.name ,password:data.password,
+                    avatar: data.avatar,tags: data.tags });
             })
             .catch(error => {
                 console.error('Error fetching contacts:', error);
@@ -64,13 +68,19 @@ class Profile extends Component {
             });
     }
 
+    handleAvatarChange = info => {
+        this.setState({ avatar: info.file.url });
+    };
+
+
     handleNameChange = e => {
         this.setState({ name: e.target.value });
     };
 
-    handleAvatarChange = info => {
-        this.setState({ avatar: info.file.url });
-    };
+   handlePasswordChange=e=>{
+       this.setState({ password: e.target.value });
+   }
+
 
     handleTagAdd = () => {
         this.setState({ modalIsOpen: true });
@@ -84,12 +94,33 @@ class Profile extends Component {
 
         params.append('uid', uid);
         params.append('name', this.state.name);
+        params.append('password', this.state.password);
 
 
         fetch('http://localhost:8080/changeName?'+params.toString()) // 发送fetch请求获取联系人信息的接口地址
             .then(response => response.json())
             .then(data => {
-                this.setState({ name: data.name ,avatar: data.avatar,tags: data.tags });
+                this.setState({ name: data.name ,password: data.password,avatar: data.avatar,tags: data.tags });
+                message.success('修改成功')
+            })
+            .catch(error => {
+                console.error('Error fetching contacts:', error);
+            });
+    }
+
+    handlePasswordEdit=()=>{
+
+        const uid = sessionStorage.getItem('uid');
+        const params = new URLSearchParams();
+
+        params.append('uid', uid);
+        params.append('password', this.state.password);
+
+
+        fetch('http://localhost:8080/changePassword?'+params.toString()) // 发送fetch请求获取联系人信息的接口地址
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ name: data.name ,password: data.password,avatar: data.avatar,tags: data.tags });
             })
             .catch(error => {
                 console.error('Error fetching contacts:', error);
@@ -108,89 +139,165 @@ class Profile extends Component {
         const { name, avatar, tags } = this.state;
 
         return (
+
             <div>
 
-                <Space direction={"vertical"} align={"center"} style={{ justifyContent: 'space-evenly' }}>
-                    <Avatar
-                        size={128}
-                        icon={<UserOutlined />}
-                    />
-                    <Input value={this.state.name} onChange={this.handleNameChange}
-                           style={{width:'300px'}}
-                           onFinish={this.handleNameEdit}/>
+              <div
+               style={{float:'left',width:'50vw', paddingTop:'200px'}}
+              >
+                  <Space direction={"vertical"} align={"center"} style={{ justifyContent: 'space-evenly' ,float:'right',width:'50vw'}}>
+                      <Avatar
+                          size={128}
+                          icon={<UserOutlined />}
+                      />
 
-                    <div>
-                        {this.state.tags.map(tag => (
-                            <Tag key={tag.tagid}>{tag.tagname}</Tag>
-                        ))}
+                      <label htmlFor="username" style={{fontSize:'1vw'}}>用户名:</label>
+                      <Input value={this.state.name} onChange={this.handleNameChange}
+                             style={{width:'20vw',height:'5vh',fontSize:'1.5vw'}}
+                             onFinish={this.handleNameEdit}/>
 
-                        <Button onClick={this.handleTagAdd}>添加标签</Button>
+                      <label htmlFor="password" style={{fontSize:'1vw'}}>密码:</label>
+                      <Input value={this.state.password} onChange={this.handlePasswordChange}
+                             style={{width:'20vw',height:'5vh',fontSize:'1.5vw'}}
+                             onFinish={this.handlePasswordEdit}
+                             type={'password'}
+                      />
 
-                        <Modal open={this.state.modalIsOpen} onOk={this.closeModal} onCancel={this.closeModal}>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <div style={{ flex: 1 }}>
-
-                                    {this.state.tags.map(tag => (
-                                        <Button key={tag.tagid} >{tag.tagname}</Button>
-                                    ))}
-
-                                </div>
-
-                                <div style={{ flex: 1 }}>
-
-                                    {this.state.remainTags.map(tag => (
-
-                                        <Button key={tag.tagid}
-                                                onClick={()=>{
-
-                                                    const params = new URLSearchParams();
-                                                    const uid = sessionStorage.getItem('uid');
-                                                    params.append('uid', uid);
-                                                    params.append('tagid', tag.tagid);
+                      <Button onClick={this.handleNameEdit}>上传修改</Button>
+                  </Space>
 
 
-                                                    fetch('http://localhost:8080/addTag?'+params.toString())
-                                                        .then(response => response.json())
-                                                        .then(data => {
-                                                            let allTags = this.state.allTags;
-                                                            let remain = [];
 
-                                                            for(let i = 0; i < allTags.length; i++){
+              </div>
 
-                                                                let flag=0;
 
-                                                                for(let j=0;j<data.length;j++){
+                <div
+                    style={{marginLeft:'50vw',paddingTop:'200px' ,width:'30vw'
+                }}
+                >
 
-                                                                    if(parseInt(allTags[i].tagid)===parseInt(data[j].tagid)){
-                                                                        flag=1;
-                                                                    }
-                                                                }
+                    <label style={{fontSize:'2vw',marginBottom:'2vw'}}>我的标签</label>
+                    <br/>
+                    <br/>
+                    <br/>
 
-                                                                if(flag===0){
-                                                                    remain.push(allTags[i]);
+                    {this.state.tags.map(tag => (
+
+                        <Tag className={'tag'} size={1111} key={tag.tagid} borderd={false} color="success">{tag.tagname}</Tag>
+                    ))}
+
+                    <br/>
+                    <Button onClick={this.handleTagAdd}>修改标签</Button>
+
+                    <Modal open={this.state.modalIsOpen} onOk={this.closeModal} onCancel={this.closeModal}>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ flex: 1 }}>
+
+                                {this.state.tags.map(tag => (
+                                    <Button
+                                        key={tag.tagid}
+
+                                        onClick={()=>{
+
+                                            const params = new URLSearchParams();
+                                            const uid = sessionStorage.getItem('uid');
+                                            params.append('uid', uid);
+                                            params.append('tagid', tag.tagid);
+
+
+                                            fetch('http://localhost:8080/removeTag?'+params.toString())
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    let allTags = this.state.allTags;
+                                                    let remain = [];
+
+                                                    for(let i = 0; i < allTags.length; i++){
+
+                                                        let flag=0;
+
+                                                        for(let j=0;j<data.length;j++){
+
+                                                            if(parseInt(allTags[i].tagid)===parseInt(data[j].tagid)){
+                                                                flag=1;
+                                                            }
+                                                        }
+
+                                                        if(flag===0){
+                                                            remain.push(allTags[i]);
+                                                        }
+                                                    }
+
+                                                    console.log(remain)
+                                                    this.setState({remainTags:remain});
+                                                    this.setState({ tags:data });
+                                                })
+                                                .catch(error => {
+                                                    console.error('Error fetching contacts:', error);
+                                                });
+
+
+                                        }}
+                                    >{tag.tagname}</Button>
+                                ))}
+
+                            </div>
+
+
+                            <Divider/>
+                            <div style={{ flex: 1 }}>
+
+                                {this.state.remainTags.map(tag => (
+
+                                    <Button key={tag.tagid}
+
+                                            onClick={()=>{
+
+                                                const params = new URLSearchParams();
+                                                const uid = sessionStorage.getItem('uid');
+                                                params.append('uid', uid);
+                                                params.append('tagid', tag.tagid);
+
+
+                                                fetch('http://localhost:8080/addTag?'+params.toString())
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        let allTags = this.state.allTags;
+                                                        let remain = [];
+
+                                                        for(let i = 0; i < allTags.length; i++){
+
+                                                            let flag=0;
+
+                                                            for(let j=0;j<data.length;j++){
+
+                                                                if(parseInt(allTags[i].tagid)===parseInt(data[j].tagid)){
+                                                                    flag=1;
                                                                 }
                                                             }
 
-                                                            console.log(remain)
-                                                            this.setState({remainTags:remain});
-                                                            this.setState({ tags:data });
-                                                        })
-                                                        .catch(error => {
-                                                            console.error('Error fetching contacts:', error);
-                                                        });
+                                                            if(flag===0){
+                                                                remain.push(allTags[i]);
+                                                            }
+                                                        }
+
+                                                        console.log(remain)
+                                                        this.setState({remainTags:remain});
+                                                        this.setState({ tags:data });
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('Error fetching contacts:', error);
+                                                    });
 
 
-                                                }}
-                                        >{tag.tagname}</Button>
-                                    ))}
+                                            }}
+                                    >{tag.tagname}</Button>
+                                ))}
 
-                                </div>
                             </div>
-                        </Modal>
+                        </div>
+                    </Modal>
 
-                    </div>
-                    <Button onClick={this.handleNameEdit}>Edit</Button>
-                </Space>
+                </div>
 
 
             </div>

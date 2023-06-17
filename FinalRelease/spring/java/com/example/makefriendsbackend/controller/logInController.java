@@ -21,8 +21,8 @@ public class logInController {
         // 在这里进行用户名和密码的验证
         System.out.println(username);
 
-        int index=Integer.parseInt(username);
-        User u=userRepository.findUserById(index);
+
+        User u=userRepository.findUserByName(username);
 
         if ( password.equals(u.getPassword())) {
             // 如果验证通过，则返回ui

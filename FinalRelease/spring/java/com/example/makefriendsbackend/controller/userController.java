@@ -118,12 +118,21 @@ public class userController {
     }
 
     @RequestMapping("newUser")
-    public void newUser(@RequestParam String username,@RequestParam String password) {
-        User u=new User();
-        u.setName(username);
-        u.setPassword(password);
-        userRepository.save(u);
-
+    public User newUser(@RequestParam String username,@RequestParam String password) {
+        User tmp = userRepository.findUserByName(username);
+        if(tmp != null) {
+            User u = new User();
+            u.setId(-1);
+            return u;
+        }
+        else {
+            System.out.println("注册成功");
+            User u=new User();
+            u.setName(username);
+            u.setPassword(password);
+            u = userRepository.save(u);
+            return u;
+        }
     }
 
     @Transactional
@@ -157,4 +166,26 @@ public class userController {
         return u;
 
     }
+    @Transactional
+    @RequestMapping("removeTag")
+    public List<Tag> removeTag(@RequestParam int uid,@RequestParam int tagid) {
+
+        User u=userRepository.findUserById(uid);
+        Tag t=tagRepository.findTagByTagid(tagid);
+        List<Tag> list=u.getTags();
+
+
+        TagUser tmp=tagUserRepository.findTagUserByUseridAndTagid(uid,tagid);
+
+        tmp.setTagid(tagid);
+        tmp.setUserid(uid);
+
+        tagUserRepository.deleteTagUserByUseridAndTagid(uid,tagid);
+
+        list.remove(t);
+
+        return list;
+
+    }
+
 }
