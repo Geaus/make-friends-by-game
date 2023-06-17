@@ -51,20 +51,20 @@
 }
 
 .message {
-    background-color : #ffffff;
+    background-color : aliceblue;
     height : 100%;
     width : 100%;
 }
 
 .messageScreen {
-    background-color : #ffffff;
+    background-color : aliceblue;
     height: 65vh;
     width : 100%;
     overflow: scroll;
 }
 
 .messageSend {
-    background-color : #ffffff;
+    background-color : aliceblue;
     height : 25vh;
     width : 100%;
     padding: 0;
@@ -151,7 +151,7 @@
 .sending {
     height : 0;
     width : 10vw;
-    line-height : 4vh;
+    line-height : 50px;
     background: #000000;
     float : right;
     margin : 0;
@@ -166,7 +166,9 @@
 }
 
 .sendingButton {
+    height: 50px;
     background-color: #00fde9;
+    font-size: 15px;
     bottom: 0;
 }
 
@@ -174,6 +176,10 @@
     min-height: 100% !important;
     width : 100%;
     float : end;
+    border-style: none;
+    outline: medium;
+    font-size: 1.5vw;
+    padding-left: 1vw;
 }
 
 .ant-header-in-send {
@@ -181,7 +187,7 @@
     width : 83vw;
     padding : 0;
     margin : 0;
-    background-color: #ffffff;
+    background-color: aliceblue;
 }
 
 .ant-footer-in-send {
@@ -193,7 +199,7 @@
 
 .message-send {
     text-align: right;
-    background-color: white;
+    background-color: aliceblue;
     font-size: 18px;
     color: green;
 }
@@ -210,7 +216,7 @@
 
 .message-receive {
     text-align: left;
-    background-color: white;
+    background-color: aliceblue;
     font-size: 18px;
     color: #0731e3;
 }

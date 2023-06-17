@@ -11,22 +11,10 @@ const items : MenuProps['items'] = [
         icon : <SearchOutlined />,
     },
     {
-        label : <Link to={'/activity'}>活动中心</Link>,
-        key : 'activity',
-    },
-    {
         label : <Link to={'/help'}>在线帮助</Link>,
         key : 'help',
         icon : <QuestionOutlined />,
     },
-    {
-        label : <Link to={'/report'}>举报/反馈</Link>,
-        key : 'report',
-    },
-    {
-        label : <Link to={'/admin'}>管理员</Link>,
-        key : 'admin',
-    }
 ]
 export class HeaderStyle extends React.Component {
     render() {

@@ -3,10 +3,12 @@ package com.example.makefriendsbackend.controller;
 import com.example.makefriendsbackend.entity.*;
 import com.example.makefriendsbackend.repository.ChatUserLinkRepository;
 import com.example.makefriendsbackend.repository.TagRepository;
+import com.example.makefriendsbackend.repository.TagUserRepository;
 import com.example.makefriendsbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +22,9 @@ public class userController {
 
     @Autowired
     TagRepository tagRepository;
+
+    @Autowired
+    TagUserRepository tagUserRepository;
 
     @Autowired
     ChatUserLinkRepository chatUserLinkRepository;
@@ -109,5 +114,46 @@ public class userController {
         User you = userRepository.findUserById(to_id);
         ChatUserLink chatUserLink_1 = chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(you, me);
         chatUserLinkRepository.delete(chatUserLink_1);
+    }
+
+    @RequestMapping("newUser")
+    public void newUser(@RequestParam String username,@RequestParam String password) {
+        User u=new User();
+        u.setName(username);
+        u.setPassword(password);
+        userRepository.save(u);
+
+    }
+
+    @Transactional
+    @RequestMapping("addTag")
+    public List<Tag> addTag(@RequestParam int uid,@RequestParam int tagid) {
+
+        User u=userRepository.findUserById(uid);
+        Tag t=tagRepository.findTagByTagid(tagid);
+
+        TagUser tmp=new TagUser();
+
+        tmp.setTagid(tagid);
+        tmp.setUserid(uid);
+        tagUserRepository.save(tmp);
+
+        List<Tag> list=u.getTags();
+        list.add(t);
+        u.setTags(list);
+
+        return u.getTags();
+
+    }
+
+    @RequestMapping("changeName")
+    public User changeName(@RequestParam int uid,@RequestParam String name) {
+
+        User u=userRepository.findUserById(uid);
+        u.setName(name);
+        userRepository.save(u);
+
+        return u;
+
     }
 }

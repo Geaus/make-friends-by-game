@@ -24,7 +24,6 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "users")
     private List<Tag> tags;
 

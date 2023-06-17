@@ -7,6 +7,7 @@ import com.example.makefriendsbackend.entity.User;
 import com.example.makefriendsbackend.repository.ChatMessageRepository;
 import com.example.makefriendsbackend.repository.ChatUserLinkRepository;
 import com.example.makefriendsbackend.repository.UserRepository;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +107,17 @@ public class WebSocketServer {
 
         org.json.JSONObject result = BaiDuAiCheck.checkText(parts[1]);
 
+        int from_uid=Integer.parseInt(this.userId);
+        int to_uid=Integer.parseInt(parts[0]);
+
+        User from=WebSocketServer.userRepository.findUserById(from_uid);
+        User to=WebSocketServer.userRepository.findUserById(to_uid);
+        ChatUserLink from_to =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
+        ChatUserLink to_from=WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
+        if(to_from.getIsBlack()==1){
+            return;
+        }
+
         System.out.println(result);
 
         if (result.get("conclusion").equals("合规")){
@@ -113,10 +125,6 @@ public class WebSocketServer {
             Date date = new Date();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String formattedDate = formatter.format(date);
-
-            int from_uid=Integer.parseInt(this.userId);
-            int to_uid=Integer.parseInt(parts[0]);
-
 
             String str = this.userId + " " +formattedDate+" "+ parts[1];
 
@@ -126,15 +134,6 @@ public class WebSocketServer {
             //from发给from
             sendOneMessage(this.userId, str);
 
-
-            User from=WebSocketServer.userRepository.findUserById(from_uid);
-            User to=WebSocketServer.userRepository.findUserById(to_uid);
-            ChatUserLink from_to =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
-
-            ChatUserLink to_from=WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
-            if(to_from.getIsBlack()==1){
-                return;
-            }
             // ChatUserLink to_from =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
             ChatMessage new_mess=new ChatMessage();
 
@@ -164,27 +163,30 @@ public class WebSocketServer {
         byte secondByte = message[1];
         byte[] remainingBytes = Arrays.copyOfRange(message, 2, message.length);
 
-        org.json.JSONObject result = BaiDuAiCheck.checkImg(remainingBytes);
+        org.json.JSONObject result = new JSONObject();
+        if (String.valueOf(secondByte).equals("1"))result = BaiDuAiCheck.checkImg(remainingBytes);
+
+        int from_uid=Integer.parseInt(this.userId);
+        int to_uid=firstByte;
+
+        User from=WebSocketServer.userRepository.findUserById(from_uid);
+        User to=WebSocketServer.userRepository.findUserById(to_uid);
+        ChatUserLink from_to =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
+
+        ChatUserLink to_from=WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
+        if(to_from.getIsBlack()==1){
+            return;
+        }
 
         System.out.println(result);
 
-        if(result.get("conclusion").equals("合规")){
+        if((String.valueOf(secondByte).equals("1") && result.get("conclusion").equals("合规")) || String.valueOf(secondByte).equals("2")){
 
             Date date = new Date();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String formattedDate = formatter.format(date);
 
-            int from_uid=Integer.parseInt(this.userId);
-            int to_uid=firstByte;
 
-            User from=WebSocketServer.userRepository.findUserById(from_uid);
-            User to=WebSocketServer.userRepository.findUserById(to_uid);
-            ChatUserLink from_to =WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);
-
-            ChatUserLink to_from=WebSocketServer.chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to,from);
-            if(to_from.getIsBlack()==1){
-                return;
-            }
             ChatMessage new_mess=new ChatMessage();
             new_mess.setChatUserLink(from_to);
             new_mess.setFromUser(from);

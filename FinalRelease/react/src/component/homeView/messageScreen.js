@@ -475,12 +475,12 @@ export class MessageScreen extends React.Component {
                 </div>
                 <div className={"messageSend"}>
                     <Layout>
-                        <Header style={{ height: '50px' }} className={"ant-header-in-send"}>
+                        <Header style={{ height: '50px', backgroundColor: "aliceblue" }} className={"ant-header-in-send"}>
                             <Popover placement="topLeft" title={false}
                                 content={<Emoji handleEmojiClick={this.handleEmojiClick}/>} trigger="hover">
                                 <Button
                                     shape="circle"
-                                    style={{ marginRight: 10 }}
+                                    style={{ marginRight: 10}}
                                     icon={<SmileOutlined />}
                                 />
                             </Popover>
@@ -549,7 +549,7 @@ export class MessageScreen extends React.Component {
 
                         </Header>
                         <Footer style={{ height: '50px' }} className={"ant-footer-in-send"}>
-                            <textarea  className={"inputBox"}  ref={this.text}></textarea>
+                            <textarea className={"inputBox"}  ref={this.text}></textarea>
                         </Footer> 
                     </Layout>
                 </div>
