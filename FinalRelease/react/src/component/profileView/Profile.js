@@ -18,7 +18,13 @@ class Profile extends Component {
             allTags:[],
             remainTags:[],
             modalIsOpen: false,
+
+            file: null ,
+            URL:null
         };
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleFileChange = this.handleFileChange.bind(this);
     }
 
     componentDidMount() {
@@ -26,9 +32,43 @@ class Profile extends Component {
         let uid = sessionStorage.getItem('uid');
         fetch('http://localhost:8080/getUser?uid=' + uid.toString()) // 发送fetch请求获取联系人信息的接口地址
             .then(response => response.json())
-            .then(data => {
-                this.setState({ name: data.name ,password:data.password,
-                    avatar: data.avatar,tags: data.tags });
+            .then(async data => {
+                this.setState({
+                    name: data.name, password: data.password,
+                    tags: data.tags
+                });
+                let reader = new FileReader();
+                const byteCharacters = atob(data.avatar);
+                const byteArrays = [];
+                for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+                    const slice = byteCharacters.slice(offset, offset + 512);
+                    const byteNumbers = new Array(slice.length);
+                    for (let j = 0; j < slice.length; j++) {
+                        byteNumbers[j] = slice.charCodeAt(j);
+                    }
+                    const byteArray = new Uint8Array(byteNumbers);
+                    byteArrays.push(byteArray);
+                }
+                const totalLength = byteArrays.reduce((acc, arr) => acc + arr.length, 0);
+                const buffer1 = new ArrayBuffer(totalLength);
+                const resultArray = new Uint8Array(buffer1);
+                let offset = 0;
+                for (const byteArray of byteArrays) {
+                    resultArray.set(byteArray, offset);
+                    offset += byteArray.length;
+                }
+                const readBlob = new Blob([buffer1]);
+
+
+                const URL = await new Promise((resolve) => {
+                    reader.onload = (event) => {
+                        resolve(event.target.result);
+                    };
+                    reader.readAsDataURL(readBlob);
+                });
+
+                this.setState({URL: URL})
+
             })
             .catch(error => {
                 console.error('Error fetching contacts:', error);
@@ -100,8 +140,14 @@ class Profile extends Component {
         fetch('http://localhost:8080/changeName?'+params.toString()) // 发送fetch请求获取联系人信息的接口地址
             .then(response => response.json())
             .then(data => {
-                this.setState({ name: data.name ,password: data.password,avatar: data.avatar,tags: data.tags });
-                message.success('修改成功')
+                if(parseInt(data.id) !== -1) {
+                    this.setState({ name: data.name ,password: data.password,avatar: data.avatar,tags: data.tags });
+                    message.success('修改成功')
+                }
+                else{
+                    console.log(1);
+                    message.error("用户名已被占用");
+                }
             })
             .catch(error => {
                 console.error('Error fetching contacts:', error);
@@ -135,6 +181,73 @@ class Profile extends Component {
         this.setState({ modalIsOpen: false });
     };
 
+    handleSubmit(event) {
+
+        event.preventDefault();
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const data = new Uint8Array(reader.result);
+
+            const uid = sessionStorage.getItem('uid');
+            const params = new URLSearchParams();
+
+            params.append('uid', uid);
+
+            console.log(data);
+
+            fetch('http://localhost:8080/changeAvatar?'+params.toString(), {
+                method: 'POST',
+                body: data,
+            }).then(response => response.json())
+                .then(async data => {
+
+                    const byteCharacters = atob(data.avatar);
+                    const byteArrays = [];
+                    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+                        const slice = byteCharacters.slice(offset, offset + 512);
+                        const byteNumbers = new Array(slice.length);
+                        for (let j = 0; j < slice.length; j++) {
+                            byteNumbers[j] = slice.charCodeAt(j);
+                        }
+                        const byteArray = new Uint8Array(byteNumbers);
+                        byteArrays.push(byteArray);
+                    }
+                    const totalLength = byteArrays.reduce((acc, arr) => acc + arr.length, 0);
+                    const buffer1 = new ArrayBuffer(totalLength);
+                    const resultArray = new Uint8Array(buffer1);
+                    let offset = 0;
+                    for (const byteArray of byteArrays) {
+                        resultArray.set(byteArray, offset);
+                        offset += byteArray.length;
+                    }
+                    const readBlob = new Blob([buffer1]);
+
+                    console.log(readBlob)
+
+                    const URL = await new Promise((resolve) => {
+                        reader.onload = (event) => {
+                            resolve(event.target.result);
+                        };
+                        reader.readAsDataURL(readBlob);
+                    });
+
+                    this.setState({URL:URL})
+
+
+
+                })
+                .catch(error => {
+                    console.error('Error fetching contacts:', error);
+                });
+        };
+        reader.readAsArrayBuffer(this.state.file);
+    }
+
+    handleFileChange(event) {
+        this.setState({ file: event.target.files[0] });
+    }
+
     render() {
         const { name, avatar, tags } = this.state;
 
@@ -146,10 +259,10 @@ class Profile extends Component {
                style={{float:'left',width:'50vw', paddingTop:'200px'}}
               >
                   <Space direction={"vertical"} align={"center"} style={{ justifyContent: 'space-evenly' ,float:'right',width:'50vw'}}>
+
                       <Avatar
                           size={128}
-                          icon={<UserOutlined />}
-                      />
+                          src={this.state.URL} />
 
                       <label htmlFor="username" style={{fontSize:'1vw'}}>用户名:</label>
                       <Input value={this.state.name} onChange={this.handleNameChange}
@@ -163,8 +276,19 @@ class Profile extends Component {
                              type={'password'}
                       />
 
+
                       <Button onClick={this.handleNameEdit}>上传修改</Button>
+
+                      <div>
+                          {/*<form onSubmit={this.handleSubmit}>*/}
+                              <Input  type={'file'} style={{width:'10vw'}}  onChange={this.handleFileChange} />
+                              <Button onClick={this.handleSubmit}>修改头像</Button>
+                          {/*</form>*/}
+                      </div>
+
                   </Space>
+
+
 
 
 

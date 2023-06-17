@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -195,5 +196,18 @@ public class userController {
         return list;
 
     }
+
+    @PostMapping("/changeAvatar")
+    public User uploadFile(@RequestParam int uid,@RequestBody byte[] file) throws IOException {
+
+        User u=userRepository.findUserById(uid);
+        u.setAvatar(file);
+        userRepository.save(u);
+
+        System.out.println(u);
+        return u;
+
+    }
+
 
 }
