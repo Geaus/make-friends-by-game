@@ -21,6 +21,11 @@ const LoginCard = () => {
 
     const handleLogin = () => {
 
+        if(username.trim().length === 0 || password.trim().length === 0){
+            message.error("用户名或密码为空");
+            return;
+        }
+
         // sessionStorage.setItem('uid',username);
         // navigate('/home');
         login(username, password)

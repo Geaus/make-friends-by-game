@@ -14,7 +14,7 @@ class RegisterForm extends React.Component {
         // Do something when the form is submitted
         const { onSubmit } = this.props;
 
-        if(this.state.username==="" || this.state.password===""){
+        if(this.state.username.trim().length === 0 || this.state.password.trim().length === 0){
             message.error("用户名或密码为空");
             return;
         }

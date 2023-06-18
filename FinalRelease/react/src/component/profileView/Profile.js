@@ -129,13 +129,16 @@ class Profile extends Component {
 
     handleNameEdit =()=>{
 
+        if(this.state.name.trim().length === 0){
+            message.error("用户名不能为空")
+            return;
+        }
+
         const uid = sessionStorage.getItem('uid');
         const params = new URLSearchParams();
 
         params.append('uid', uid);
         params.append('name', this.state.name);
-
-
 
         fetch('http://localhost:8080/changeName?'+params.toString()) // 发送fetch请求获取联系人信息的接口地址
             .then(response => response.json())
@@ -155,6 +158,11 @@ class Profile extends Component {
     }
 
     handlePasswordEdit=()=>{
+
+        if(this.state.password.trim().length === 0){
+            message.error("密码不能为空")
+            return;
+        }
 
         const uid = sessionStorage.getItem('uid');
         const params = new URLSearchParams();

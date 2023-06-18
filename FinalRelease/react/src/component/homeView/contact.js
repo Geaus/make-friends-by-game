@@ -198,6 +198,7 @@ class ContactsManagement extends Component {
                 dataIndex: 'toUser',
                 width: '10vw',
                 key: 'toUser',
+                align: 'center',
                 render: (_, contact) => {
                     let uid = sessionStorage.getItem('uid');
                     if(parseInt(contact.toUser.id) === parseInt(uid))return contact.fromUser.name;
@@ -209,6 +210,7 @@ class ContactsManagement extends Component {
                 dataIndex: 'tags',
                 width: '15vw',
                 key: 'tags',
+                align: 'center',
                 render: (_, contact) => {
                     let uid = sessionStorage.getItem('uid');
                     if(parseInt(contact.toUser.id) === parseInt(uid))return (
@@ -231,6 +233,7 @@ class ContactsManagement extends Component {
                 title: '操作',
                 key: 'actions',
                 width: '20vw',
+                align: 'center',
                 render: (_, contact) => {
                     let uid = sessionStorage.getItem('uid');
                     if(parseInt(contact.isAdd) === 0 && parseInt(contact.toUser.id) === parseInt(uid))return(
@@ -266,12 +269,14 @@ class ContactsManagement extends Component {
                 dataIndex: 'name',
                 key: 'name',
                 width: '10vw',
+                align: 'center',
             },
             {
                 title: '标签',
                 dataIndex: 'tags',
                 width: '15vw',
                 key: 'tags',
+                align: 'center',
                 render: (_, record) => {
                     return (
                         <div>

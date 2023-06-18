@@ -11,11 +11,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-/**
- * @author hanjinqun
- * @date 2022/10/24
- * websocket操作类
- */
+
 @Component
 @ServerEndpoint("/websocket/game/{userId}")
 public class WebSocketOfGameServer {

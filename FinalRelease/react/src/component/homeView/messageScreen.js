@@ -24,7 +24,7 @@ export class MessageScreen extends React.Component {
 
         this.handleEmojiClick = this.handleEmojiClick.bind(this)
 
-        this.state = {gameIsFinished:false,isShowGame:false,isReceiveGame:false, message: "", browse:"<p class=\"message-receive\"></p>", to_user: null, from_user: null, text:"",isReceiveVideo:false,isShowVideo:false};
+        this.state = {gameIsFinished:false,isShowGame:false,isReceiveGame:false, message: "", browse:"<p class=\"message-receive\"></p>", to_user: null, from_user: null, text:"",isReceiveVideo:false,isShowVideo:false, isCloseGameVideo: false};
         let uid = sessionStorage.getItem('uid');
         this.setState({user: uid});
         let baseUrl = "ws://localhost:8080/websocket/"+uid;
@@ -76,6 +76,7 @@ export class MessageScreen extends React.Component {
                 }
                 if(str[3]==='结束游戏'){
                     gameSender = null;
+                    this.setState({isCloseGameVideo: true});
                     this.setState({isShowGame:false});
                     this.setState({gameIsFinished:true});
                 }
@@ -418,6 +419,10 @@ export class MessageScreen extends React.Component {
         this.setState({isShowGame: false})
     }
 
+    setIsCloseVideoGame = () => {
+        this.setState({isCloseGameVideo: false})
+    }
+
     sendGame = () =>{
         let to_uid = sessionStorage.getItem("to_uid");
         let str = to_uid + " " + "一起游戏吧";
@@ -452,8 +457,8 @@ export class MessageScreen extends React.Component {
         console.log(str);
         websocket.send(str);
         this.setState({isShowGame:false});
+        this.setState({isCloseGameVideo: true})
     }
-    
     render() {
         let html = {__html:this.state.browse};
         // upload组件配置
@@ -545,7 +550,9 @@ export class MessageScreen extends React.Component {
                                     gameIsFinished={this.state.gameIsFinished}
                                     setGameIsFinished = {this.setGameIsFinished}
                                 />
-                               <VideoOnFight/>
+                               <VideoOnFight
+                               setIsCloseVideoGame={this.setIsCloseVideoGame}
+                               isCloseGameVideo={this.state.isCloseGameVideo}/>
                             </Drawer>
                             
                             <div className={"sending"}>

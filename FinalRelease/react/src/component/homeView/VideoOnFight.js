@@ -29,6 +29,10 @@ class VideoOnFight extends React.Component {
 
   componentDidUpdate() {
     console.log(sessionStorage.getItem('to_uid'));
+    if(this.props.isCloseGameVideo === true){
+      this.hangUp();
+      this.props.setIsCloseVideoGame();
+    }
     if(sessionStorage.getItem('to_uid') != this.state.isWebSocket){
       this.setState({isWebSocket:sessionStorage.getItem('to_uid')})
       if(this.socket != null){
