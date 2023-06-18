@@ -24,7 +24,7 @@ export class ContactView extends React.Component {
                 <Header className={"ant-header"}>
                     <HeaderStyle />
                 </Header>
-                <ContactsManagement />
+                <ContactsManagement/>
             </Layout>
         )
     }

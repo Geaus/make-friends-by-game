@@ -44,7 +44,7 @@ class SearchView extends React.Component{
                 <Header className={"ant-header"}>
                     <HeaderStyle keys={'search'}/>
                 </Header>
-                <Content style={{backgroundColor:"white"}}>
+                <Content style={{backgroundColor:"aliceblue"}}>
                     <Space direction="vertical" size={"large"}>
                         <SearchBar/>
                     </Space>

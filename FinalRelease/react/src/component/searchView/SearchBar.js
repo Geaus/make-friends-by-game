@@ -245,7 +245,7 @@ export class SearchBar extends React.Component {
                     })}
                 </div>
                 <span className={"search-font"}>搜索结果</span>
-                <Table className={"search-result-lines"} columns={columns} dataSource={this.state.searchResult}></Table>
+                <Table className={"search-result-lines"} columns={columns} dataSource={this.state.searchResult} pagination={ {pageSize: 4} }></Table>
             </div>
         );
     }

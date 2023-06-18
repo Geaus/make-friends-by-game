@@ -263,7 +263,6 @@ class Profile extends Component {
         return (
 
             <div>
-
               <div
                style={{float:'left',width:'50vw', paddingTop:'40px'}}
               >

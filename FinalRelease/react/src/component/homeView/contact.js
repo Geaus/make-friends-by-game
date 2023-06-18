@@ -311,14 +311,14 @@ class ContactsManagement extends Component {
 
         return (
             <Layout>
-                <Sider style={{backgroundColor: "white", padding: '2vw'}} width={"50vw"}>
+                <Sider style={{backgroundColor: "aliceblue", padding: '2vw'}} width={"50vw"}>
                     <span style={{fontSize: '2vw', margin: '2vw'}}>我的好友</span>
                     <div>
-                        <Table dataSource={contacts} columns={columns} />
+                        <Table dataSource={contacts} columns={columns} pagination={ {pageSize: 4} }/>
                     </div>
                 </Sider>
                 <Content className={"contact-right"}>
-                    <span style={{backgroundColor: 'white', fontSize: '2vw', margin: '2vw'}}>可能想认识的人</span>
+                    <span style={{backgroundColor: 'aliceblue', fontSize: '2vw', margin: '2vw'}}>可能想认识的人</span>
                     <div>
                         <Table dataSource={recommend} columns={column_recommend} />
                     </div>

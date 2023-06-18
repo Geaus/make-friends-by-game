@@ -11,18 +11,17 @@
 }
 
 .ant-sider {
-    height : 90vh;
     padding : 0;
 }
 
 .ant-sider-in-sider {
-    height : 90vh;
     padding : 0;
+    background-color : #000000;
 }
 
 .ant-content-in-sider {
-    height : 90vh;
     width : 13vw;
+    background-color : #31382e;
     padding : 0;
 }
 
@@ -40,13 +39,11 @@
 
 .menuBar-left {
     background-color : #000000;
-    height: 100%;
     width : 100%;
 }
 
 .friendList {
     background-color : #31382e;
-    height : 100%;
     width : 100%;
 }
 
@@ -58,14 +55,14 @@
 
 .messageScreen {
     background-color : aliceblue;
-    height: 65vh;
+    height: 60vh;
     width : 100%;
     overflow: scroll;
 }
 
 .messageSend {
     background-color : aliceblue;
-    height : 25vh;
+    height : 30vh;
     width : 100%;
     padding: 0;
 }
@@ -180,6 +177,7 @@
     outline: medium;
     font-size: 1.5vw;
     padding-left: 1vw;
+    background-color: aliceblue;
 }
 
 .ant-header-in-send {
@@ -197,6 +195,17 @@
     margin : 0;
 }
 
+.bg-profile {
+    height: 90vh;
+    width: 100vw;
+    background-color: aliceblue;
+}
+
+.bg-aliceblue {
+    width: 100vw;
+    background-color: aliceblue;
+}
+
 .message-send {
     text-align: right;
     background-color: aliceblue;
@@ -211,7 +220,7 @@
 
 .search-result-lines {
     width : 100%;
-    background-color: #ffffff;
+    background-color: aliceblue;
 }
 
 .message-receive {
@@ -225,7 +234,7 @@
     height: 90vh;
     width: 50vw;
     padding: 2vw;
-    background-color: white;
+    background-color: aliceblue;
 }
 
 .loading1 {

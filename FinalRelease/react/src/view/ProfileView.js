@@ -16,7 +16,7 @@ class ProfileView extends React.Component {
                     <HeaderStyle />
                 </Header>
                 <Layout>
-                    <Content className={"ant-content"} style={{ display: "flex", justifyContent: "center" }}>
+                    <Content className={"bg-profile"} style={{ display: "flex", justifyContent: "center" }}>
                            <Profile/>
                     </Content>
                 </Layout>

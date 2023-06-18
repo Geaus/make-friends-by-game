@@ -12,6 +12,7 @@ import moment from "moment";
 import Toe from '../Toe';
 import VideoOnFight from "./VideoOnFight";
 import {Home} from "../fight";
+import {Divider} from "antd/lib";
 
 
 let websocket;
@@ -560,7 +561,8 @@ export class MessageScreen extends React.Component {
                             </div>
 
                         </Header>
-                        <Footer style={{ height: '50px' }} className={"ant-footer-in-send"}>
+                        <Divider style={{margin: 0}}/>
+                        <Footer style={{ height: '50px' , backgroundColor: "aliceblue"}} className={"ant-footer-in-send"}>
                             <textarea className={"inputBox"}  ref={this.text}></textarea>
                         </Footer> 
                     </Layout>
