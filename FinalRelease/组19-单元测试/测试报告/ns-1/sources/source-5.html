@@ -1,0 +1,325 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > userController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.makefriendsbackend.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: userController (com.example.makefriendsbackend.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">userController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    99.1%
+  </span>
+  <span class="absValue">
+    (107/108)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.makefriendsbackend.controller;
+&nbsp;
+&nbsp;import com.example.makefriendsbackend.entity.*;
+&nbsp;import com.example.makefriendsbackend.repository.ChatUserLinkRepository;
+&nbsp;import com.example.makefriendsbackend.repository.TagRepository;
+&nbsp;import com.example.makefriendsbackend.repository.TagUserRepository;
+&nbsp;import com.example.makefriendsbackend.repository.UserRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import javax.transaction.Transactional;
+&nbsp;import java.io.IOException;
+&nbsp;import java.text.SimpleDateFormat;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@CrossOrigin
+<b class="fc">&nbsp;public class userController {</b>
+&nbsp;    @Autowired
+&nbsp;    UserRepository userRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    TagRepository tagRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    TagUserRepository tagUserRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    ChatUserLinkRepository chatUserLinkRepository;
+&nbsp;
+&nbsp;    @RequestMapping(&quot;getUser&quot;)
+&nbsp;    public User getUser(@RequestParam int uid) {
+<b class="fc">&nbsp;        User user = userRepository.findUserById(uid);</b>
+<b class="fc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;getTag&quot;)
+&nbsp;    public List&lt;Tag&gt; getTags() {
+<b class="fc">&nbsp;        System.out.println(1);</b>
+<b class="fc">&nbsp;        return tagRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;searchUser&quot;)
+&nbsp;    public List&lt;UserWithFlag&gt; searchUser(@RequestParam String userName, @RequestParam int uid, @RequestBody List&lt;TagWithoutMapping&gt; tags) {
+<b class="fc">&nbsp;        List&lt;User&gt; users = userRepository.findUsersByNameContaining(userName);</b>
+<b class="fc">&nbsp;        List&lt;UserWithFlag&gt; res = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        User me = userRepository.findUserById(uid);</b>
+<b class="fc">&nbsp;        for(int i = 0; i &lt; users.size(); i++) {</b>
+<b class="fc">&nbsp;            if(users.get(i).getId() == uid)continue;</b>
+<b class="fc">&nbsp;            ChatUserLink chatUserLink = chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(me, users.get(i));</b>
+<b class="fc">&nbsp;            ChatUserLink rev = chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(users.get(i), me);</b>
+<b class="fc">&nbsp;            if(chatUserLink != null &amp;&amp; chatUserLink.getIsAdd() == 1)continue;</b>
+<b class="fc">&nbsp;            boolean ok = true;</b>
+<b class="fc">&nbsp;            List&lt;Tag&gt; userTag = users.get(i).getTags();</b>
+<b class="fc">&nbsp;            for(int j = 0; j &lt; tags.size(); j++) {</b>
+<b class="fc">&nbsp;                boolean ok_2 = false;</b>
+<b class="fc">&nbsp;                for(int k = 0; k &lt; userTag.size(); k++) {</b>
+<b class="fc">&nbsp;                    if(userTag.get(k).getTagid() == tags.get(j).getTagid()){</b>
+<b class="fc">&nbsp;                        ok_2 = true;</b>
+<b class="fc">&nbsp;                        break;</b>
+&nbsp;                    }
+&nbsp;                }
+<b class="fc">&nbsp;                if(!ok_2)ok = false;</b>
+&nbsp;            }
+<b class="fc">&nbsp;            if(ok) {</b>
+<b class="fc">&nbsp;                UserWithFlag user = new UserWithFlag();</b>
+<b class="fc">&nbsp;                user.setName(users.get(i).getName());</b>
+<b class="fc">&nbsp;                user.setId(users.get(i).getId());</b>
+<b class="fc">&nbsp;                user.setTags(users.get(i).getTags());</b>
+<b class="fc">&nbsp;                if(chatUserLink != null &amp;&amp; chatUserLink.getIsAdd() == 0)user.setAddFlag(1);</b>
+<b class="fc">&nbsp;                else if(chatUserLink == null &amp;&amp; rev != null)user.setAddFlag(2);</b>
+<b class="nc">&nbsp;                else user.setAddFlag(0);</b>
+<b class="fc">&nbsp;                res.add(user);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return res;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;addFriend&quot;)
+&nbsp;    public void addFriend(@RequestParam int from_id, @RequestParam int to_id){
+<b class="fc">&nbsp;        ChatUserLink chatUserLink_1 = new ChatUserLink();</b>
+<b class="fc">&nbsp;        Date date = new Date();</b>
+<b class="fc">&nbsp;        SimpleDateFormat formatter = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</b>
+<b class="fc">&nbsp;        String formattedDate = formatter.format(date);</b>
+<b class="fc">&nbsp;        chatUserLink_1.setCreateTime(formattedDate);</b>
+<b class="fc">&nbsp;        User from_user = userRepository.findUserById(from_id);</b>
+<b class="fc">&nbsp;        User to_user = userRepository.findUserById(to_id);</b>
+<b class="fc">&nbsp;        chatUserLink_1.setFromUser(from_user);</b>
+<b class="fc">&nbsp;        chatUserLink_1.setToUser(to_user);</b>
+<b class="fc">&nbsp;        chatUserLink_1.setIsBlack(0);</b>
+<b class="fc">&nbsp;        chatUserLink_1.setIsAdd(0);</b>
+<b class="fc">&nbsp;        chatUserLinkRepository.save(chatUserLink_1);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;accept&quot;)
+&nbsp;    public void acceptFriend(@RequestParam int from_id, @RequestParam int to_id) {
+<b class="fc">&nbsp;        User me = userRepository.findUserById(from_id);</b>
+<b class="fc">&nbsp;        User you = userRepository.findUserById(to_id);</b>
+<b class="fc">&nbsp;        ChatUserLink chatUserLink_1 = chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(you, me);</b>
+<b class="fc">&nbsp;        chatUserLink_1.setIsAdd(1);</b>
+<b class="fc">&nbsp;        chatUserLinkRepository.save(chatUserLink_1);</b>
+<b class="fc">&nbsp;        ChatUserLink chatUserLink_2 = new ChatUserLink();</b>
+<b class="fc">&nbsp;        chatUserLink_2.setFromUser(me);</b>
+<b class="fc">&nbsp;        chatUserLink_2.setToUser(you);</b>
+<b class="fc">&nbsp;        chatUserLink_2.setIsBlack(0);</b>
+<b class="fc">&nbsp;        chatUserLink_2.setIsAdd(1);</b>
+<b class="fc">&nbsp;        chatUserLink_2.setCreateTime(chatUserLink_1.getCreateTime());</b>
+<b class="fc">&nbsp;        chatUserLinkRepository.save(chatUserLink_2);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;reject&quot;)
+&nbsp;    public void rejectFriend(@RequestParam int from_id, @RequestParam int to_id) {
+<b class="fc">&nbsp;        User me = userRepository.findUserById(from_id);</b>
+<b class="fc">&nbsp;        User you = userRepository.findUserById(to_id);</b>
+<b class="fc">&nbsp;        ChatUserLink chatUserLink_1 = chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(you, me);</b>
+<b class="fc">&nbsp;        chatUserLinkRepository.delete(chatUserLink_1);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;newUser&quot;)
+&nbsp;    public User newUser(@RequestParam String username,@RequestParam String password) {
+<b class="fc">&nbsp;        User tmp = userRepository.findUserByName(username);</b>
+<b class="fc">&nbsp;        if(tmp != null) {</b>
+<b class="fc">&nbsp;            User u = new User();</b>
+<b class="fc">&nbsp;            u.setId(-1);</b>
+<b class="fc">&nbsp;            return u;</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="fc">&nbsp;            System.out.println(&quot;×¢²á³É¹¦&quot;);</b>
+<b class="fc">&nbsp;            User u=new User();</b>
+<b class="fc">&nbsp;            u.setName(username);</b>
+<b class="fc">&nbsp;            u.setPassword(password);</b>
+<b class="fc">&nbsp;            u = userRepository.save(u);</b>
+<b class="fc">&nbsp;            return u;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    @RequestMapping(&quot;addTag&quot;)
+&nbsp;    public List&lt;Tag&gt; addTag(@RequestParam int uid,@RequestParam int tagid) {
+&nbsp;
+<b class="fc">&nbsp;        User u=userRepository.findUserById(uid);</b>
+<b class="fc">&nbsp;        Tag t=tagRepository.findTagByTagid(tagid);</b>
+&nbsp;
+<b class="fc">&nbsp;        TagUser tmp=new TagUser();</b>
+&nbsp;
+<b class="fc">&nbsp;        tmp.setTagid(tagid);</b>
+<b class="fc">&nbsp;        tmp.setUserid(uid);</b>
+<b class="fc">&nbsp;        tagUserRepository.save(tmp);</b>
+&nbsp;
+<b class="fc">&nbsp;        List&lt;Tag&gt; list=u.getTags();</b>
+<b class="fc">&nbsp;        list.add(t);</b>
+<b class="fc">&nbsp;        u.setTags(list);</b>
+&nbsp;
+<b class="fc">&nbsp;        return u.getTags();</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;changeName&quot;)
+&nbsp;    public User changeName(@RequestParam int uid,@RequestParam String name) {
+<b class="fc">&nbsp;        User tmp = userRepository.findUserByName(name);</b>
+<b class="fc">&nbsp;        if(tmp != null &amp;&amp; tmp.getId() != uid) {</b>
+<b class="fc">&nbsp;            User u = new User();</b>
+<b class="fc">&nbsp;            u.setId(-1);</b>
+<b class="fc">&nbsp;            return u;</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="fc">&nbsp;            User u=userRepository.findUserById(uid);</b>
+<b class="fc">&nbsp;            u.setName(name);</b>
+<b class="fc">&nbsp;            userRepository.save(u);</b>
+&nbsp;
+<b class="fc">&nbsp;            return u;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;changePassword&quot;)
+&nbsp;    public User changePassword(@RequestParam int uid,@RequestParam String password) {
+&nbsp;
+<b class="fc">&nbsp;        User u=userRepository.findUserById(uid);</b>
+<b class="fc">&nbsp;        u.setPassword(password);</b>
+<b class="fc">&nbsp;        userRepository.save(u);</b>
+&nbsp;
+<b class="fc">&nbsp;        return u;</b>
+&nbsp;
+&nbsp;    }
+&nbsp;    @Transactional
+&nbsp;    @RequestMapping(&quot;removeTag&quot;)
+&nbsp;    public List&lt;Tag&gt; removeTag(@RequestParam int uid,@RequestParam int tagid) {
+&nbsp;
+<b class="fc">&nbsp;        User u=userRepository.findUserById(uid);</b>
+<b class="fc">&nbsp;        Tag t=tagRepository.findTagByTagid(tagid);</b>
+<b class="fc">&nbsp;        List&lt;Tag&gt; list=u.getTags();</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        TagUser tmp=tagUserRepository.findTagUserByUseridAndTagid(uid,tagid);</b>
+&nbsp;
+<b class="fc">&nbsp;        tmp.setTagid(tagid);</b>
+<b class="fc">&nbsp;        tmp.setUserid(uid);</b>
+&nbsp;
+<b class="fc">&nbsp;        tagUserRepository.deleteTagUserByUseridAndTagid(uid,tagid);</b>
+&nbsp;
+<b class="fc">&nbsp;        list.remove(t);</b>
+&nbsp;
+<b class="fc">&nbsp;        return list;</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/changeAvatar&quot;)
+&nbsp;    public User uploadFile(@RequestParam int uid,@RequestBody byte[] file) throws IOException {
+&nbsp;
+<b class="fc">&nbsp;        User u=userRepository.findUserById(uid);</b>
+<b class="fc">&nbsp;        u.setAvatar(file);</b>
+<b class="fc">&nbsp;        userRepository.save(u);</b>
+&nbsp;
+<b class="fc">&nbsp;        System.out.println(u);</b>
+<b class="fc">&nbsp;        return u;</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-18 09:27</div>
+</div>
+</body>
+</html>

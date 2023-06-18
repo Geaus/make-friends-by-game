@@ -1,0 +1,193 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > contactController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.makefriendsbackend.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: contactController (com.example.makefriendsbackend.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">contactController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (33/33)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.makefriendsbackend.controller;
+&nbsp;
+&nbsp;import com.example.makefriendsbackend.entity.ChatList;
+&nbsp;import com.example.makefriendsbackend.entity.ChatUserLink;
+&nbsp;import com.example.makefriendsbackend.entity.User;
+&nbsp;import com.example.makefriendsbackend.repository.ChatMessageRepository;
+&nbsp;import com.example.makefriendsbackend.repository.ChatUserLinkRepository;
+&nbsp;import com.example.makefriendsbackend.repository.UserRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.CrossOrigin;
+&nbsp;import org.springframework.web.bind.annotation.RequestMapping;
+&nbsp;import org.springframework.web.bind.annotation.RequestParam;
+&nbsp;import org.springframework.web.bind.annotation.RestController;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@CrossOrigin
+<b class="fc">&nbsp;public class contactController {</b>
+&nbsp;    @Autowired
+&nbsp;    UserRepository userRepository;
+&nbsp;    @Autowired
+&nbsp;    ChatUserLinkRepository chatUserLinkRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    ChatMessageRepository chatMessageRepository;
+&nbsp;    @RequestMapping(&quot;/getContact&quot;)
+&nbsp;    public List&lt;ChatUserLink&gt; getContact(@RequestParam int uid){
+&nbsp;
+<b class="fc">&nbsp;        User u =userRepository.findUserById(uid);</b>
+<b class="fc">&nbsp;        List&lt;ChatUserLink&gt; links= chatUserLinkRepository.findChatUserLinksByFromUser(u);</b>
+&nbsp;
+<b class="fc">&nbsp;        List&lt;ChatUserLink&gt; list=new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for(ChatUserLink  link:links){</b>
+<b class="fc">&nbsp;            list.add(link);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        links = chatUserLinkRepository.findChatUserLinksByToUser(u);</b>
+&nbsp;
+<b class="fc">&nbsp;        for(ChatUserLink link: links) {</b>
+<b class="fc">&nbsp;            if(link.getIsAdd() == 0)list.add(link);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return list;</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;/blackContact&quot;)
+&nbsp;    public String blackContact(@RequestParam int uid ,@RequestParam int to_uid){
+&nbsp;
+<b class="fc">&nbsp;        User from=userRepository.findUserById(uid);</b>
+<b class="fc">&nbsp;        User to=userRepository.findUserById(to_uid);</b>
+<b class="fc">&nbsp;        ChatUserLink link=chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);</b>
+<b class="fc">&nbsp;        link.setIsBlack(1);</b>
+<b class="fc">&nbsp;        chatUserLinkRepository.save(link);</b>
+&nbsp;
+<b class="fc">&nbsp;        return &quot;拉黑成功&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;/reAddContact&quot;)
+&nbsp;    public String reAddContact(@RequestParam int uid,@RequestParam int to_uid){
+&nbsp;
+<b class="fc">&nbsp;        User from=userRepository.findUserById(uid);</b>
+<b class="fc">&nbsp;        User to=userRepository.findUserById(to_uid);</b>
+<b class="fc">&nbsp;        ChatUserLink link=chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from,to);</b>
+<b class="fc">&nbsp;        link.setIsBlack(0);</b>
+<b class="fc">&nbsp;        chatUserLinkRepository.save(link);</b>
+&nbsp;
+<b class="fc">&nbsp;        return &quot;重加成功&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;/deleteContact&quot;)
+&nbsp;    public  String deleteContact (@RequestParam int uid,@RequestParam int to_uid){
+&nbsp;
+<b class="fc">&nbsp;        User from = userRepository.findUserById(uid);</b>
+<b class="fc">&nbsp;        User to = userRepository.findUserById(to_uid);</b>
+<b class="fc">&nbsp;        ChatUserLink link_1 = chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(from, to);</b>
+<b class="fc">&nbsp;        ChatUserLink link_2 = chatUserLinkRepository.findChatUserLinkByFromUserAndToUser(to, from);</b>
+&nbsp;
+<b class="fc">&nbsp;        chatMessageRepository.deleteChatMessagesByChatUserLink(link_1);</b>
+<b class="fc">&nbsp;        chatMessageRepository.deleteChatMessagesByChatUserLink(link_2);</b>
+<b class="fc">&nbsp;        chatUserLinkRepository.delete(link_1);</b>
+<b class="fc">&nbsp;        chatUserLinkRepository.delete(link_2);</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        return &quot;删除成功&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-18 09:27</div>
+</div>
+</body>
+</html>
