@@ -257,7 +257,7 @@ class Profile extends Component {
             <div>
 
               <div
-               style={{float:'left',width:'50vw', paddingTop:'200px'}}
+               style={{float:'left',width:'50vw', paddingTop:'40px'}}
               >
                   <Space direction={"vertical"} align={"center"} style={{ justifyContent: 'space-evenly' ,float:'right',width:'50vw'}}>
 

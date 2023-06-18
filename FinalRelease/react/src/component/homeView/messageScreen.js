@@ -415,6 +415,7 @@ export class MessageScreen extends React.Component {
 
     setGameIsFinished = () =>{
         this.setState({gameIsFinished:false})
+        this.setState({isShowGame: false})
     }
 
     sendGame = () =>{
@@ -539,7 +540,11 @@ export class MessageScreen extends React.Component {
                                 onClose={this.onClose}
                                 open={this.state.isShowGame}
                             >
-                                <Home/>
+                                <Home
+                                    isShowGame={this.state.isShowGame}
+                                    gameIsFinished={this.state.gameIsFinished}
+                                    setGameIsFinished = {this.setGameIsFinished}
+                                />
                                <VideoOnFight/>
                             </Drawer>
                             

@@ -78,7 +78,7 @@
 .header-name {
     height : 100%;
     width : 10vw;
-    font-size: 3vh;
+    font-size: 1.5vw;
     float : left;
     text-align: center;
     color:white;
@@ -100,7 +100,7 @@
 .header-person {
     height : 100%;
     width : 10vw;
-    font-size : 3vh;
+    font-size : 1.5vw;
 
     float : left;
     text-align: center;

@@ -37,6 +37,8 @@ export class Home extends Component {
 	}
 
 	move=(e)=>{
+		console.log(this.props.isShowGame)
+		if(this.props.isShowGame === false) return;
 		if(this.state.lock == true){
 			return
 		}
@@ -55,7 +57,7 @@ export class Home extends Component {
 							m.style.left = m.offsetLeft+6+"px";
 							m.src = require(`../asset/pic/go${i}.png`); 
 							i === 6 && self.setState({ lock: false});
-						}, i*60);
+						}, i*100);
 					}
 					break;
 				case 37:
@@ -66,7 +68,7 @@ export class Home extends Component {
 							player2.style.left = player2.offsetLeft-6+"px";
 							player2.src = require(`../asset/pic/go${i}.png`); 
 							i === 6 && self.setState({ lock: false});
-						}, i*60);
+						}, i*100);
 					}
 					break;
 				case 65:
@@ -77,7 +79,7 @@ export class Home extends Component {
 							m.style.left = m.offsetLeft-6+"px";
 							m.src = require(`../asset/pic/back${i}.png`); 
 							i === 6 && self.setState({ lock: false});
-						}, i*60);
+						}, i*100);
 					}
 					break;
 				case 39:
@@ -88,7 +90,7 @@ export class Home extends Component {
 							player2.style.left = player2.offsetLeft+6+"px";
 							player2.src = require(`../asset/pic/back${i}.png`); 
 							i === 6 && self.setState({ lock: false});
-						}, i*60);
+						}, i*100);
 					}
 					break;
 				case 83:
@@ -220,6 +222,7 @@ export class Home extends Component {
 											clearInterval(fly);
 											boom.style.display = "none"
 											blood2 = blood2 - 20
+											if(blood2 < 172) blood2 = 172;
 											bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 											self.attacked2()
 										}
@@ -251,6 +254,7 @@ export class Home extends Component {
 											clearInterval(fly);
 											boom1.style.display = "none"
 											blood1 = blood1 - 20
+											if(blood1 < 172) blood1 = 172;
 											console.log(blood1);
 											bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 											self.attacked1()
@@ -277,6 +281,7 @@ export class Home extends Component {
 								m.src = require(`../asset/pic/jump_kick${i}.png`); 
 								if(player2.offsetLeft - m.offsetLeft <= 120){
 									blood2 = blood2 - 10
+									if(blood2 < 172) blood2 = 172;
 									bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 									self.attackedFly(2)
 								}
@@ -297,6 +302,7 @@ export class Home extends Component {
 								player2.src = require(`../asset/pic/jump_kick${i}.png`); 
 								if(player2.offsetLeft - m.offsetLeft <= 120){
 									blood1 = blood1 - 10
+									if(blood1 < 172) blood1 = 172;
 									bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 									self.attackedFly(1)
 								}
@@ -317,6 +323,7 @@ export class Home extends Component {
 	}
 
 	keyup=(e)=>{
+		if(this.props.isShowGame === false) return;
 		arrKey[e.keyCode] = false
 		switch(e.keyCode){
 			case 83:
@@ -406,6 +413,7 @@ export class Home extends Component {
 
 	attacked1 = () => {
     	if(blood1 <= 172){
+			blood1 = 172;
 			this.ko1()
 		}
 		else{
@@ -422,6 +430,7 @@ export class Home extends Component {
 
     attacked2 = ()=>{
     	if(blood2 <= 172){
+			blood2 = 172;
 			this.ko2()
 		}
 		else{
@@ -437,7 +446,7 @@ export class Home extends Component {
     }
 
     attackedFly = (player)=>{
-    	if(blood2 <= 172){
+    	if(blood2 <= 172 || blood1 <= 172){
 			if(player === 2){
 				this.ko2();
 			}
@@ -503,6 +512,7 @@ export class Home extends Component {
 			case 74:
 				if(distance <= 86){
 					blood2 = blood2 - 15
+					if(blood2 < 172) blood2 = 172;
 					bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 					this.attacked2()
 				}
@@ -510,6 +520,7 @@ export class Home extends Component {
 			case 78:
 				if(distance <= 86){
 					blood1 = blood1 - 15
+					if(blood1 < 172) blood1 = 172;
 					bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 					this.attacked1()
 				}
@@ -517,6 +528,7 @@ export class Home extends Component {
 			case 75:
 				if(distance <= 116){
 					blood2 = blood2 - 15
+					if(blood2 < 172) blood2 = 172;
 					bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 					this.attacked2()
 				}
@@ -524,6 +536,7 @@ export class Home extends Component {
 			case 77:
 				if(distance <= 116){
 					blood1 = blood1 - 15
+					if(blood1 < 172) blood1 = 172;
 					bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 					this.attacked1()
 				}
@@ -566,6 +579,7 @@ export class Home extends Component {
 			case "74":
 				if(distance <= 86){
 					blood2 = blood2 - 15
+					if(blood2 < 172) blood2 = 172;
 					bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 					this.attacked2()
 				}
@@ -573,6 +587,7 @@ export class Home extends Component {
 			case "78":
 				if(distance <= 86){
 					blood1 = blood1 - 15
+					if(blood1 < 172) blood1 = 172;
 					bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 					this.attacked1()
 				}
@@ -580,6 +595,7 @@ export class Home extends Component {
 			case "75":
 				if(distance <= 116){
 					blood2 = blood2 - 15
+					if(blood2 < 172) blood2 = 172;
 					bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 					this.attacked2()
 				}
@@ -587,6 +603,7 @@ export class Home extends Component {
 			case "77":
 				if(distance <= 116){
 					blood1 = blood1 - 15
+					if(blood1 < 172) blood1 = 172;
 					bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 					this.attacked1()
 				}
@@ -643,6 +660,19 @@ export class Home extends Component {
 		bar.style.clip = `rect(0 322px 50px 0px)`;
 		this.setState({isOpen : false});
 	}
+
+	sleep = (ms)=> {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	componentDidUpdate() {
+		if(this.props.gameIsFinished){
+			console.log("ok");
+		  this.startGame1();
+		  this.props.setGameIsFinished();
+		}
+	}
+
 	componentDidMount(){
 		m =this.mRef.current;
 		player2 =this.player2.current;
@@ -665,15 +695,17 @@ export class Home extends Component {
 		console.log("WebSocket连接已建立");
 		};
 
-		this.websocket.onmessage = (event) => {
-		console.log("收到WebSocket消息:", event.data);
-
+		this.websocket.onmessage = async (event) => {
+			console.log("收到WebSocket消息:", event.data);
 		if(event.data === "74up" || event.data === "78up"){
 			console.log("收到WebSocket消息:", event.data);
 			this.setState({lock1 : false});
 		}
 		if(event.data === "重新启动"){
 			this.startGame1();
+		}
+		if(event.data === "取消"){
+			this.setState({isOpen : false});
 		}
 		if(this.state.lock1 == true){
 			return
@@ -684,46 +716,56 @@ export class Home extends Component {
 			arrKey[event.data] = true
 			this.effect1(event)
 			//单个键
-			console.log("收到WebSocket消息:", event.data);
 			switch (event.data){
 				case "68":
 					console.log("收到WebSocket消息:", event.data);
+					//self.setState({ lock1: false});
 					for(let i=1;i<=6;i++){
+						console.log(i);
 						setTimeout(function(){ 
+							
 							m.style.left = m.offsetLeft+6+"px";
 							m.src = require(`../asset/pic/go${i}.png`); 
-							i === 6 && self.setState({ lock1: false});
-						}, i*60);
+							
+						}, i*99);
 					}
+					self.setState({ lock1: false});
 					break;
 				case "37":
 					console.log("收到WebSocket消息:", event.data);
 					for(let i=1;i<=6;i++){
+						 
 						setTimeout(function(){ 
 							player2.style.left = player2.offsetLeft-6+"px";
 							player2.src = require(`../asset/pic/go${i}.png`); 
 							i === 6 && self.setState({ lock1: false});
-						}, i*60);
+						}, i*99);
+						self.setState({ lock1: false});
 					}
 					break;
 				case "65":
 					console.log("收到WebSocket消息:", event.data);
 					for(let i=1;i<=6;i++){
+						console.log(i);
+						
 						setTimeout(function(){ 
+							
 							m.style.left = m.offsetLeft-6+"px";
 							m.src = require(`../asset/pic/back${i}.png`); 
 							i === 6 && self.setState({ lock1: false});
-						}, i*60);
+						}, i*99);
 					}
 					break;
 				case "39":
 					console.log("收到WebSocket消息:", event.data);
 					for(let i=1;i<=6;i++){
+						console.log(i);
+						
 						setTimeout(function(){ 
 							player2.style.left = player2.offsetLeft+6+"px";
 							player2.src = require(`../asset/pic/back${i}.png`); 
 							i === 6 && self.setState({ lock1: false});
-						}, i*60);
+						}, i*100);
 					}
 					break;
 				case "83":
@@ -732,6 +774,7 @@ export class Home extends Component {
 					if(this.state.keep1 === false){
 						self.setState({ keep1: true});
 						for(let i=1;i<=3;i++){
+							console.log(i);
 							setTimeout(function(){ 
 								m.src = require(`../asset/pic/down${i}.png`); 
 							}, i*40);
@@ -752,6 +795,7 @@ export class Home extends Component {
 					if(this.state.keep2 === false){
 						self.setState({ keep2: true});
 						for(let i=1;i<=3;i++){
+							console.log(i);
 							setTimeout(function(){ 
 								player2.src = require(`../asset/pic/down${i}.png`); 
 							}, i*40);
@@ -789,22 +833,27 @@ export class Home extends Component {
 					console.log("收到WebSocket消息:", event.data);
 					if(!arrKey[83] && !arrKey[32]){
 						for(let i=1;i<=5;i++){
+							 
 							setTimeout(function(){ 
 								m.src = require(`../asset/pic/leg${i}.png`); 
 								i === 5 && self.setState({ lock1: false});
-							}, i*100);
+							}, i*99);
+							
 						}
+						self.setState({ lock1: false});
 					}	
 					break;
 				case "77":
 					console.log("收到WebSocket消息:", event.data);
 					if(!arrKey[40]){
 						for(let i=1;i<=5;i++){
+							
 							setTimeout(function(){ 
 								player2.src = require(`../asset/pic/leg${i}.png`); 
 								i === 5 && self.setState({ lock1: false});
-							}, i*100);
+							}, i*99);
 						}
+						self.setState({ lock1: false});
 					}	
 					break;
 				case "32":
@@ -822,7 +871,7 @@ export class Home extends Component {
 									}, j*100);
 								}
 							}
-						}, i*100);
+						}, i*99);
 					}
 
 					break;
@@ -838,7 +887,7 @@ export class Home extends Component {
 										player2.src = require(`../asset/pic/jump${j}.png`); 
 										player2.style.bottom = 130+"px"
 										j === 4 && self.setState({ lock1: false});
-									}, j*100);
+									}, j*99);
 								}
 							}
 						}, i*100);
@@ -860,6 +909,7 @@ export class Home extends Component {
 											clearInterval(fly);
 											boom.style.display = "none"
 											blood2 = blood2 - 20
+											if(blood2 < 172) blood2 = 172;
 											bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 											self.attacked2()
 										}
@@ -891,6 +941,7 @@ export class Home extends Component {
 											boom1.style.display = "none"
 											blood1 = blood1 - 20
 											console.log(blood1);
+											if(blood1 < 172) blood1 = 172;
 											bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 											self.attacked1()
 										}
@@ -916,6 +967,7 @@ export class Home extends Component {
 								m.src = require(`../asset/pic/jump_kick${i}.png`); 
 								if(player2.offsetLeft - m.offsetLeft <= 120){
 									blood2 = blood2 - 10
+									if(blood2 < 172) blood2 = 172;
 									bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 									self.attackedFly(2)
 								}
@@ -937,6 +989,7 @@ export class Home extends Component {
 								player2.src = require(`../asset/pic/jump_kick${i}.png`); 
 								if(player2.offsetLeft - m.offsetLeft <= 120){
 									blood1 = blood1 - 10
+									if(blood1 < 172) blood1 = 172;
 									bar.style.clip = `rect(0 ${blood2}px 50px ${322 - blood1}px)`
 									self.attackedFly(1)
 								}
@@ -962,8 +1015,12 @@ export class Home extends Component {
 		console.log("WebSocket连接已关闭");
 		};
 	}
-
+	onCancel = () =>{
+		this.setState({isOpen : false});
+		this.websocket.send(sessionStorage.getItem("to_uid") + " " + "取消");
+	}
     render(){
+		if(this.props === null) return;
         return <div className="container">
 			<Modal title="游戏结束" 
                 open={this.state.isOpen}
