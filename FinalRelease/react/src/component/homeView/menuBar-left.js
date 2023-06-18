@@ -42,15 +42,37 @@ const MenuBar_Left = (props) => {
                               onClick={handleMenuClick}
                         >
 
-                            <Menu.Item key="1" icon={<UserAddOutlined/>}>
+                            <Menu.Item key="1"
+                                       style={{
+                                           maxWidth: 100,
+                                           overflow: 'hidden',
+                                           whiteSpace: 'nowrap',
+                                           textOverflow: 'ellipsis',
+                                           cursor: 'pointer'}} title={"好友列表"}
+                                       icon={<UserAddOutlined/>}>
 
                             </Menu.Item>
-                            <Menu.Item key="2" icon={<UserDeleteOutlined/>}>
+                            <Menu.Item key="2"
+
+                                       style={{
+                                           maxWidth: 100,
+                                           overflow: 'hidden',
+                                           whiteSpace: 'nowrap',
+                                           textOverflow: 'ellipsis',
+                                           cursor: 'pointer'}} title={"黑名单"}
+                                       icon={<UserDeleteOutlined/>}>
 
                             </Menu.Item>
 
                             <Link to={'/contact'}>
-                                <Menu.Item key="3" icon={<UsergroupAddOutlined/>}>
+                                <Menu.Item key="3"
+                                           style={{
+                                               maxWidth: 100,
+                                               overflow: 'hidden',
+                                               whiteSpace: 'nowrap',
+                                               textOverflow: 'ellipsis',
+                                               cursor: 'pointer'}} title={"通讯录管理"}
+                                           icon={<UsergroupAddOutlined/>}>
 
                                 </Menu.Item>
                             </Link>

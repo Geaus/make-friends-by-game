@@ -160,7 +160,7 @@ public class userController {
     @RequestMapping("changeName")
     public User changeName(@RequestParam int uid,@RequestParam String name) {
         User tmp = userRepository.findUserByName(name);
-        if(tmp != null) {
+        if(tmp != null && tmp.getId()!=uid) {
             User u = new User();
             u.setId(-1);
             return u;
@@ -172,6 +172,19 @@ public class userController {
 
             return u;
         }
+
+
+    }
+
+    @RequestMapping("changePassword")
+    public User changePassword(@RequestParam int uid,@RequestParam String password) {
+
+            User u=userRepository.findUserById(uid);
+            u.setPassword(password);
+            userRepository.save(u);
+
+            return u;
+
 
 
     }

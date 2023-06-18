@@ -10,6 +10,8 @@ import {getMessage} from "../../service/ChatService";
 import {getUser} from "../../service/UserService";
 import moment from "moment";
 import Toe from '../Toe';
+import VideoOnFight from "./VideoOnFight";
+import {Home} from "../fight";
 
 
 let websocket;
@@ -530,17 +532,15 @@ export class MessageScreen extends React.Component {
                                 videoCallSender={videoCallSender}
                                 setIsOver = {this.setIsOver} />
                              
-                            <Drawer width='1000px'
+                            <Drawer width='750px'
                                 forceRender={true}
                                 title="游戏面板"
                                 placement="right"
                                 onClose={this.onClose}
                                 open={this.state.isShowGame}
                             >
-                                <Toe 
-                                    gameSender={gameSender}
-                                    gameIsFinished={this.state.gameIsFinished}
-                                    setGameIsFinished = {this.setGameIsFinished}/>
+                                <Home/>
+                               <VideoOnFight/>
                             </Drawer>
                             
                             <div className={"sending"}>

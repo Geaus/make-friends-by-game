@@ -218,9 +218,10 @@ export class SearchBar extends React.Component {
                         }
                     />
                 <div>
-                    {this.state.buttons.map((button) => (
+                    {this.state.buttons.map((button) => {if(button.clicked) return(
                         <Button
-                            type="dashed"
+
+                            type="primary"
                             shape="round"
                             style={{marginRight:20 ,marginBottom:40}}
                             key={button.id}
@@ -228,7 +229,20 @@ export class SearchBar extends React.Component {
                         >
                             {button.text} - {button.clicked ? "已添加" : "未添加"}
                         </Button>
-                    ))}
+                    )
+                        else return (
+                            <Button
+
+                                type="dashed"
+                                shape="round"
+                                style={{marginRight:20 ,marginBottom:40}}
+                                key={button.id}
+                                onClick={() => this.handleClick(button.id)}
+                            >
+                                {button.text} - {button.clicked ? "已添加" : "未添加"}
+                            </Button>
+                        )
+                    })}
                 </div>
                 <span className={"search-font"}>搜索结果</span>
                 <Table className={"search-result-lines"} columns={columns} dataSource={this.state.searchResult}></Table>

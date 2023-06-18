@@ -108,7 +108,7 @@ public class friendController {
             int multi = 0;
             for(int j = 0; j < 20; j++)multi += your_dir[j] * my_dir[j];
             double prob = 0;
-            if(mySum == 0 || yourSum == 0)prob = 0.1;
+            if(mySum == 0 || yourSum == 0)prob = 0.01;
             else prob = multi / (Math.sqrt(mySum)) / (Math.sqrt(yourSum));
             System.out.println(prob);
             UserWithFlag user = new UserWithFlag();

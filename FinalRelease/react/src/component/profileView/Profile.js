@@ -134,7 +134,7 @@ class Profile extends Component {
 
         params.append('uid', uid);
         params.append('name', this.state.name);
-        params.append('password', this.state.password);
+
 
 
         fetch('http://localhost:8080/changeName?'+params.toString()) // 发送fetch请求获取联系人信息的接口地址
@@ -167,6 +167,7 @@ class Profile extends Component {
             .then(response => response.json())
             .then(data => {
                 this.setState({ name: data.name ,password: data.password,avatar: data.avatar,tags: data.tags });
+                message.success('修改成功')
             })
             .catch(error => {
                 console.error('Error fetching contacts:', error);
@@ -277,7 +278,8 @@ class Profile extends Component {
                       />
 
 
-                      <Button onClick={this.handleNameEdit}>上传修改</Button>
+                      <Button onClick={this.handleNameEdit}>修改用户名</Button>
+                      <Button onClick={this.handlePasswordEdit}>修改密码</Button>
 
                       <div>
                           {/*<form onSubmit={this.handleSubmit}>*/}
